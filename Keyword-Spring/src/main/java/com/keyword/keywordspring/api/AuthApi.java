@@ -1,6 +1,5 @@
 package com.keyword.keywordspring.api;
 
-import com.keyword.keywordspring.dto.JwtDto;
 import com.keyword.keywordspring.dto.LoginRequest;
 import com.keyword.keywordspring.dto.RegisterRequest;
 import com.keyword.keywordspring.exception.EmailAlreadyTakenException;
@@ -8,6 +7,7 @@ import com.keyword.keywordspring.exception.InvalidUsernameOrPasswordException;
 import com.keyword.keywordspring.exception.UsernameAlreadyTakenException;
 import com.keyword.keywordspring.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,26 +25,57 @@ public class AuthApi {
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         try {
             userService.register(request);
-        } catch (UsernameAlreadyTakenException e) {
-            return ResponseEntity.badRequest().body(e.toString());
-        } catch (EmailAlreadyTakenException e) {
-            return ResponseEntity.badRequest().body(e.toString());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-
-        JwtDto jwt;
-
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
         try {
-            jwt = userService.login(request);
-        } catch (InvalidUsernameOrPasswordException e) {
-            return ResponseEntity.status(401).body(e.toString());
+            userService.login(request);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
 
-        return ResponseEntity.ok().body(jwt);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/validate-new/username")
+    public ResponseEntity<String> validateNewUsername(@RequestBody String username) {
+
+        try {
+            userService.validateNewUsername(username);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/validate-new/email")
+    public ResponseEntity<String> validateNewEmail(@RequestBody String email) {
+
+        try {
+            userService.validateNewEmail(email);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/validate-new/password")
+    public ResponseEntity<String> validateNewPassword(@RequestBody String password) {
+
+        try {
+            userService.validateNewPassword(password);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,6 +1,5 @@
 package com.keyword.keywordspring.api;
 
-import com.keyword.keywordspring.dto.JwtDto;
 import com.keyword.keywordspring.dto.LoginRequest;
 import com.keyword.keywordspring.dto.RegisterRequest;
 import com.keyword.keywordspring.exception.EmailAlreadyTakenException;
@@ -40,7 +39,6 @@ class AuthApiTest {
 
     @Test
     void registerSuccessful() {
-        when(userService.register(any())).thenReturn(true);
 
         ResponseEntity response = api.register(registerRequest);
 
@@ -48,24 +46,7 @@ class AuthApiTest {
     }
 
     @Test
-    void registerBadUsername() {
-        when(userService.register(any())).thenThrow(new UsernameAlreadyTakenException(anyString()));
-
-        ResponseEntity response = api.register(registerRequest);
-        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    void registerBadEmail() {
-        when(userService.register(any())).thenThrow(new EmailAlreadyTakenException(anyString()));
-
-        ResponseEntity response = api.register(registerRequest);
-        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
     void loginSuccessful() {
-        when(userService.login(any())).thenReturn(JwtDto.builder().build());
 
         ResponseEntity response = api.login(loginRequest);
 

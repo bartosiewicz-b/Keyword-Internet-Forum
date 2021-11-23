@@ -1,14 +1,14 @@
 package com.keyword.keywordspring.service;
 
-import com.keyword.keywordspring.dto.JwtDto;
 import com.keyword.keywordspring.dto.LoginRequest;
 import com.keyword.keywordspring.dto.RegisterRequest;
-import com.keyword.keywordspring.exception.EmailAlreadyTakenException;
-import com.keyword.keywordspring.exception.InvalidUsernameOrPasswordException;
-import com.keyword.keywordspring.exception.UsernameAlreadyTakenException;
 
 public interface UserService {
-    boolean register(RegisterRequest request) throws UsernameAlreadyTakenException, EmailAlreadyTakenException;
+    void register(RegisterRequest request);
 
-    JwtDto login(LoginRequest request) throws InvalidUsernameOrPasswordException;
+    void login(LoginRequest request);
+
+    void validateNewUsername(String username);
+    void validateNewEmail(String email);
+    void validateNewPassword(String password);
 }
