@@ -35,8 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void login(LoginRequest request) {
-
+    public AppUser login(LoginRequest request) {
         AppUser user;
 
         if(userRepository.findByUsername(request.getLogin()).isPresent())
@@ -48,6 +47,8 @@ public class UserServiceImpl implements UserService {
 
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
             throw new InvalidUsernameOrPasswordException();
+
+        return user;
     }
 
     @Override

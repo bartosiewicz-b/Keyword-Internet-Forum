@@ -2,11 +2,11 @@ package com.keyword.keywordspring.api;
 
 import com.keyword.keywordspring.dto.LoginRequest;
 import com.keyword.keywordspring.dto.RegisterRequest;
-import com.keyword.keywordspring.exception.EmailAlreadyTakenException;
-import com.keyword.keywordspring.exception.InvalidUsernameOrPasswordException;
-import com.keyword.keywordspring.exception.UsernameAlreadyTakenException;
+import com.keyword.keywordspring.model.AppUser;
+import com.keyword.keywordspring.service.JwtUtil;
 import com.keyword.keywordspring.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthApi {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
@@ -34,13 +35,18 @@ public class AuthApi {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+
+        AppUser user;
+
         try {
-            userService.login(request);
+            user = userService.login(request);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
 
-        return ResponseEntity.ok().build();
+        final String token = jwtUtil.generateJwt(user);
+
+        return ResponseEntity.ok().body(token);
     }
 
     @PostMapping("/validate-new/username")
