@@ -4,6 +4,8 @@ import com.keyword.keywordspring.dto.LoginRequest;
 import com.keyword.keywordspring.dto.RegisterRequest;
 import com.keyword.keywordspring.exception.EmailAlreadyTakenException;
 import com.keyword.keywordspring.exception.UsernameAlreadyTakenException;
+import com.keyword.keywordspring.model.AppUser;
+import com.keyword.keywordspring.service.JwtUtil;
 import com.keyword.keywordspring.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,9 @@ class AuthApiTest {
 
     @Mock
     UserService userService;
+
+    @Mock
+    JwtUtil jwtUtil;
 
     @InjectMocks
     AuthApi api;
@@ -47,6 +52,9 @@ class AuthApiTest {
 
     @Test
     void loginSuccessful() {
+
+        when(userService.login(any())).thenReturn(AppUser.builder().build());
+        when(jwtUtil.generateJwt(any())).thenReturn("");
 
         ResponseEntity response = api.login(loginRequest);
 

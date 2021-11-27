@@ -1,6 +1,7 @@
 package com.keyword.keywordspring.api;
 
 import com.keyword.keywordspring.dto.LoginRequest;
+import com.keyword.keywordspring.dto.LoginResponse;
 import com.keyword.keywordspring.dto.RegisterRequest;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.JwtUtil;
@@ -9,14 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
+@Slf4j
 public class AuthApi {
 
     private final UserService userService;
@@ -34,19 +33,30 @@ public class AuthApi {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
 
         AppUser user;
 
         try {
             user = userService.login(request);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        final String token = jwtUtil.generateJwt(user);
+        return ResponseEntity.ok().body(LoginResponse.builder()
+                .token(jwtUtil.generateJwt(user))
+                .refreshToken(jwtUtil.generateRefresh(user))
+                .build());
+    }
 
-        return ResponseEntity.ok().body(token);
+    @GetMapping("/refresh/token")
+    public ResponseEntity<LoginResponse> refreshToken(@RequestHeader("refresh") String refresh) {
+
+        try {
+            return ResponseEntity.ok().body(jwtUtil.refreshJwt(refresh));
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PostMapping("/validate-new/username")
