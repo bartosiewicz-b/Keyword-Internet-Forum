@@ -32,7 +32,6 @@ class UserServiceImplTest {
 
     RegisterRequest registerRequest;
     LoginRequest loginRequest;
-    Optional<AppUser> userOptional;
 
     @BeforeEach
     void setUp() {
@@ -43,8 +42,6 @@ class UserServiceImplTest {
 
         loginRequest = LoginRequest.builder().login("test@email.com")
                 .password("password").build();
-
-        userOptional = Optional.of(new AppUser());
     }
 
     @Test
@@ -59,7 +56,7 @@ class UserServiceImplTest {
     @Test
     void registerUsernameTaken() {
 
-        when(userRepository.findByUsername(anyString())).thenReturn(userOptional);
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(new AppUser()));
 
         assertThrows(UsernameAlreadyTakenException.class,
                 () -> userService.register(registerRequest));
@@ -67,7 +64,7 @@ class UserServiceImplTest {
 
     @Test
     void registerEmailTaken() {
-        when(userRepository.findByEmail(anyString())).thenReturn(userOptional);
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(new AppUser()));
 
         assertThrows(EmailAlreadyTakenException.class,
                 () -> userService.register(registerRequest));
@@ -101,59 +98,30 @@ class UserServiceImplTest {
     }
 
     @Test
-    void validateNewUsernameOK() {
+    void isUsernameTakenOk() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        userService.validateNewUsername("username");
+        assertFalse(userService.isUsernameTaken("username"));
     }
 
     @Test
-    void validateNewUsernameBad() {
-        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+    void isUsernameTakenBad() {
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(AppUser.builder().build()));
 
-
-        assertThrows(IllegalUsernameException.class, () -> userService.validateNewUsername("u"));
-        assertThrows(IllegalUsernameException.class, () -> userService.validateNewUsername("........"));
+        assertTrue(userService.isUsernameTaken("username"));
     }
 
     @Test
-    void validateNewUsernameTaken() {
-        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(
-                AppUser.builder().username("username").build()));
-
-        assertThrows(UsernameAlreadyTakenException.class, () -> userService.validateNewUsername("username"));
-    }
-
-    @Test
-    void validateNewEmailOK() {
+    void isEmailTakenOk() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        userService.validateNewEmail("email@email.com");
+        assertFalse(userService.isEmailTaken("email@email.com"));
     }
 
     @Test
-    void validateNewEmailBad() {
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+    void isEmailTakenBad() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(AppUser.builder().build()));
 
-        assertThrows(IllegalEmailException.class, () -> userService.validateNewEmail("email"));
-    }
-
-    @Test
-    void validateNewEmailTaken() {
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(
-                AppUser.builder().email("email@email.com").build()));
-
-        assertThrows(EmailAlreadyTakenException.class, () ->
-                userService.validateNewEmail("email@email.com"));
-    }
-
-    @Test
-    void validateNewPasswordOK() {
-        userService.validateNewPassword("password");
-    }
-
-    @Test
-    void validateNewPasswordBad() {
-        assertThrows(IllegalPasswordException.class, () -> userService.validateNewPassword("p"));
+        assertTrue(userService.isEmailTaken("email@email.com"));
     }
 }

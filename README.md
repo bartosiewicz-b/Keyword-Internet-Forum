@@ -1,1 +1,3 @@
-Simple internet forum application
+Simple internet forum application.
+
+Backend with Spring.

@@ -1,0 +1,39 @@
+= Spring Forum API
+
+A service running at http://localhost:8080:
+
+= Auth
+
+== Login
+.request
+include::{snippets}/login/http-request.adoc[]
+.response
+include::{snippets}/login/http-response.adoc[]
+
+
+== Register
+.request
+include::{snippets}/register/http-request.adoc[]
+.response
+include::{snippets}/register/http-response.adoc[]
+
+
+== Refresh Token
+.request
+include::{snippets}/refreshToken/http-request.adoc[]
+.response
+include::{snippets}/refreshToken/http-response.adoc[]
+
+
+== Validate New Email
+.request
+include::{snippets}/validateNewEmail/http-request.adoc[]
+.response
+include::{snippets}/validateNewEmail/http-response.adoc[]
+
+
+== Validate New Username
+.request
+include::{snippets}/validateNewUsername/http-request.adoc[]
+.response
+include::{snippets}/validateNewUsername/http-response.adoc[]

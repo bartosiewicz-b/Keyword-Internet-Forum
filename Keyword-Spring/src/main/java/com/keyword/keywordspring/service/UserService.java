@@ -10,7 +10,6 @@ public interface UserService {
 
     AppUser login(LoginRequest request);
 
-    void validateNewUsername(String username);
-    void validateNewEmail(String email);
-    void validateNewPassword(String password);
+    boolean isUsernameTaken(String username);
+    boolean isEmailTaken(String email);
 }

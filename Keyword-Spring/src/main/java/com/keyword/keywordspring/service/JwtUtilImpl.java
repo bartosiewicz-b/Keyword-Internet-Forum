@@ -20,11 +20,11 @@ public class JwtUtilImpl implements JwtUtil {
     @Value("${jwt.secret}")
     private String secret = "secret";
     @Value("${jwt.expiryTime}")
-    private Long expiryTime = 1000l;
+    private Long expiryTime = 1000L;
     @Value("${jwt.refreshExpiryTime}")
-    private Long refreshExpiryTime = 1000l;
+    private Long refreshExpiryTime = 1000L;
     @Value("${jwt.refreshActionTime}")
-    private Long refreshActionTime = 1000l;
+    private Long refreshActionTime = 1000L;
 
     private final UserRepository userRepository;
     private final InvalidTokenRepository invalidTokenRepository;
@@ -48,18 +48,20 @@ public class JwtUtilImpl implements JwtUtil {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
-        } catch(SignatureException | MalformedJwtException |
-                UnsupportedJwtException | IllegalArgumentException |
-                ExpiredJwtException e) {
-            throw new InvalidTokenException();
+        } catch(Exception ignored) {
+            return false;
         }
     }
 
     @Override
     public String getUsernameFromJwt(String token) {
-        return Jwts.parser().setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody().getSubject();
+        try {
+            return Jwts.parser().setSigningKey(secret)
+                    .parseClaimsJws(token)
+                    .getBody().getSubject();
+        } catch (Exception ignored) {
+            throw new InvalidTokenException();
+        }
     }
 
     @Override
@@ -68,16 +70,20 @@ public class JwtUtilImpl implements JwtUtil {
             return Jwts.parser().setSigningKey(secret)
                     .parseClaimsJws(token)
                     .getBody().get("type").toString();
-        } catch (Exception e) {
-            return "";
+        } catch (Exception ignored) {
+            throw new InvalidTokenException();
         }
     }
 
     @Override
     public Date getIssuedAtFromJwt(String token) {
-        return Jwts.parser().setSigningKey(secret)
-                .parseClaimsJws(token).getBody()
-                .getIssuedAt();
+        try {
+            return Jwts.parser().setSigningKey(secret)
+                    .parseClaimsJws(token).getBody()
+                    .getIssuedAt();
+        } catch (Exception ignored) {
+            throw new InvalidTokenException();
+        }
     }
 
     @Override

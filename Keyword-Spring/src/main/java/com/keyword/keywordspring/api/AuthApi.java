@@ -7,22 +7,23 @@ import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.JwtUtil;
 import com.keyword.keywordspring.service.UserService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
+
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
-@Slf4j
 public class AuthApi {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<String> register(@RequestBody @Valid RegisterRequest request) {
         try {
             userService.register(request);
         } catch (Exception e) {
@@ -62,36 +63,18 @@ public class AuthApi {
     @PostMapping("/validate-new/username")
     public ResponseEntity<String> validateNewUsername(@RequestBody String username) {
 
-        try {
-            userService.validateNewUsername(username);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
-        return ResponseEntity.ok().build();
+        if(userService.isUsernameTaken(username))
+            return ResponseEntity.badRequest().body("Username already taken.");
+        else
+            return ResponseEntity.ok().build();
     }
 
     @PostMapping("/validate-new/email")
     public ResponseEntity<String> validateNewEmail(@RequestBody String email) {
 
-        try {
-            userService.validateNewEmail(email);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/validate-new/password")
-    public ResponseEntity<String> validateNewPassword(@RequestBody String password) {
-
-        try {
-            userService.validateNewPassword(password);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
-        return ResponseEntity.ok().build();
+        if(userService.isEmailTaken(email))
+            return ResponseEntity.badRequest().body("Account with this email already exists.");
+        else
+            return ResponseEntity.ok().build();
     }
 }

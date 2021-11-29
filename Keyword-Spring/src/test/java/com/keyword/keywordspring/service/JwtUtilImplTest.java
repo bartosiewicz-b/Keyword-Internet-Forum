@@ -1,6 +1,5 @@
 package com.keyword.keywordspring.service;
 
-import com.keyword.keywordspring.exception.InvalidTokenException;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.InvalidTokenRepository;
 import com.keyword.keywordspring.repository.UserRepository;
@@ -35,7 +34,7 @@ class JwtUtilImplTest {
     void invalidToken() {
         String token = "invalidToken";
 
-        assertThrows(InvalidTokenException.class, () -> jwtUtil.validateJwt(token));
+        assertFalse(jwtUtil.validateJwt(token));
     }
 
     @Test
