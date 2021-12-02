@@ -1,9 +1,10 @@
 package com.keyword.keywordspring.service;
 
-import com.keyword.keywordspring.dto.LoginRequest;
-import com.keyword.keywordspring.dto.RegisterRequest;
+import com.keyword.keywordspring.dto.request.LoginRequest;
+import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.exception.*;
 import com.keyword.keywordspring.model.AppUser;
+import com.keyword.keywordspring.model.ReturnValue;
 import com.keyword.keywordspring.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,18 +35,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AppUser login(LoginRequest request) {
-        AppUser user;
+    public ReturnValue<AppUser> login(LoginRequest request) {
+        ReturnValue<AppUser> user = new ReturnValue<>();
 
         if(userRepository.findByUsername(request.getLogin()).isPresent())
-            user = userRepository.findByUsername(request.getLogin()).get();
+            user.set(userRepository.findByUsername(request.getLogin()).get());
         else if (userRepository.findByEmail(request.getLogin()).isPresent())
-            user = userRepository.findByEmail(request.getLogin()).get();
-        else
-            throw new InvalidUsernameOrPasswordException();
+            user.set(userRepository.findByEmail(request.getLogin()).get());
 
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
-            throw new InvalidUsernameOrPasswordException();
+        if(user.isNok() || !passwordEncoder.matches(request.getPassword(), user.get().getPassword()))
+            user.setError("Invalid credentials.");
 
         return user;
     }

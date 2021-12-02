@@ -1,20 +1,21 @@
 package com.keyword.keywordspring.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.keyword.keywordspring.dto.LoginRequest;
-import com.keyword.keywordspring.dto.LoginResponse;
-import com.keyword.keywordspring.dto.RegisterRequest;
+import com.keyword.keywordspring.dto.request.LoginRequest;
+import com.keyword.keywordspring.dto.response.LoginResponse;
+import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.model.AppUser;
+import com.keyword.keywordspring.model.ReturnValue;
 import com.keyword.keywordspring.service.JwtUtil;
 import com.keyword.keywordspring.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,8 +44,6 @@ class AuthApiTest {
     @MockBean
     JwtUtil jwtUtil;
 
-    @Autowired
-    WebApplicationContext context;
 
     MockMvc mockMvc;
     ObjectMapper mapper;
@@ -52,13 +51,14 @@ class AuthApiTest {
     AppUser user;
 
     @BeforeEach
-    void setUp(RestDocumentationContextProvider restDocumentationContextProvider) {
+    void setUp(RestDocumentationContextProvider restDocs,
+               WebApplicationContext context) {
 
         mapper = new ObjectMapper();
 
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentationContextProvider))
+                .apply(documentationConfiguration(restDocs))
                 .build();
 
         user = AppUser.builder()
@@ -78,7 +78,7 @@ class AuthApiTest {
 
         mockMvc.perform(post("/auth/register")
                 .content(request)
-                .contentType("application/json"))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
@@ -89,7 +89,7 @@ class AuthApiTest {
     @Test
     void login() throws Exception {
 
-        when(userService.login(any())).thenReturn(user);
+        when(userService.login(any())).thenReturn(new ReturnValue<>(user));
 
         String request = mapper.writeValueAsString(LoginRequest.builder()
                 .login(user.getUsername())
@@ -98,7 +98,7 @@ class AuthApiTest {
 
         mockMvc.perform(post("/auth/login")
                 .content(request)
-                .contentType("application/json"))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
@@ -114,7 +114,7 @@ class AuthApiTest {
                 .refreshToken("refreshToken")
                 .build();
 
-        when(jwtUtil.refreshJwt(anyString())).thenReturn(response);
+        when(jwtUtil.refreshJwt(anyString())).thenReturn(new ReturnValue<>(response));
 
         MvcResult result = mockMvc.perform(get("/auth/refresh/token")
                 .header("refresh", "refreshToken"))

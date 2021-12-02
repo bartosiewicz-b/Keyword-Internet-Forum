@@ -1,18 +1,14 @@
 package com.keyword.keywordspring.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
-@Data
 @Entity
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppUser {
@@ -24,4 +20,16 @@ public class AppUser {
     private String username;
     private String email;
     private String password;
+
+    @OneToMany
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    private List<ForumGroup> ownedGroups;
+
+    @OneToMany
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private List<Post> posts;
+
+    @OneToMany
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private List<Comment> comments;
 }

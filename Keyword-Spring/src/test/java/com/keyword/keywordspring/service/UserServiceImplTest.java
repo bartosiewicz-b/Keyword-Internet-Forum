@@ -1,7 +1,7 @@
 package com.keyword.keywordspring.service;
 
-import com.keyword.keywordspring.dto.LoginRequest;
-import com.keyword.keywordspring.dto.RegisterRequest;
+import com.keyword.keywordspring.dto.request.LoginRequest;
+import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.exception.*;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.UserRepository;
@@ -87,14 +87,14 @@ class UserServiceImplTest {
 
         when(passwordEncoder.matches(any(), any())).thenReturn(false);
 
-        assertThrows(InvalidUsernameOrPasswordException.class, () -> userService.login(loginRequest));
+        assertFalse(userService.login(loginRequest).isOk());
     }
 
     @Test
     void loginNoUser() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(InvalidUsernameOrPasswordException.class, () -> userService.login(loginRequest));
+        assertFalse(userService.login(loginRequest).isOk());
     }
 
     @Test

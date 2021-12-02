@@ -1,14 +1,15 @@
 package com.keyword.keywordspring.service;
 
-import com.keyword.keywordspring.dto.LoginRequest;
-import com.keyword.keywordspring.dto.RegisterRequest;
+import com.keyword.keywordspring.dto.request.LoginRequest;
+import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.model.AppUser;
+import com.keyword.keywordspring.model.ReturnValue;
 
 public interface UserService {
 
     void register(RegisterRequest request);
 
-    AppUser login(LoginRequest request);
+    ReturnValue<AppUser> login(LoginRequest request);
 
     boolean isUsernameTaken(String username);
     boolean isEmailTaken(String email);

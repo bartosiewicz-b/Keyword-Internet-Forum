@@ -37,3 +37,37 @@ include::{snippets}/validateNewEmail/http-response.adoc[]
 include::{snippets}/validateNewUsername/http-request.adoc[]
 .response
 include::{snippets}/validateNewUsername/http-response.adoc[]
+
+
+
+= Group
+
+
+
+== Create group
+.request
+include::{snippets}/createGroup/http-request.adoc[]
+.response
+include::{snippets}/createGroup/http-response.adoc[]
+
+
+
+= Post
+
+
+
+== Create post
+.request
+include::{snippets}/createPost/http-request.adoc[]
+.response
+include::{snippets}/createPost/http-response.adoc[]
+
+
+
+= Comment
+
+== Create comment
+.request
+include::{snippets}/createComment/http-request.adoc[]
+.response
+include::{snippets}/createComment/http-response.adoc[]

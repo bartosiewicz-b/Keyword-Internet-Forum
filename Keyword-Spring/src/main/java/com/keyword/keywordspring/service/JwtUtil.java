@@ -1,23 +1,19 @@
 package com.keyword.keywordspring.service;
 
-import com.keyword.keywordspring.dto.LoginResponse;
+import com.keyword.keywordspring.dto.response.LoginResponse;
 import com.keyword.keywordspring.model.AppUser;
-
-import java.util.Date;
+import com.keyword.keywordspring.model.ReturnValue;
 
 public interface JwtUtil {
 
-    String generateJwt(AppUser user);
+    LoginResponse generateLoginResponse(AppUser user);
+
+    ReturnValue<LoginResponse> refreshJwt(String refreshToken);
 
     boolean validateJwt(String token);
 
+    AppUser getUserFromToken(String token);
+
     String getUsernameFromJwt(String token);
     String getTypeFromJwt(String token);
-    Date getIssuedAtFromJwt(String token );
-
-    String generateRefresh(AppUser user);
-
-    LoginResponse refreshJwt(String refreshToken);
-
-    boolean validateRefresh(String refreshToken);
 }

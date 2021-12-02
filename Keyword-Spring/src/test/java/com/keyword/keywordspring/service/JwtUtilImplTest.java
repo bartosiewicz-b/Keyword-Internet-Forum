@@ -1,5 +1,6 @@
 package com.keyword.keywordspring.service;
 
+import com.keyword.keywordspring.dto.response.LoginResponse;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.InvalidTokenRepository;
 import com.keyword.keywordspring.repository.UserRepository;
@@ -24,10 +25,11 @@ class JwtUtilImplTest {
     }
 
     @Test
-    void generateAndValidateJwt() {
-        String token = jwtUtil.generateJwt(AppUser.builder().username("username").build());
+    void generateLoginResponse() {
 
-        jwtUtil.validateJwt(token);
+        LoginResponse response = jwtUtil.generateLoginResponse(AppUser.builder().username("username").build());
+
+        jwtUtil.validateJwt(response.getToken());
     }
 
     @Test
@@ -39,24 +41,16 @@ class JwtUtilImplTest {
 
     @Test
     void getUsernameFromJwt() {
-        String token = jwtUtil.generateJwt(AppUser.builder().username("username").build());
+        String token = jwtUtil.generateLoginResponse(AppUser.builder().username("username").build()).getToken();
 
         assertEquals(jwtUtil.getUsernameFromJwt(token), "username");
     }
 
     @Test
     void getTypeFromJwt() {
-        String token = jwtUtil.generateJwt(AppUser.builder().username("username").build());
-        String refresh = jwtUtil.generateRefresh(AppUser.builder().username("username").build());
+        LoginResponse response = jwtUtil.generateLoginResponse(AppUser.builder().username("username").build());
 
-        assertEquals(jwtUtil.getTypeFromJwt(token), "token");
-        assertEquals(jwtUtil.getTypeFromJwt(refresh), "refresh");
-    }
-
-    @Test
-    void generateAndValidateRefresh() {
-        String refresh = jwtUtil.generateRefresh(AppUser.builder().username("username").build());
-
-        jwtUtil.validateJwt(refresh);
+        assertEquals(jwtUtil.getTypeFromJwt(response.getToken()), "token");
+        assertEquals(jwtUtil.getTypeFromJwt(response.getRefreshToken()), "refresh");
     }
 }

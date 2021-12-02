@@ -1,9 +1,9 @@
 package com.keyword.keywordspring.service;
 
-import com.keyword.keywordspring.dto.LoginResponse;
-import com.keyword.keywordspring.exception.InvalidTokenException;
+import com.keyword.keywordspring.dto.response.LoginResponse;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.InvalidToken;
+import com.keyword.keywordspring.model.ReturnValue;
 import com.keyword.keywordspring.repository.InvalidTokenRepository;
 import com.keyword.keywordspring.repository.UserRepository;
 import io.jsonwebtoken.*;
@@ -30,17 +30,38 @@ public class JwtUtilImpl implements JwtUtil {
     private final InvalidTokenRepository invalidTokenRepository;
 
     @Override
-    public String generateJwt(AppUser user) {
+    public LoginResponse generateLoginResponse(AppUser user) {
+        return LoginResponse.builder()
+                .token(generateJwt(user))
+                .refreshToken(generateRefreshToken(user))
+                .build();
+    }
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("type", "token");
+    @Override
+    public ReturnValue<LoginResponse> refreshJwt(String refreshToken) {
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiryTime))
-                .signWith(SignatureAlgorithm.HS512, secret).compact();
+        ReturnValue<LoginResponse> response = new ReturnValue<>();
+
+        if(validateRefreshToken(refreshToken)) {
+
+            Optional<AppUser> user = userRepository.findByUsername(getUsernameFromJwt(refreshToken));
+
+            if(user.isPresent()) {
+                response.set(LoginResponse.builder()
+                        .token(generateJwt(user.get()))
+                        .build());
+
+                if (Objects.requireNonNull(getIssuedAtFromJwt(refreshToken)).getTime() + refreshActionTime < System.currentTimeMillis()) {
+                    response.get().setRefreshToken(generateRefreshToken(user.get()));
+                    invalidTokenRepository.save(InvalidToken.builder().token(refreshToken).build());
+                }
+            }
+        }
+
+        if(response.isNok())
+            response.setError("The refresh token is invalid.");
+
+        return response;
     }
 
     @Override
@@ -54,13 +75,25 @@ public class JwtUtilImpl implements JwtUtil {
     }
 
     @Override
+    public AppUser getUserFromToken(String token) {
+
+        if(token.startsWith("Bearer "))
+            token = token.substring(7);
+
+        Optional<AppUser> user = userRepository.findByUsername(getUsernameFromJwt(token));
+
+        return user.orElse(null);
+
+    }
+
+    @Override
     public String getUsernameFromJwt(String token) {
         try {
             return Jwts.parser().setSigningKey(secret)
                     .parseClaimsJws(token)
                     .getBody().getSubject();
         } catch (Exception ignored) {
-            throw new InvalidTokenException();
+            return "";
         }
     }
 
@@ -71,23 +104,24 @@ public class JwtUtilImpl implements JwtUtil {
                     .parseClaimsJws(token)
                     .getBody().get("type").toString();
         } catch (Exception ignored) {
-            throw new InvalidTokenException();
+            return "";
         }
     }
 
-    @Override
-    public Date getIssuedAtFromJwt(String token) {
-        try {
-            return Jwts.parser().setSigningKey(secret)
-                    .parseClaimsJws(token).getBody()
-                    .getIssuedAt();
-        } catch (Exception ignored) {
-            throw new InvalidTokenException();
-        }
+    private String generateJwt(AppUser user) {
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "token");
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiryTime))
+                .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
-    @Override
-    public String generateRefresh(AppUser user) {
+    private String generateRefreshToken(AppUser user) {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("type", "refresh");
@@ -100,42 +134,26 @@ public class JwtUtilImpl implements JwtUtil {
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
-    @Override
-    public LoginResponse refreshJwt(String refreshToken) {
+    private boolean validateRefreshToken(String refreshToken) {
+        String type = "";
 
         try {
-            if(validateRefresh(refreshToken)) {
+            type = Jwts.parser().setSigningKey(secret).parseClaimsJws(refreshToken)
+                    .getBody().get("type").toString();
+        } catch (Exception ignore){}
 
-                LoginResponse response = new LoginResponse();
+        Optional<InvalidToken> invalid = invalidTokenRepository.findByToken(refreshToken);
 
-                Optional<AppUser> user = userRepository.findByUsername(getUsernameFromJwt(refreshToken));
-                if(user.isPresent()) {
-                    response.setToken(generateJwt(user.get()));
-
-                    if (getIssuedAtFromJwt(refreshToken).getTime() + refreshActionTime < System.currentTimeMillis()) {
-                        response.setRefreshToken(generateRefresh(user.get()));
-                        invalidTokenRepository.save(InvalidToken.builder().token(refreshToken).build());
-                    }
-
-                    return response;
-                }
-        }} catch(Exception ignored) {}
-
-        throw new InvalidTokenException();
+        return Objects.equals(type, "refresh") && invalid.isEmpty();
     }
 
-    @Override
-    public boolean validateRefresh(String refreshToken) {
+    private Date getIssuedAtFromJwt(String token) {
         try {
-            String type = Jwts.parser().setSigningKey(secret).parseClaimsJws(refreshToken)
-                    .getBody().get("type").toString();
-
-            Optional<InvalidToken> invalid = invalidTokenRepository.findByToken(refreshToken);
-
-            if(Objects.equals(type, "refresh") && invalid.isEmpty())
-                return true;
-        } catch(Exception ignored) {}
-
-        return false;
+            return Jwts.parser().setSigningKey(secret)
+                    .parseClaimsJws(token).getBody()
+                    .getIssuedAt();
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 }

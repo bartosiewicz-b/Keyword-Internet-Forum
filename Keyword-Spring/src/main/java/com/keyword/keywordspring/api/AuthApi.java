@@ -1,9 +1,10 @@
 package com.keyword.keywordspring.api;
 
-import com.keyword.keywordspring.dto.LoginRequest;
-import com.keyword.keywordspring.dto.LoginResponse;
-import com.keyword.keywordspring.dto.RegisterRequest;
+import com.keyword.keywordspring.dto.request.LoginRequest;
+import com.keyword.keywordspring.dto.response.LoginResponse;
+import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.model.AppUser;
+import com.keyword.keywordspring.model.ReturnValue;
 import com.keyword.keywordspring.service.JwtUtil;
 import com.keyword.keywordspring.service.UserService;
 import lombok.AllArgsConstructor;
@@ -34,30 +35,25 @@ public class AuthApi {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-        AppUser user;
+        ReturnValue<AppUser> user = userService.login(request);
 
-        try {
-            user = userService.login(request);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        return ResponseEntity.ok().body(LoginResponse.builder()
-                .token(jwtUtil.generateJwt(user))
-                .refreshToken(jwtUtil.generateRefresh(user))
-                .build());
+        if(user.isOk())
+            return ResponseEntity.ok().body(jwtUtil.generateLoginResponse(user.get()));
+        else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(user.getError());
     }
 
     @GetMapping("/refresh/token")
-    public ResponseEntity<LoginResponse> refreshToken(@RequestHeader("refresh") String refresh) {
+    public ResponseEntity<?> refreshToken(@RequestHeader("refresh") String refresh) {
 
-        try {
-            return ResponseEntity.ok().body(jwtUtil.refreshJwt(refresh));
-        } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        ReturnValue<LoginResponse> response = jwtUtil.refreshJwt(refresh);
+
+        if(response.isOk())
+            return ResponseEntity.ok().body(response.get());
+        else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response.getError());
     }
 
     @PostMapping("/validate-new/username")
