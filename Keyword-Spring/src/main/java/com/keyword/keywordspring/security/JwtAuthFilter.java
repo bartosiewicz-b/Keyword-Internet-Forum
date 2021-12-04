@@ -1,6 +1,6 @@
 package com.keyword.keywordspring.security;
 
-import com.keyword.keywordspring.service.JwtUtil;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

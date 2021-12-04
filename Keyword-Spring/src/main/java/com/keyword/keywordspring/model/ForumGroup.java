@@ -3,6 +3,7 @@ package com.keyword.keywordspring.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -26,4 +27,6 @@ public class ForumGroup {
     @OneToMany
     @JoinColumn(name = "forum_group_id", referencedColumnName = "id")
     private List<Post> posts;
+
+    private Date dateCreated;
 }

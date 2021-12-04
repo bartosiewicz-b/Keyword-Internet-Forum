@@ -3,6 +3,7 @@ package com.keyword.keywordspring.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Builder
@@ -26,4 +27,6 @@ public class Comment {
 
     @OneToOne
     private Comment parentComment;
+
+    private Date dateCreated;
 }

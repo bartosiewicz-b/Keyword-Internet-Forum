@@ -1,4 +1,4 @@
-package com.keyword.keywordspring.service;
+package com.keyword.keywordspring.service.interf;
 
 import com.keyword.keywordspring.dto.response.LoginResponse;
 import com.keyword.keywordspring.model.AppUser;

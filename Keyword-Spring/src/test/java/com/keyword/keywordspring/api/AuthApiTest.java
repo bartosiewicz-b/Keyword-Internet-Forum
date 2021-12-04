@@ -6,8 +6,8 @@ import com.keyword.keywordspring.dto.response.LoginResponse;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ReturnValue;
-import com.keyword.keywordspring.service.JwtUtil;
-import com.keyword.keywordspring.service.UserService;
+import com.keyword.keywordspring.service.interf.JwtUtil;
+import com.keyword.keywordspring.service.interf.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -133,13 +133,16 @@ class AuthApiTest {
 
         when(userService.isUsernameTaken(anyString())).thenReturn(false);
 
-        mockMvc.perform(post("/auth/validate-new/username")
+        MvcResult result = mockMvc.perform(post("/auth/validate-new/username")
                 .content(user.getUsername()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                        preprocessResponse(prettyPrint())))
+                        .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(), "true");
     }
 
     @Test
@@ -147,12 +150,15 @@ class AuthApiTest {
 
         when(userService.isEmailTaken(anyString())).thenReturn(false);
 
-        mockMvc.perform(post("/auth/validate-new/email")
+        MvcResult result = mockMvc.perform(post("/auth/validate-new/email")
                 .content(user.getEmail()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(), "true");
     }
 }

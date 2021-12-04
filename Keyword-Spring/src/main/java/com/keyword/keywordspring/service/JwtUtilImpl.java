@@ -6,6 +6,7 @@ import com.keyword.keywordspring.model.InvalidToken;
 import com.keyword.keywordspring.model.ReturnValue;
 import com.keyword.keywordspring.repository.InvalidTokenRepository;
 import com.keyword.keywordspring.repository.UserRepository;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

@@ -50,6 +50,18 @@ include::{snippets}/createGroup/http-request.adoc[]
 .response
 include::{snippets}/createGroup/http-response.adoc[]
 
+== Get groups
+.request
+include::{snippets}/getGroups/http-request.adoc[]
+.response
+include::{snippets}/getGroups/http-response.adoc[]
+
+== Validate new group name
+.request
+include::{snippets}/validateNewGroupName/http-request.adoc[]
+.response
+include::{snippets}/validateNewGroupName/http-response.adoc[]
+
 
 
 = Post
@@ -62,6 +74,11 @@ include::{snippets}/createPost/http-request.adoc[]
 .response
 include::{snippets}/createPost/http-response.adoc[]
 
+== Get posts
+.request
+include::{snippets}/getPosts/http-request.adoc[]
+.response
+include::{snippets}/getPosts/http-response.adoc[]
 
 
 = Comment
@@ -71,3 +88,9 @@ include::{snippets}/createPost/http-response.adoc[]
 include::{snippets}/createComment/http-request.adoc[]
 .response
 include::{snippets}/createComment/http-response.adoc[]
+
+== Get comments
+.request
+include::{snippets}/getComments/http-request.adoc[]
+.response
+include::{snippets}/getComments/http-response.adoc[]

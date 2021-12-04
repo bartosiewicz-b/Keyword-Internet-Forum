@@ -5,6 +5,7 @@ import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.exception.*;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.UserRepository;
+import com.keyword.keywordspring.service.interf.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

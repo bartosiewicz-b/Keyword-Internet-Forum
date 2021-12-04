@@ -5,8 +5,8 @@ import com.keyword.keywordspring.dto.response.LoginResponse;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ReturnValue;
-import com.keyword.keywordspring.service.JwtUtil;
-import com.keyword.keywordspring.service.UserService;
+import com.keyword.keywordspring.service.interf.JwtUtil;
+import com.keyword.keywordspring.service.interf.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,20 +57,20 @@ public class AuthApi {
     }
 
     @PostMapping("/validate-new/username")
-    public ResponseEntity<String> validateNewUsername(@RequestBody String username) {
+    public ResponseEntity<Boolean> validateNewUsername(@RequestBody String username) {
 
         if(userService.isUsernameTaken(username))
-            return ResponseEntity.badRequest().body("Username already taken.");
+            return ResponseEntity.badRequest().body(false);
         else
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(true);
     }
 
     @PostMapping("/validate-new/email")
-    public ResponseEntity<String> validateNewEmail(@RequestBody String email) {
+    public ResponseEntity<Boolean> validateNewEmail(@RequestBody String email) {
 
         if(userService.isEmailTaken(email))
-            return ResponseEntity.badRequest().body("Account with this email already exists.");
+            return ResponseEntity.badRequest().body(false);
         else
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(true);
     }
 }

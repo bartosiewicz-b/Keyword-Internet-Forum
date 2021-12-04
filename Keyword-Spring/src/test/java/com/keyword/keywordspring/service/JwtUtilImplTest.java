@@ -4,6 +4,7 @@ import com.keyword.keywordspring.dto.response.LoginResponse;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.InvalidTokenRepository;
 import com.keyword.keywordspring.repository.UserRepository;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

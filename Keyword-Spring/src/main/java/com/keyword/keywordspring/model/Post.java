@@ -3,6 +3,7 @@ package com.keyword.keywordspring.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -29,4 +30,6 @@ public class Post {
     @OneToMany
     @JoinColumn(name = "post_id", referencedColumnName = "id")
     private List<Comment> comments;
+
+    private Date dateCreated;
 }

@@ -1,4 +1,4 @@
-package com.keyword.keywordspring.service;
+package com.keyword.keywordspring.service.interf;
 
 import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
