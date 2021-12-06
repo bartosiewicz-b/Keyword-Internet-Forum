@@ -2,6 +2,7 @@ package com.keyword.keywordspring.api;
 
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.request.CreateGroupRequest;
+import com.keyword.keywordspring.dto.request.EditGroupRequest;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.GroupService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
@@ -34,7 +35,7 @@ public class GroupApi {
         }
     }
 
-    @GetMapping("/get")
+    @GetMapping("/get-all")
     public ResponseEntity<List<GroupDto>> getGroups(@RequestParam Integer page,
                                                     @RequestParam(required = false) String name) {
 
@@ -43,6 +44,31 @@ public class GroupApi {
         } catch (Exception ignored) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<GroupDto> getGroup(@RequestParam Long id) {
+
+        try {
+            return ResponseEntity.ok().body(groupService.getGroup(id));
+        } catch (Exception ignored) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/edit")
+    public ResponseEntity<String> editGroup(@RequestHeader("Authorization") String token,
+                                            @RequestBody EditGroupRequest request) {
+
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try {
+            groupService.editGroup(user, request);
+            return ResponseEntity.ok().build();
+        } catch(Exception ignored) {
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
     @PostMapping("/validate-new/group-name")

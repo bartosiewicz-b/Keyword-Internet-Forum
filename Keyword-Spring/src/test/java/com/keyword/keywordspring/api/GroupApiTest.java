@@ -3,7 +3,11 @@ package com.keyword.keywordspring.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.request.CreateGroupRequest;
+import com.keyword.keywordspring.dto.request.EditGroupRequest;
+import com.keyword.keywordspring.dto.request.EditPostRequest;
+import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.GroupService;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,8 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -40,9 +43,13 @@ class GroupApiTest {
 
     @MockBean
     GroupService groupService;
+    @MockBean
+    JwtUtil jwtUtil;
 
     MockMvc mockMvc;
     ObjectMapper mapper;
+
+    GroupDto group;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocs,
@@ -53,6 +60,12 @@ class GroupApiTest {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(documentationConfiguration(restDocs))
+                .build();
+
+        group = GroupDto.builder()
+                .id(1L)
+                .groupName("group")
+                .description("description")
                 .build();
     }
 
@@ -76,15 +89,11 @@ class GroupApiTest {
     @Test
     void getGroups() throws Exception {
         List<GroupDto> groups = new ArrayList<>();
-        groups.add(GroupDto.builder()
-                        .id(1L)
-                        .groupName("group")
-                        .description("description")
-                .build());
+        groups.add(group);
 
         when(groupService.getGroups(any(), any())).thenReturn(groups);
 
-        MvcResult result = mockMvc.perform(get("/group/get")
+        MvcResult result = mockMvc.perform(get("/group/get-all")
                 .param("page", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -94,6 +103,44 @@ class GroupApiTest {
                 .andReturn();
 
         assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(groups));
+    }
+
+    @Test
+    void getGroup() throws Exception {
+
+        when(groupService.getGroup(anyLong())).thenReturn(group);
+
+        MvcResult result = mockMvc.perform(get("/group/get")
+                        .param("id", "0"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(group));
+    }
+
+    @Test
+    void editGroup() throws Exception {
+        String request = mapper.writeValueAsString(EditGroupRequest.builder()
+                .id(1L)
+                .groupName("new group name")
+                .description("new description")
+                .build());
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
+
+        mockMvc.perform(post("/group/edit")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test

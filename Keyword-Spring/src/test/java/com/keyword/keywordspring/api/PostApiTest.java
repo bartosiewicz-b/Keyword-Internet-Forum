@@ -3,6 +3,10 @@ package com.keyword.keywordspring.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keyword.keywordspring.dto.model.PostDto;
 import com.keyword.keywordspring.dto.request.CreatePostRequest;
+import com.keyword.keywordspring.dto.request.EditPostRequest;
+import com.keyword.keywordspring.dto.request.IdRequest;
+import com.keyword.keywordspring.model.AppUser;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,8 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -42,9 +45,13 @@ class PostApiTest {
 
     @MockBean
     PostService postService;
+    @MockBean
+    JwtUtil jwtUtil;
 
     MockMvc mockMvc;
     ObjectMapper mapper;
+
+    PostDto post;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocs,
@@ -55,6 +62,11 @@ class PostApiTest {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(documentationConfiguration(restDocs))
+                .build();
+
+        post = PostDto.builder()
+                .id(1L)
+                .title("title")
                 .build();
     }
 
@@ -80,14 +92,11 @@ class PostApiTest {
     @Test
     void getPosts() throws Exception {
         List<PostDto> posts = new ArrayList<>();
-        posts.add(PostDto.builder()
-                .id(1L)
-                .title("title")
-                .build());
+        posts.add(post);
 
         when(postService.getPosts(any(), any())).thenReturn(posts);
 
-        MvcResult result = mockMvc.perform(get("/post/get")
+        MvcResult result = mockMvc.perform(get("/post/get-all")
                 .param("page", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -97,5 +106,60 @@ class PostApiTest {
                 .andReturn();
 
         assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(posts));
+    }
+
+    @Test
+    void getPost() throws Exception {
+
+        when(postService.getPost(anyLong())).thenReturn(post);
+
+        MvcResult result = mockMvc.perform(get("/post/get")
+                        .param("id", "0"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(post));
+    }
+
+    @Test
+    void editPost() throws Exception {
+        String request = mapper.writeValueAsString(EditPostRequest.builder()
+                        .title("new title")
+                        .description("new description")
+                .build());
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
+
+        mockMvc.perform(post("/post/edit")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void deletePost() throws Exception {
+
+        String request = mapper.writeValueAsString(IdRequest.builder().id(1L).build());
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().id(1L).build());
+
+        mockMvc.perform(post("/post/delete")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 }

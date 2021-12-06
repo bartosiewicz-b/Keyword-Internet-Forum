@@ -2,6 +2,8 @@ package com.keyword.keywordspring.api;
 
 import com.keyword.keywordspring.dto.model.PostDto;
 import com.keyword.keywordspring.dto.request.CreatePostRequest;
+import com.keyword.keywordspring.dto.request.EditPostRequest;
+import com.keyword.keywordspring.dto.request.IdRequest;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.PostService;
@@ -33,7 +35,7 @@ public class PostApi {
         }
     }
 
-    @GetMapping("/get")
+    @GetMapping("/get-all")
     public ResponseEntity<List<PostDto>> getPosts(@RequestParam Integer page,
                                                   @RequestParam(required = false) String name) {
 
@@ -43,5 +45,43 @@ public class PostApi {
             return ResponseEntity.badRequest().build();
         }
 
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<PostDto> getPost(@RequestParam Long id) {
+
+        try {
+            return ResponseEntity.ok().body(postService.getPost(id));
+        } catch(Exception ignored) {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
+    @PostMapping("/edit")
+    public ResponseEntity<String> editPost(@RequestHeader("Authorization") String token,
+                                           @RequestBody EditPostRequest request) {
+
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try {
+            postService.editPost(user, request);
+            return ResponseEntity.ok().build();
+        } catch(Exception ignored) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<String> deletePost(@RequestHeader("Authorization") String token,
+                                             @RequestBody IdRequest request) {
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try{
+            postService.deletePost(user, request.getId());
+            return ResponseEntity.ok().build();
+        } catch (Exception ignored) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

@@ -7,6 +7,7 @@ import com.keyword.keywordspring.repository.GroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -27,15 +28,13 @@ class GroupServiceImplTest {
     GroupRepository groupRepository;
     @Mock
     GroupMapper groupMapper;
-
+    @InjectMocks
     GroupServiceImpl groupService;
 
     List<ForumGroup> groups;
 
     @BeforeEach
     void setUp() {
-        groupService = new GroupServiceImpl(groupRepository, groupMapper);
-
         groups = new ArrayList<>();
         groups.add(ForumGroup.builder()
                         .id(1L)

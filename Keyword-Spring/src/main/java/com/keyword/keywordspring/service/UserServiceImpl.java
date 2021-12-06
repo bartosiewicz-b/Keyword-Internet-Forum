@@ -1,5 +1,7 @@
 package com.keyword.keywordspring.service;
 
+import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
+import com.keyword.keywordspring.dto.request.ChangeUsernameRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.exception.*;
@@ -48,6 +50,33 @@ public class UserServiceImpl implements UserService {
             user.setError("Invalid credentials.");
 
         return user;
+    }
+
+    @Override
+    public void changeUsername(ChangeUsernameRequest request) {
+
+        AppUser user = login(LoginRequest.builder()
+                .login(request.getEmail())
+                .password(request.getPassword())
+                .build())
+                .orElseThrow(AuthorizationException::new);
+
+        user.setUsername(request.getNewUsername());
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public void changeEmail(ChangeEmailRequest request) {
+        AppUser user = login(LoginRequest.builder()
+                .login(request.getEmail())
+                .password(request.getPassword())
+                .build())
+                .orElseThrow(AuthorizationException::new);
+
+        user.setEmail(request.getNewEmail());
+
+        userRepository.save(user);
     }
 
     @Override

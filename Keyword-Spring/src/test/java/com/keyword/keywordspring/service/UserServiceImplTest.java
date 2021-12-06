@@ -5,10 +5,10 @@ import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.exception.*;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.UserRepository;
-import com.keyword.keywordspring.service.interf.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,18 +25,16 @@ class UserServiceImplTest {
 
     @Mock
     UserRepository userRepository;
-
     @Mock
     PasswordEncoder passwordEncoder;
-
-    UserService userService;
+    @InjectMocks
+    UserServiceImpl userService;
 
     RegisterRequest registerRequest;
     LoginRequest loginRequest;
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(userRepository, passwordEncoder);
 
         registerRequest = RegisterRequest.builder().username("test").email("test@email.com")
                 .password("password").build();

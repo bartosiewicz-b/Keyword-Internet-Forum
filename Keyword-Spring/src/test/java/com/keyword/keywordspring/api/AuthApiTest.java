@@ -1,6 +1,8 @@
 package com.keyword.keywordspring.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
+import com.keyword.keywordspring.dto.request.ChangeUsernameRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.response.LoginResponse;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
@@ -126,6 +128,46 @@ class AuthApiTest {
                 .andReturn();
 
         assertEquals(mapper.writeValueAsString(response), result.getResponse().getContentAsString());
+    }
+
+    @Test
+    void changeUsername() throws Exception {
+
+        String request = mapper.writeValueAsString(ChangeUsernameRequest.builder()
+                        .email(user.getEmail())
+                        .password(user.getPassword())
+                        .newUsername("new username")
+                .build());
+
+        mockMvc.perform(post("/auth/change/username")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+    }
+
+    @Test
+    void changeEmail() throws Exception {
+
+        String request = mapper.writeValueAsString(ChangeEmailRequest.builder()
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .newEmail("newEmail@email.com")
+                .build());
+
+        mockMvc.perform(post("/auth/change/email")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
     }
 
     @Test

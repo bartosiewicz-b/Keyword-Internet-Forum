@@ -1,5 +1,7 @@
 package com.keyword.keywordspring.api;
 
+import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
+import com.keyword.keywordspring.dto.request.ChangeUsernameRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.response.LoginResponse;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
@@ -54,6 +56,28 @@ public class AuthApi {
             return ResponseEntity.ok().body(response.get());
         else
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response.getError());
+    }
+
+    @PostMapping("/change/username")
+    public ResponseEntity<?> changeUsername(@RequestBody ChangeUsernameRequest request) {
+
+        try {
+            userService.changeUsername(request);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/change/email")
+    public ResponseEntity<?> changeEmail(@RequestBody ChangeEmailRequest request) {
+
+        try {
+            userService.changeEmail(request);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/validate-new/username")

@@ -4,25 +4,27 @@ import com.keyword.keywordspring.dto.response.LoginResponse;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.InvalidTokenRepository;
 import com.keyword.keywordspring.repository.UserRepository;
-import com.keyword.keywordspring.service.interf.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class JwtUtilImplTest {
 
     @Mock
     UserRepository userRepository;
     @Mock
     InvalidTokenRepository invalidTokenRepository;
-
-    JwtUtil jwtUtil;
+    @InjectMocks
+    JwtUtilImpl jwtUtil;
 
     @BeforeEach
     void setUp() {
-        jwtUtil = new JwtUtilImpl(userRepository, invalidTokenRepository);
     }
 
     @Test

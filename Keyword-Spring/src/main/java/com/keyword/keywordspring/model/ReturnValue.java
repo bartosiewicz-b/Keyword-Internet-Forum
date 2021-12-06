@@ -1,5 +1,7 @@
 package com.keyword.keywordspring.model;
 
+import java.util.function.Supplier;
+
 public class ReturnValue <T> {
 
     private T value;
@@ -33,5 +35,13 @@ public class ReturnValue <T> {
     public void setError(String message) {
         value = null;
         error = message;
+    }
+
+    public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
+        if (value != null) {
+            return value;
+        } else {
+            throw exceptionSupplier.get();
+        }
     }
 }

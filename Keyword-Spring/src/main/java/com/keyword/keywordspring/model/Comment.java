@@ -29,4 +29,6 @@ public class Comment {
     private Comment parentComment;
 
     private Date dateCreated;
+
+    private Boolean edited;
 }

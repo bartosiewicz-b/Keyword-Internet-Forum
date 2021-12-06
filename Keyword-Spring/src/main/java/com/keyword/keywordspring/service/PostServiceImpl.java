@@ -2,7 +2,11 @@ package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.model.PostDto;
 import com.keyword.keywordspring.dto.request.CreatePostRequest;
+import com.keyword.keywordspring.dto.request.EditPostRequest;
+import com.keyword.keywordspring.exception.AuthorizationException;
+import com.keyword.keywordspring.exception.CommentDoesNotExistException;
 import com.keyword.keywordspring.exception.GroupDoesNotExistException;
+import com.keyword.keywordspring.exception.PostDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.PostMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ForumGroup;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,6 +46,7 @@ public class PostServiceImpl implements PostService {
                         .title(request.getTitle())
                         .description(request.getDescription())
                         .dateCreated(new Date(System.currentTimeMillis()))
+                        .edited(false)
                 .build());
     }
 
@@ -53,5 +59,39 @@ public class PostServiceImpl implements PostService {
                 .stream()
                 .map(postMapper::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PostDto getPost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostDoesNotExistException(id));
+
+        return postMapper.mapToDto(post);
+    }
+
+    @Override
+    public void editPost(AppUser user, EditPostRequest request) {
+
+        if(postRepository.findById(request.getId()).isEmpty() ||
+                !Objects.equals(user.getId(), postRepository.findById(request.getId()).get().getUser().getId()))
+            throw new AuthorizationException();
+
+        Post post = postRepository.findById(request.getId())
+                .orElseThrow(() -> new CommentDoesNotExistException(request.getId()));
+
+        post.setTitle(request.getTitle());
+        post.setDescription(request.getDescription());
+        post.setEdited(true);
+
+        postRepository.save(post);
+    }
+
+    @Override
+    public void deletePost(AppUser user, Long id) {
+
+        if(postRepository.findById(id).isEmpty() ||
+                !Objects.equals(user.getId(), postRepository.findById(id).get().getUser().getId()))
+            throw new AuthorizationException();
+
+        postRepository.deleteById(id);
     }
 }

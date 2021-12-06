@@ -3,7 +3,11 @@ package com.keyword.keywordspring.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keyword.keywordspring.dto.model.CommentDto;
 import com.keyword.keywordspring.dto.request.CreateCommentRequest;
+import com.keyword.keywordspring.dto.request.EditCommentRequest;
+import com.keyword.keywordspring.dto.request.IdRequest;
+import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.CommentService;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +28,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -41,6 +46,9 @@ class CommentApiTest {
 
     @MockBean
     CommentService commentService;
+
+    @MockBean
+    JwtUtil jwtUtil;
 
     MockMvc mockMvc;
     ObjectMapper mapper;
@@ -88,7 +96,7 @@ class CommentApiTest {
         when(commentService.getComments(any())).thenReturn(comments);
 
         MvcResult result = mockMvc.perform(get("/comment/get")
-                        .param("page", "0"))
+                .param("page", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
@@ -97,5 +105,43 @@ class CommentApiTest {
                 .andReturn();
 
         assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(comments));
+    }
+
+    @Test
+    void editComment() throws Exception {
+        String request = mapper.writeValueAsString(EditCommentRequest.builder()
+                        .id(1L)
+                        .newContent("Edited comment.")
+                .build());
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
+
+        mockMvc.perform(post("/comment/edit")
+                .header("Authorization", "token")
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void deleteComment() throws Exception {
+
+        String request = mapper.writeValueAsString(IdRequest.builder().id(1L).build());
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().id(1L).build());
+
+        mockMvc.perform(post("/comment/delete")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 }

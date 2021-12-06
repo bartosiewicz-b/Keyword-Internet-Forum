@@ -27,9 +27,11 @@ public class Post {
     private String title;
     private String description;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "post_id", referencedColumnName = "id")
     private List<Comment> comments;
 
     private Date dateCreated;
+
+    private boolean edited;
 }
