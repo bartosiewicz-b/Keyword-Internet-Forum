@@ -3,7 +3,7 @@ package com.keyword.keywordspring.service;
 import com.keyword.keywordspring.dto.model.CommentDto;
 import com.keyword.keywordspring.dto.request.CreateCommentRequest;
 import com.keyword.keywordspring.dto.request.EditCommentRequest;
-import com.keyword.keywordspring.exception.AuthorizationException;
+import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.CommentDoesNotExistException;
 import com.keyword.keywordspring.exception.PostDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.CommentMapper;
@@ -67,7 +67,7 @@ public class CommentServiceImpl implements CommentService {
 
         if(commentRepository.findById(request.getId()).isEmpty() ||
                 !Objects.equals(user.getId(), commentRepository.findById(request.getId()).get().getUser().getId()))
-            throw new AuthorizationException();
+            throw new UnauthorizedException();
 
         Comment comment = commentRepository.findById(request.getId())
                 .orElseThrow(() -> new CommentDoesNotExistException(request.getId()));
@@ -83,7 +83,7 @@ public class CommentServiceImpl implements CommentService {
 
         if(commentRepository.findById(id).isEmpty() ||
                 !Objects.equals(user.getId(), commentRepository.findById(id).get().getUser().getId()))
-            throw new AuthorizationException();
+            throw new UnauthorizedException();
 
         commentRepository.deleteById(id);
     }

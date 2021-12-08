@@ -1,9 +1,8 @@
 package com.keyword.keywordspring.service;
 
-import com.keyword.keywordspring.dto.response.LoginResponse;
+import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.InvalidToken;
-import com.keyword.keywordspring.model.ReturnValue;
 import com.keyword.keywordspring.repository.InvalidTokenRepository;
 import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.JwtUtil;
@@ -31,24 +30,24 @@ public class JwtUtilImpl implements JwtUtil {
     private final InvalidTokenRepository invalidTokenRepository;
 
     @Override
-    public LoginResponse generateLoginResponse(AppUser user) {
-        return LoginResponse.builder()
+    public TokenResponse generateLoginResponse(AppUser user) {
+        return TokenResponse.builder()
                 .token(generateJwt(user))
                 .refreshToken(generateRefreshToken(user))
                 .build();
     }
 
     @Override
-    public ReturnValue<LoginResponse> refreshJwt(String refreshToken) {
+    public Optional<TokenResponse> refreshJwt(String refreshToken) {
 
-        ReturnValue<LoginResponse> response = new ReturnValue<>();
+        Optional<TokenResponse> response = Optional.empty();
 
         if(validateRefreshToken(refreshToken)) {
 
             Optional<AppUser> user = userRepository.findByUsername(getUsernameFromJwt(refreshToken));
 
             if(user.isPresent()) {
-                response.set(LoginResponse.builder()
+                response = Optional.of(TokenResponse.builder()
                         .token(generateJwt(user.get()))
                         .build());
 
@@ -58,9 +57,6 @@ public class JwtUtilImpl implements JwtUtil {
                 }
             }
         }
-
-        if(response.isNok())
-            response.setError("The refresh token is invalid.");
 
         return response;
     }

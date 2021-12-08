@@ -3,6 +3,7 @@ package com.keyword.keywordspring.api;
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.request.CreateGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
+import com.keyword.keywordspring.exception.UnexpectedProblemException;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.GroupService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
@@ -22,7 +23,7 @@ public class GroupApi {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createGroup(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Void> createGroup(@RequestHeader("Authorization") String token,
                                               @RequestBody CreateGroupRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
@@ -31,7 +32,7 @@ public class GroupApi {
             groupService.createGroup(user, request);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            throw new UnexpectedProblemException(e.getMessage());
         }
     }
 
@@ -41,8 +42,8 @@ public class GroupApi {
 
         try {
             return ResponseEntity.ok().body(groupService.getGroups(page, name));
-        } catch (Exception ignored) {
-            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
         }
     }
 
@@ -51,13 +52,13 @@ public class GroupApi {
 
         try {
             return ResponseEntity.ok().body(groupService.getGroup(id));
-        } catch (Exception ignored) {
-            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
         }
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<String> editGroup(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Void> editGroup(@RequestHeader("Authorization") String token,
                                             @RequestBody EditGroupRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
@@ -65,18 +66,18 @@ public class GroupApi {
         try {
             groupService.editGroup(user, request);
             return ResponseEntity.ok().build();
-        } catch(Exception ignored) {
-            return ResponseEntity.badRequest().build();
+        } catch(Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
         }
 
     }
 
     @PostMapping("/validate-new/group-name")
-    public ResponseEntity<Boolean> validateNewGroupName(@RequestBody String name) {
+    public ResponseEntity<Void> validateNewGroupName(@RequestBody String name) {
 
         if(groupService.isGroupNameTaken(name))
-            return ResponseEntity.badRequest().body(false);
+            return ResponseEntity.badRequest().build();
         else
-            return ResponseEntity.ok().body(true);
+            return ResponseEntity.ok().build();
     }
 }

@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
 import com.keyword.keywordspring.dto.request.ChangeUsernameRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
-import com.keyword.keywordspring.dto.response.LoginResponse;
+import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.model.AppUser;
-import com.keyword.keywordspring.model.ReturnValue;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -91,7 +92,7 @@ class AuthApiTest {
     @Test
     void login() throws Exception {
 
-        when(userService.login(any())).thenReturn(new ReturnValue<>(user));
+        when(userService.login(any())).thenReturn(Optional.of(user));
 
         String request = mapper.writeValueAsString(LoginRequest.builder()
                 .login(user.getUsername())
@@ -111,12 +112,12 @@ class AuthApiTest {
     @Test
     void refreshToken() throws Exception {
 
-        LoginResponse response = LoginResponse.builder()
+        TokenResponse response = TokenResponse.builder()
                 .token("token")
                 .refreshToken("refreshToken")
                 .build();
 
-        when(jwtUtil.refreshJwt(anyString())).thenReturn(new ReturnValue<>(response));
+        when(jwtUtil.refreshJwt(anyString())).thenReturn(Optional.of(response));
 
         MvcResult result = mockMvc.perform(get("/auth/refresh/token")
                 .header("refresh", "refreshToken"))
@@ -175,16 +176,13 @@ class AuthApiTest {
 
         when(userService.isUsernameTaken(anyString())).thenReturn(false);
 
-        MvcResult result = mockMvc.perform(post("/auth/validate-new/username")
+        mockMvc.perform(post("/auth/validate-new/username")
                 .content(user.getUsername()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                        .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), "true");
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -192,15 +190,12 @@ class AuthApiTest {
 
         when(userService.isEmailTaken(anyString())).thenReturn(false);
 
-        MvcResult result = mockMvc.perform(post("/auth/validate-new/email")
+        mockMvc.perform(post("/auth/validate-new/email")
                 .content(user.getEmail()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), "true");
+                        preprocessResponse(prettyPrint())));
     }
 }

@@ -3,7 +3,7 @@ package com.keyword.keywordspring.service;
 import com.keyword.keywordspring.dto.model.PostDto;
 import com.keyword.keywordspring.dto.request.CreatePostRequest;
 import com.keyword.keywordspring.dto.request.EditPostRequest;
-import com.keyword.keywordspring.exception.AuthorizationException;
+import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.CommentDoesNotExistException;
 import com.keyword.keywordspring.exception.GroupDoesNotExistException;
 import com.keyword.keywordspring.exception.PostDoesNotExistException;
@@ -73,7 +73,7 @@ public class PostServiceImpl implements PostService {
 
         if(postRepository.findById(request.getId()).isEmpty() ||
                 !Objects.equals(user.getId(), postRepository.findById(request.getId()).get().getUser().getId()))
-            throw new AuthorizationException();
+            throw new UnauthorizedException();
 
         Post post = postRepository.findById(request.getId())
                 .orElseThrow(() -> new CommentDoesNotExistException(request.getId()));
@@ -90,7 +90,7 @@ public class PostServiceImpl implements PostService {
 
         if(postRepository.findById(id).isEmpty() ||
                 !Objects.equals(user.getId(), postRepository.findById(id).get().getUser().getId()))
-            throw new AuthorizationException();
+            throw new UnauthorizedException();
 
         postRepository.deleteById(id);
     }

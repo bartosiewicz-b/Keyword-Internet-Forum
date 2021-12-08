@@ -3,13 +3,12 @@ package com.keyword.keywordspring.service;
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.request.CreateGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
-import com.keyword.keywordspring.exception.AuthorizationException;
+import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.CommentDoesNotExistException;
 import com.keyword.keywordspring.exception.GroupDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.GroupMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ForumGroup;
-import com.keyword.keywordspring.model.Post;
 import com.keyword.keywordspring.repository.GroupRepository;
 import com.keyword.keywordspring.service.interf.GroupService;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +62,7 @@ public class GroupServiceImpl implements GroupService {
     public void editGroup(AppUser user, EditGroupRequest request) {
         if(groupRepository.findById(request.getId()).isEmpty() ||
                 !Objects.equals(user.getId(), groupRepository.findById(request.getId()).get().getOwner().getId()))
-            throw new AuthorizationException();
+            throw new UnauthorizedException();
 
         ForumGroup group = groupRepository.findById(request.getId())
                 .orElseThrow(() -> new CommentDoesNotExistException(request.getId()));

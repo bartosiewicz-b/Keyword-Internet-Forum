@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.request.CreateGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
-import com.keyword.keywordspring.dto.request.EditPostRequest;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.GroupService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
@@ -147,15 +146,12 @@ class GroupApiTest {
     void validateNewGroupName() throws Exception {
         when(groupService.isGroupNameTaken(anyString())).thenReturn(false);
 
-        MvcResult result = mockMvc.perform(post("/group/validate-new/group-name")
-                        .content("name"))
+        mockMvc.perform(post("/group/validate-new/group-name")
+                .content("name"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), "true");
+                        preprocessResponse(prettyPrint())));
     }
 }

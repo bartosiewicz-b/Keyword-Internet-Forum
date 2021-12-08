@@ -6,12 +6,13 @@ import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.exception.*;
 import com.keyword.keywordspring.model.AppUser;
-import com.keyword.keywordspring.model.ReturnValue;
 import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -38,16 +39,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ReturnValue<AppUser> login(LoginRequest request) {
-        ReturnValue<AppUser> user = new ReturnValue<>();
+    public Optional<AppUser> login(LoginRequest request) {
+        Optional<AppUser> user = Optional.empty();
 
         if(userRepository.findByUsername(request.getLogin()).isPresent())
-            user.set(userRepository.findByUsername(request.getLogin()).get());
+            user = userRepository.findByUsername(request.getLogin());
         else if (userRepository.findByEmail(request.getLogin()).isPresent())
-            user.set(userRepository.findByEmail(request.getLogin()).get());
+            user = userRepository.findByEmail(request.getLogin());
 
-        if(user.isNok() || !passwordEncoder.matches(request.getPassword(), user.get().getPassword()))
-            user.setError("Invalid credentials.");
+        if(user.isPresent() && !passwordEncoder.matches(request.getPassword(), user.get().getPassword()))
+            user = Optional.empty();
 
         return user;
     }
@@ -55,11 +56,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changeUsername(ChangeUsernameRequest request) {
 
+        if(isUsernameTaken(request.getNewUsername()))
+            throw new UsernameAlreadyTakenException(request.getNewUsername());
+
         AppUser user = login(LoginRequest.builder()
                 .login(request.getEmail())
                 .password(request.getPassword())
                 .build())
-                .orElseThrow(AuthorizationException::new);
+                .orElseThrow(UnauthorizedException::new);
 
         user.setUsername(request.getNewUsername());
 
@@ -68,11 +72,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeEmail(ChangeEmailRequest request) {
+
+        if(isEmailTaken(request.getNewEmail()))
+            throw new EmailAlreadyTakenException(request.getNewEmail());
+
         AppUser user = login(LoginRequest.builder()
                 .login(request.getEmail())
                 .password(request.getPassword())
                 .build())
-                .orElseThrow(AuthorizationException::new);
+                .orElseThrow(UnauthorizedException::new);
 
         user.setEmail(request.getNewEmail());
 

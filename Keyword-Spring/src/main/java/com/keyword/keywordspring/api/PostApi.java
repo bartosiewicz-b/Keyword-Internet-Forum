@@ -4,6 +4,7 @@ import com.keyword.keywordspring.dto.model.PostDto;
 import com.keyword.keywordspring.dto.request.CreatePostRequest;
 import com.keyword.keywordspring.dto.request.EditPostRequest;
 import com.keyword.keywordspring.dto.request.IdRequest;
+import com.keyword.keywordspring.exception.UnexpectedProblemException;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.PostService;
@@ -22,7 +23,7 @@ public class PostApi {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createPost(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Void> createPost(@RequestHeader("Authorization") String token,
             @RequestBody CreatePostRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
@@ -31,7 +32,7 @@ public class PostApi {
             postService.createPost(user, request);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            throw new UnexpectedProblemException(e.getMessage());
         }
     }
 
@@ -41,8 +42,8 @@ public class PostApi {
 
         try {
             return ResponseEntity.ok().body(postService.getPosts(page, name));
-        } catch(Exception ignored) {
-            return ResponseEntity.badRequest().build();
+        } catch(Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
         }
 
     }
@@ -52,14 +53,14 @@ public class PostApi {
 
         try {
             return ResponseEntity.ok().body(postService.getPost(id));
-        } catch(Exception ignored) {
-            return ResponseEntity.badRequest().build();
+        } catch(Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
         }
 
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<String> editPost(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Void> editPost(@RequestHeader("Authorization") String token,
                                            @RequestBody EditPostRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
@@ -67,21 +68,21 @@ public class PostApi {
         try {
             postService.editPost(user, request);
             return ResponseEntity.ok().build();
-        } catch(Exception ignored) {
-            return ResponseEntity.badRequest().build();
+        } catch(Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
         }
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<String> deletePost(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Void> deletePost(@RequestHeader("Authorization") String token,
                                              @RequestBody IdRequest request) {
         AppUser user = jwtUtil.getUserFromToken(token);
 
         try{
             postService.deletePost(user, request.getId());
             return ResponseEntity.ok().build();
-        } catch (Exception ignored) {
-            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
         }
     }
 }

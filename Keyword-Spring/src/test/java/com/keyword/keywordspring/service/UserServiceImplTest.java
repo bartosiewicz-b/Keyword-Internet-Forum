@@ -86,14 +86,14 @@ class UserServiceImplTest {
 
         when(passwordEncoder.matches(any(), any())).thenReturn(false);
 
-        assertFalse(userService.login(loginRequest).isOk());
+        assertFalse(userService.login(loginRequest).isPresent());
     }
 
     @Test
     void loginNoUser() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        assertFalse(userService.login(loginRequest).isOk());
+        assertFalse(userService.login(loginRequest).isPresent());
     }
 
     @Test
