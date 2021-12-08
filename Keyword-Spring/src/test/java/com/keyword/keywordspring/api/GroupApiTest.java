@@ -23,7 +23,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -72,6 +74,7 @@ class GroupApiTest {
     void createGroup() throws Exception {
         String request = mapper.writeValueAsString(CreateGroupRequest.builder()
                 .groupName("group")
+                .description("description")
                 .build());
 
         mockMvc.perform(post("/group/create")
@@ -144,10 +147,15 @@ class GroupApiTest {
 
     @Test
     void validateNewGroupName() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("groupName", "new group name");
+        String request = mapper.writeValueAsString(map);
+
         when(groupService.isGroupNameTaken(anyString())).thenReturn(false);
 
         mockMvc.perform(post("/group/validate-new/group-name")
-                .content("name"))
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",

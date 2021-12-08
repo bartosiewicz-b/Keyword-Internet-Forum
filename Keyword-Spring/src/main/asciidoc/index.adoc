@@ -4,12 +4,6 @@ A service running at http://localhost:8080:
 
 = Auth
 
-== Login
-.request
-include::{snippets}/login/http-request.adoc[]
-.response
-include::{snippets}/login/http-response.adoc[]
-
 
 == Register
 .request
@@ -17,6 +11,11 @@ include::{snippets}/register/http-request.adoc[]
 .response
 include::{snippets}/register/http-response.adoc[]
 
+== Login
+.request
+include::{snippets}/login/http-request.adoc[]
+.response
+include::{snippets}/login/http-response.adoc[]
 
 == Refresh Token
 .request
@@ -24,6 +23,23 @@ include::{snippets}/refreshToken/http-request.adoc[]
 .response
 include::{snippets}/refreshToken/http-response.adoc[]
 
+== Change Username
+.request
+include::{snippets}/changeUsername/http-request.adoc[]
+.response
+include::{snippets}/changeUsername/http-response.adoc[]
+
+== Change Email
+.request
+include::{snippets}/changeEmail/http-request.adoc[]
+.response
+include::{snippets}/changeEmail/http-response.adoc[]
+
+== Validate New Username
+.request
+include::{snippets}/validateNewUsername/http-request.adoc[]
+.response
+include::{snippets}/validateNewUsername/http-response.adoc[]
 
 == Validate New Email
 .request
@@ -32,65 +48,96 @@ include::{snippets}/validateNewEmail/http-request.adoc[]
 include::{snippets}/validateNewEmail/http-response.adoc[]
 
 
-== Validate New Username
-.request
-include::{snippets}/validateNewUsername/http-request.adoc[]
-.response
-include::{snippets}/validateNewUsername/http-response.adoc[]
-
-
-
 = Group
 
 
-
-== Create group
+== Create Group
 .request
 include::{snippets}/createGroup/http-request.adoc[]
 .response
 include::{snippets}/createGroup/http-response.adoc[]
 
-== Get groups
+== Get Groups
 .request
 include::{snippets}/getGroups/http-request.adoc[]
 .response
 include::{snippets}/getGroups/http-response.adoc[]
 
-== Validate new group name
+== Get Group
+.request
+include::{snippets}/getGroup/http-request.adoc[]
+.response
+include::{snippets}/getGroup/http-response.adoc[]
+
+== Edit Group
+.request
+include::{snippets}/editGroup/http-request.adoc[]
+.response
+include::{snippets}/editGroup/http-response.adoc[]
+
+== Validate New Group Name
 .request
 include::{snippets}/validateNewGroupName/http-request.adoc[]
 .response
 include::{snippets}/validateNewGroupName/http-response.adoc[]
 
 
-
 = Post
 
 
-
-== Create post
+== Create Post
 .request
 include::{snippets}/createPost/http-request.adoc[]
 .response
 include::{snippets}/createPost/http-response.adoc[]
 
-== Get posts
+== Get Posts
 .request
 include::{snippets}/getPosts/http-request.adoc[]
 .response
 include::{snippets}/getPosts/http-response.adoc[]
 
+== Get Post
+.request
+include::{snippets}/getPost/http-request.adoc[]
+.response
+include::{snippets}/getPost/http-response.adoc[]
+
+== Edit Post
+.request
+include::{snippets}/editPost/http-request.adoc[]
+.response
+include::{snippets}/editPost/http-response.adoc[]
+
+== Delete Post
+.request
+include::{snippets}/deletePost/http-request.adoc[]
+.response
+include::{snippets}/deletePost/http-response.adoc[]
+
 
 = Comment
 
-== Create comment
+== Create Comment
 .request
 include::{snippets}/createComment/http-request.adoc[]
 .response
 include::{snippets}/createComment/http-response.adoc[]
 
-== Get comments
+== Get Comments
 .request
 include::{snippets}/getComments/http-request.adoc[]
 .response
 include::{snippets}/getComments/http-response.adoc[]
+
+== Edit Comment
+.request
+include::{snippets}/editComment/http-request.adoc[]
+.response
+include::{snippets}/editComment/http-response.adoc[]
+
+== Delete Comment
+.request
+include::{snippets}/deleteComment/http-request.adoc[]
+.response
+include::{snippets}/deleteComment/http-response.adoc[]

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -73,9 +74,9 @@ public class GroupApi {
     }
 
     @PostMapping("/validate-new/group-name")
-    public ResponseEntity<Void> validateNewGroupName(@RequestBody String name) {
+    public ResponseEntity<Void> validateNewGroupName(@RequestBody Map<String, String> request) {
 
-        if(groupService.isGroupNameTaken(name))
+        if(null == request.get("groupName") || groupService.isGroupNameTaken(request.get("groupName")))
             return ResponseEntity.badRequest().build();
         else
             return ResponseEntity.ok().build();

@@ -1,7 +1,6 @@
 package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.model.PostDto;
-import com.keyword.keywordspring.dto.request.EditCommentRequest;
 import com.keyword.keywordspring.dto.request.EditPostRequest;
 import com.keyword.keywordspring.mapper.interf.PostMapper;
 import com.keyword.keywordspring.model.AppUser;

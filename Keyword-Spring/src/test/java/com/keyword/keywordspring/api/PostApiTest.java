@@ -67,14 +67,17 @@ class PostApiTest {
         post = PostDto.builder()
                 .id(1L)
                 .title("title")
+                .description("description")
+                .username("username")
+                .numberOfComments(1)
                 .build();
     }
 
     @Test
     void createPost() throws Exception {
         String request = mapper.writeValueAsString(CreatePostRequest.builder()
-                        .title("new post")
-                        .description("hello")
+                        .title("post title")
+                        .description("description")
                         .groupId(1L)
                 .build());
 

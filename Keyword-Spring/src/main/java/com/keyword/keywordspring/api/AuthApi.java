@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 
 @RestController
@@ -76,18 +77,18 @@ public class AuthApi {
     }
 
     @PostMapping("/validate-new/username")
-    public ResponseEntity<Void> validateNewUsername(@RequestBody String username) {
+    public ResponseEntity<Void> validateNewUsername(@RequestBody Map<String, String> request) {
 
-        if(userService.isUsernameTaken(username))
+        if(null == request.get("username") || userService.isUsernameTaken(request.get("username")))
             return ResponseEntity.badRequest().build();
         else
             return ResponseEntity.ok().build();
     }
 
     @PostMapping("/validate-new/email")
-    public ResponseEntity<Void> validateNewEmail(@RequestBody String email) {
+    public ResponseEntity<Void> validateNewEmail(@RequestBody Map<String, String> request) {
 
-        if(userService.isEmailTaken(email))
+        if(null == request.get("email") || userService.isEmailTaken(request.get("email")))
             return ResponseEntity.badRequest().build();
         else
             return ResponseEntity.ok().build();

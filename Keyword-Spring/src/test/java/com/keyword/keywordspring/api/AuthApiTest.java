@@ -24,6 +24,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -174,10 +176,15 @@ class AuthApiTest {
     @Test
     void validateNewUsername() throws Exception {
 
+        Map<String, String> map = new HashMap<>();
+        map.put("username", "newUsername");
+        String request = mapper.writeValueAsString(map);
+
         when(userService.isUsernameTaken(anyString())).thenReturn(false);
 
         mockMvc.perform(post("/auth/validate-new/username")
-                .content(user.getUsername()))
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
@@ -188,10 +195,15 @@ class AuthApiTest {
     @Test
     void validateNewEmail() throws Exception {
 
+        Map<String, String> map = new HashMap<>();
+        map.put("email", "newEmail@email.com");
+        String request = mapper.writeValueAsString(map);
+
         when(userService.isEmailTaken(anyString())).thenReturn(false);
 
         mockMvc.perform(post("/auth/validate-new/email")
-                .content(user.getEmail()))
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
