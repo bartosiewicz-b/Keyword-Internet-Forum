@@ -25,6 +25,8 @@ public class Post {
     private ForumGroup forumGroup;
 
     private String title;
+
+    @Lob
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

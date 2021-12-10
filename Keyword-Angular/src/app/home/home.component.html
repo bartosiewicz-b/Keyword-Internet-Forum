@@ -1,0 +1,11 @@
+<div *ngFor="let p of posts">
+    <div class="card" style="width: 50rem;">
+        <div class="card-body">
+            <div class="flex-container">
+                <h5 class="card-title">{{p.title}}</h5>
+                <p class="card-text"><small class="text-muted">{{p.username}}</small></p>
+            </div>
+          <p class="card-text">{{p.description}}</p>
+        </div>
+      </div>
+</div>
