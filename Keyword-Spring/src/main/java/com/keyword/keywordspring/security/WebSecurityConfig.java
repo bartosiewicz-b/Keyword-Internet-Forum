@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/comment/get-all").permitAll()
                 .antMatchers("/group/get").permitAll()
-                .antMatchers("/post/get-all", "/post/get").permitAll()
+                //.antMatchers("/post/get-all", "/post/get").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
                 .authenticationEntryPoint(jwtAuthEntryPoint)
