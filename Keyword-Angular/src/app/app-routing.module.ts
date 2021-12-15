@@ -1,6 +1,6 @@
-import { PostComponent } from './post/post.component';
-import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component';
+import { PostComponent } from './component/post/post.component';
+import { LoginComponent } from './component/login/login.component';
+import { HomeComponent } from './component/home/home.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 

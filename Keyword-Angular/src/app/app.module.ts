@@ -5,15 +5,15 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from  '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
-import { PostCardComponent } from './card/post-card/post-card.component';
+import { HomeComponent } from './component/home/home.component';
+import { LoginComponent } from './component/login/login.component';
+import { PostCardComponent } from './component/card/post-card/post-card.component';
 import { AuthInterceptorService } from './service/auth-interceptor.service';
-import { NavbarComponent } from './navbar/navbar.component';
-import { FeedComponent } from './feed/feed.component';
+import { NavbarComponent } from './component/navbar/navbar.component';
+import { FeedComponent } from './component/feed/feed.component';
 import { ExcerptPipe } from './pipe/excerpt.pipe';
-import { PostComponent } from './post/post.component';
-import { CommentCardComponent } from './card/comment-card/comment-card.component';
+import { PostComponent } from './component/post/post.component';
+import { CommentCardComponent } from './component/card/comment-card/comment-card.component';
 
 
 @NgModule({

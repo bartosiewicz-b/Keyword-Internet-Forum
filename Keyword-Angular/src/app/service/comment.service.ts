@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Comment } from '../model/comment';
 
 @Injectable({
@@ -7,18 +9,15 @@ import { Comment } from '../model/comment';
 })
 export class CommentService {
 
+  url = 'http://localhost:8080/comment';
+
   constructor(private httpClient: HttpClient) { }
 
-  getAll(postId: number): Comment[] {
-    let comments: Comment[] = [];
-
-    this.httpClient.get<Comment[]>("http://localhost:8080/comment/get",
-      {params: {"postId": postId}}).subscribe(res => {
-        res.forEach(comment => {
-          comments.push(comment);
-        })
-      });
-
-    return comments;
+  getAll(postId: number): Observable<Comment[]> {
+    return this.httpClient.get<Comment[]>(this.url + '/get',
+      {params: {"postId": postId}})
+      .pipe(map(res => {
+        return res as Comment[];
+      }));
   }
 }

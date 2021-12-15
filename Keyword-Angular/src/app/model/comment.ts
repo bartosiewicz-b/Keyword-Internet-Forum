@@ -1,8 +1,8 @@
-export interface Comment{
-    id: number;
-    content: string;
-    parentCommentId: number;
-    user: string;
-    postId: number;
-    dateCreated: Date;
+export class Comment{
+    id: number = 0;
+    content: string = "content";
+    parentCommentId: number | null = null;
+    user: string = "username";
+    postId: number = 0;
+    dateCreated: Date = new Date();
 }

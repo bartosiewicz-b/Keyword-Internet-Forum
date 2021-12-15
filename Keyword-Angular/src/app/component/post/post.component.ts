@@ -1,8 +1,8 @@
-import { PostService } from './../service/post.service';
-import { Post } from './../model/post';
-import { CommentService } from './../service/comment.service';
+import { PostService } from '../../service/post.service';
+import { Post } from '../../model/post';
+import { CommentService } from '../../service/comment.service';
 import { Component, OnInit } from '@angular/core';
-import { Comment } from '../model/comment';
+import { Comment } from '../../model/comment';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -12,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PostComponent implements OnInit {
   comments: Comment[] = [];
-  post: Post = {} as Post;
+  post: Post = new Post;
 
   constructor(private postService: PostService,
       private commentService: CommentService,
@@ -21,7 +21,7 @@ export class PostComponent implements OnInit {
     let postId = Number(this.route.snapshot.paramMap.get("postId"));
 
     this.postService.get(postId).subscribe(res => this.post = res);
-    this.comments = this.commentService.getAll(1);
+    this.commentService.getAll(1).subscribe(res => this.comments = res);
   }
 
   ngOnInit(): void {

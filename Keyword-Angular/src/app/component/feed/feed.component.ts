@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Post } from '../model/post';
-import { PostService } from '../service/post.service';
+import { Post } from '../../model/post';
+import { PostService } from '../../service/post.service';
 
 @Component({
   selector: 'feed',
@@ -9,10 +9,10 @@ import { PostService } from '../service/post.service';
 })
 export class FeedComponent implements OnInit {
 
-  posts: Post[];
+  posts: Post[] = [];
 
   constructor(private postService: PostService) { 
-    this.posts = postService.getAll();
+    postService.getAll(0).subscribe(res => {this.posts = res});
   }
 
   ngOnInit(): void {
