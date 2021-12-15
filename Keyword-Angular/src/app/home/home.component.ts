@@ -1,5 +1,3 @@
-import { PostService } from './../service/post.service';
-import { Post } from './../model/post';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -9,10 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  posts: Post[];
-
-  constructor(private postService: PostService) { 
-    this.posts = postService.getAll();
+  constructor() { 
   }
 
   ngOnInit(): void {

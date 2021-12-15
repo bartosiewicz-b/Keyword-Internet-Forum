@@ -21,7 +21,9 @@ public class CommentMapperImpl implements CommentMapper {
         return CommentDto.builder()
                 .id(model.getId())
                 .content(model.getContent())
-                .parentCommentId(model.getParentComment().getId())
+                .parentCommentId(null == model.getParentComment() ?
+                        null :
+                        model.getParentComment().getId())
                 .user(model.getUser().getUsername())
                 .postId(model.getPost().getId())
                 .dateCreated(model.getDateCreated())

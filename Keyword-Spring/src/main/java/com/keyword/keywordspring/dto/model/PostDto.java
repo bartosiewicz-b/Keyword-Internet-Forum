@@ -18,6 +18,9 @@ public class PostDto {
     private Long id;
 
     @NotNull
+    private String groupName;
+
+    @NotNull
     private String title;
 
     @NotNull

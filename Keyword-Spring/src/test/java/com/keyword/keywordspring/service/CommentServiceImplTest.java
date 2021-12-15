@@ -5,7 +5,9 @@ import com.keyword.keywordspring.dto.request.EditCommentRequest;
 import com.keyword.keywordspring.mapper.interf.CommentMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.Comment;
+import com.keyword.keywordspring.model.Post;
 import com.keyword.keywordspring.repository.CommentRepository;
+import com.keyword.keywordspring.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +29,8 @@ class CommentServiceImplTest {
 
     @Mock
     CommentRepository commentRepository;
+    @Mock
+    PostRepository postRepository;
     @Mock
     CommentMapper commentMapper;
     @InjectMocks
@@ -50,9 +54,10 @@ class CommentServiceImplTest {
         List<Comment> comments = new ArrayList<>();
         comments.add(comment);
 
-        when(commentRepository.findAll(any())).thenReturn(comments);
+        when(postRepository.findById(anyLong())).thenReturn(Optional.of(Post.builder().build()));
+        when(commentRepository.findAllByPost(any())).thenReturn(comments);
 
-        List<CommentDto> result = commentService.getComments(0);
+        List<CommentDto> result = commentService.getComments(1L);
 
         assertEquals(commentMapper.mapToDto(comment), result.get(0));
     }

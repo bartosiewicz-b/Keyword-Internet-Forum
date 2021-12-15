@@ -20,6 +20,7 @@ public class PostMapperImpl implements PostMapper {
     public PostDto mapToDto(Post model) {
         return PostDto.builder()
                 .id(model.getId())
+                .groupName(model.getForumGroup().getGroupName())
                 .title(model.getTitle())
                 .description(model.getDescription())
                 .dateCreated(model.getDateCreated())

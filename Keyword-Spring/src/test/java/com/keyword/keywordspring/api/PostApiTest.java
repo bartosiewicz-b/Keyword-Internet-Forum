@@ -66,6 +66,7 @@ class PostApiTest {
 
         post = PostDto.builder()
                 .id(1L)
+                .groupName("group")
                 .title("title")
                 .description("description")
                 .username("username")

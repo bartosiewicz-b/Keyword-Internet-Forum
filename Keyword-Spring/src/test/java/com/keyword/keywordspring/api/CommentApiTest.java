@@ -27,8 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -95,10 +94,10 @@ class CommentApiTest {
                 .postId(1L)
                 .build());
 
-        when(commentService.getComments(any())).thenReturn(comments);
+        when(commentService.getComments(anyLong())).thenReturn(comments);
 
         MvcResult result = mockMvc.perform(get("/comment/get")
-                .param("page", "0"))
+                .param("postId", "1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",

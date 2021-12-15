@@ -1,1 +1,17 @@
-<p>post-card works!</p>
+<div class="card text-white mb-3" style="width: 50rem;">
+    <div class="card-body">
+        <div class="flex-container">
+          <p class="card-text header">
+            <small class="text-muted">{{post.username}}</small>
+            <small class="text-muted">{{post.dateCreated | date}}</small>
+          </p>
+          <h5 class="card-title">{{post.title}}</h5>
+        </div>
+        <div *ngIf="excerpt; else fullText">
+          <p class="card-text">{{post.description|excerpt:1150}}</p>
+        </div>
+        <ng-template #fullText>
+          <p class="card-text">{{post.description}}</p>
+        </ng-template>
+    </div>
+  </div>

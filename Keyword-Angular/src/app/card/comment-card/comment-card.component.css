@@ -1,0 +1,9 @@
+.card{
+    margin: 0 auto 20px auto;
+    background-color: transparent;
+    border-bottom: 1px solid rgb(71, 71, 71);
+}
+
+.header{
+    margin-bottom: 20px;
+}

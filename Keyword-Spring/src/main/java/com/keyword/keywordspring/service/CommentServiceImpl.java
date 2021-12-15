@@ -54,9 +54,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDto> getComments(Integer page) {
+    public List<CommentDto> getComments(Long postId) {
 
-        return commentRepository.findAll(PageRequest.of(page, 10))
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostDoesNotExistException(postId));
+
+        return commentRepository.findAllByPost(post)
                 .stream()
                 .map(commentMapper::mapToDto)
                 .collect(Collectors.toList());

@@ -11,7 +11,7 @@ public interface CommentService {
 
     void addComment(AppUser user, CreateCommentRequest request);
 
-    List<CommentDto> getComments(Integer page);
+    List<CommentDto> getComments(Long postId);
 
     void editComment(AppUser user, EditCommentRequest request);
 

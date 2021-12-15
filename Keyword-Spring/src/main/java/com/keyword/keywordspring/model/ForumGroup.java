@@ -22,6 +22,8 @@ public class ForumGroup {
     private AppUser owner;
 
     private String groupName;
+
+    @Lob
     private String description;
 
     @OneToMany

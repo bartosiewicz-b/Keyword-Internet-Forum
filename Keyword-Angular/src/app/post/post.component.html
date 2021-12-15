@@ -1,0 +1,10 @@
+<div class="post">
+    <post-card [post]="post"></post-card>
+
+    Comments:
+    
+    <div *ngFor="let c of comments">
+        <comment-card [comment]="c"></comment-card>
+    </div>
+</div>
+

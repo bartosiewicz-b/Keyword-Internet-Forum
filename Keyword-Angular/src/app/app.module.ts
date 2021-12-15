@@ -9,6 +9,11 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { PostCardComponent } from './card/post-card/post-card.component';
 import { AuthInterceptorService } from './service/auth-interceptor.service';
+import { NavbarComponent } from './navbar/navbar.component';
+import { FeedComponent } from './feed/feed.component';
+import { ExcerptPipe } from './pipe/excerpt.pipe';
+import { PostComponent } from './post/post.component';
+import { CommentCardComponent } from './card/comment-card/comment-card.component';
 
 
 @NgModule({
@@ -16,7 +21,12 @@ import { AuthInterceptorService } from './service/auth-interceptor.service';
     AppComponent,
     HomeComponent,
     LoginComponent,
-    PostCardComponent
+    PostCardComponent,
+    NavbarComponent,
+    FeedComponent,
+    ExcerptPipe,
+    PostComponent,
+    CommentCardComponent
   ],
   imports: [
     BrowserModule,

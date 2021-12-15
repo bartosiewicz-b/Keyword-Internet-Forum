@@ -1,0 +1,16 @@
+.card{
+    margin: 0 auto 20px auto;
+    background-color: #1a1a1a;
+    border: 1px solid rgb(53, 53, 53);
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.card-title{
+    margin-bottom: 20px;
+}

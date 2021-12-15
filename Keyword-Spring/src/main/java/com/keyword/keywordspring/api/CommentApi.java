@@ -16,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/comment")
+@CrossOrigin(origins = "http://localhost:4200")
 @AllArgsConstructor
 public class CommentApi {
 
@@ -37,10 +38,10 @@ public class CommentApi {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<CommentDto>> getComments(@RequestParam Integer page) {
+    public ResponseEntity<List<CommentDto>> getComments(@RequestParam Long postId) {
 
         try {
-            return ResponseEntity.ok().body(commentService.getComments(page));
+            return ResponseEntity.ok().body(commentService.getComments(postId));
         } catch(Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }

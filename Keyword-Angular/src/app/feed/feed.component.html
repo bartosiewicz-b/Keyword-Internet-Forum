@@ -1,0 +1,8 @@
+
+  <div *ngFor="let p of posts" class="feed">
+    <a routerLink="{{p.groupName}}/{{p.id}}">
+      <post-card [post]="p" [excerpt]="true"></post-card>
+    </a>
+</div>
+
+
