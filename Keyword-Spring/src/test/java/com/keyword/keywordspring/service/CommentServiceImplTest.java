@@ -3,10 +3,9 @@ package com.keyword.keywordspring.service;
 import com.keyword.keywordspring.dto.model.CommentDto;
 import com.keyword.keywordspring.dto.request.EditCommentRequest;
 import com.keyword.keywordspring.mapper.interf.CommentMapper;
-import com.keyword.keywordspring.model.AppUser;
-import com.keyword.keywordspring.model.Comment;
-import com.keyword.keywordspring.model.Post;
+import com.keyword.keywordspring.model.*;
 import com.keyword.keywordspring.repository.CommentRepository;
+import com.keyword.keywordspring.repository.CommentVoteRepository;
 import com.keyword.keywordspring.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceImplTest {
@@ -33,6 +32,8 @@ class CommentServiceImplTest {
     PostRepository postRepository;
     @Mock
     CommentMapper commentMapper;
+    @Mock
+    CommentVoteRepository commentVoteRepository;
     @InjectMocks
     CommentServiceImpl commentService;
 
@@ -46,6 +47,7 @@ class CommentServiceImplTest {
                         .id(1L)
                         .build())
                 .content("Old content.")
+                .votes(0)
                 .build();
     }
 
@@ -55,11 +57,11 @@ class CommentServiceImplTest {
         comments.add(comment);
 
         when(postRepository.findById(anyLong())).thenReturn(Optional.of(Post.builder().build()));
-        when(commentRepository.findAllByPost(any())).thenReturn(comments);
+        when(commentRepository.findAllByPostOrderByVotesDesc(any())).thenReturn(comments);
 
-        List<CommentDto> result = commentService.getComments(1L);
+        List<CommentDto> result = commentService.getComments(1L, comment.getUser());
 
-        assertEquals(commentMapper.mapToDto(comment), result.get(0));
+        assertEquals(commentMapper.mapToDto(comment, comment.getUser()), result.get(0));
     }
 
     @Test
@@ -68,5 +70,79 @@ class CommentServiceImplTest {
 
         commentService.editComment(AppUser.builder().id(1L).build(),
                 EditCommentRequest.builder().id(1L).newContent("New content.").build());
+    }
+
+    @Test
+    void upvote() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+        when(commentVoteRepository.findByUserAndComment(any(), any()))
+                .thenReturn(Optional.empty());
+
+        commentService.upvote(comment.getUser(), 1L);
+
+        verify(commentVoteRepository, times(1)).save(any());
+    }
+
+    @Test
+    void upvoteAlreadyUpvoted() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+        when(commentVoteRepository.findByUserAndComment(any(), any()))
+                .thenReturn(Optional.of(CommentVote.builder()
+                        .type(VoteType.UP)
+                        .build()));
+
+        commentService.upvote(comment.getUser(), 1L);
+
+        verify(commentVoteRepository, times(1)).delete(any());
+    }
+
+    @Test
+    void upvoteAlreadyDownvoted() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+        when(commentVoteRepository.findByUserAndComment(any(), any()))
+                .thenReturn(Optional.of(CommentVote.builder()
+                        .type(VoteType.DOWN)
+                        .build()));
+
+        commentService.upvote(comment.getUser(), 1L);
+
+        verify(commentVoteRepository, times(1)).save(any());
+    }
+
+    @Test
+    void downvote() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+        when(commentVoteRepository.findByUserAndComment(any(), any()))
+                .thenReturn(Optional.empty());
+
+        commentService.downvote(comment.getUser(), 1L);
+
+        verify(commentVoteRepository, times(1)).save(any());
+    }
+
+    @Test
+    void downvoteAlreadyDownvoted() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+        when(commentVoteRepository.findByUserAndComment(any(), any()))
+                .thenReturn(Optional.of(CommentVote.builder()
+                        .type(VoteType.DOWN)
+                        .build()));
+
+        commentService.downvote(comment.getUser(), 1L);
+
+        verify(commentVoteRepository, times(1)).delete(any());
+    }
+
+    @Test
+    void downvoteAlreadyUpvoted() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+        when(commentVoteRepository.findByUserAndComment(any(), any()))
+                .thenReturn(Optional.of(CommentVote.builder()
+                        .type(VoteType.UP)
+                        .build()));
+
+        commentService.downvote(comment.getUser(), 1L);
+
+        verify(commentVoteRepository, times(1)).save(any());
     }
 }

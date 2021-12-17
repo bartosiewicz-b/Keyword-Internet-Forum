@@ -1,10 +1,25 @@
-<div class="card text-white mb-3" style="width: 50rem;">
-    <div class="card-body">
-        <div class="flex-container">
-          <p class="card-text header">
-            <small class="text-muted">{{comment.user}}</small>
-        </div>
-      <p class="card-text">{{comment.content}}</p>
-      <small class="text-muted">{{comment.dateCreated | date}}</small>
+<div class="card text-white mb-3 container" style="width: 50rem;">
+  <div class="row">
+    <div class="col-1">
+      <div class="row arrow" [class.active]="comment.userVote!=null && (comment.userVote==0 || comment.userVote.toString()=='UP')"
+        (click)="upvote()">
+        <fa-icon [icon]="faArrowUp"></fa-icon>
+      </div>
+      <div class="row">
+        <small class="text-muted">{{comment.votes}}</small>
+      </div>
+      <div class="row arrow" [class.active]="comment.userVote!=null && (comment.userVote==1 || comment.userVote.toString()=='DOWN')" 
+        (click)="downvote()">
+        <fa-icon [icon]="faArrowDown"></fa-icon>
+      </div>
     </div>
+      <div class="card-body col-11">
+          <div class="flex-container">
+            <p class="card-text header">
+              <small class="text-muted">{{comment.user}}</small>
+          </div>
+        <p class="card-text">{{comment.content}}</p>
+        <small class="text-muted">{{comment.dateCreated | date}}</small>
+      </div>
+  </div>
   </div>

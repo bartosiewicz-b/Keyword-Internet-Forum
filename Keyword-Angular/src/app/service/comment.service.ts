@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { Comment } from '../model/comment';
 
 @Injectable({
@@ -19,5 +19,17 @@ export class CommentService {
       .pipe(map(res => {
         return res as Comment[];
       }));
+  }
+
+  upvote(commentId: number) {
+    this.httpClient.post(this.url + '/upvote', {'commentId': commentId})
+    .pipe(take(1))
+    .subscribe()
+  }
+
+  downvote(commentId: number) {
+    this.httpClient.post(this.url + '/downvote', {'commentId': commentId})
+    .pipe(take(1))
+    .subscribe()
   }
 }

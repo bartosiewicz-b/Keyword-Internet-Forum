@@ -24,7 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -92,9 +94,10 @@ class CommentApiTest {
                 .content("comment")
                 .user("username")
                 .postId(1L)
+                .votes(0)
                 .build());
 
-        when(commentService.getComments(anyLong())).thenReturn(comments);
+        when(commentService.getComments(anyLong(), any())).thenReturn(comments);
 
         MvcResult result = mockMvc.perform(get("/comment/get")
                 .param("postId", "1"))
@@ -121,6 +124,44 @@ class CommentApiTest {
                 .header("Authorization", "token")
                 .content(request)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void upvote() throws Exception {
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
+
+        Map<String, Long> commentId = new HashMap<>();
+        commentId.put("commentId", 1L);
+        String request = mapper.writeValueAsString(commentId);
+
+        mockMvc.perform(post("/comment/upvote")
+                .header("Authorization", "token")
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void downvote() throws Exception {
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
+
+        Map<String, Long> commentId = new HashMap<>();
+        commentId.put("commentId", 1L);
+        String request = mapper.writeValueAsString(commentId);
+
+        mockMvc.perform(post("/comment/downvote")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",

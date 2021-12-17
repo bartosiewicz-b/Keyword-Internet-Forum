@@ -7,14 +7,12 @@ import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.CommentDoesNotExistException;
 import com.keyword.keywordspring.exception.PostDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.CommentMapper;
-import com.keyword.keywordspring.model.AppUser;
-import com.keyword.keywordspring.model.Comment;
-import com.keyword.keywordspring.model.Post;
+import com.keyword.keywordspring.model.*;
 import com.keyword.keywordspring.repository.CommentRepository;
+import com.keyword.keywordspring.repository.CommentVoteRepository;
 import com.keyword.keywordspring.repository.PostRepository;
 import com.keyword.keywordspring.service.interf.CommentService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -30,6 +28,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final CommentMapper commentMapper;
+    private final CommentVoteRepository commentVoteRepository;
 
     @Override
     public void addComment(AppUser user, CreateCommentRequest request) {
@@ -48,19 +47,20 @@ public class CommentServiceImpl implements CommentService {
                         .post(post.get())
                         .parentComment(comment.orElse(null))
                         .dateCreated(new Date(System.currentTimeMillis()))
+                        .votes(0)
                         .edited(false)
                 .build());
 
     }
 
     @Override
-    public List<CommentDto> getComments(Long postId) {
+    public List<CommentDto> getComments(Long postId, AppUser user) {
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostDoesNotExistException(postId));
 
-        return commentRepository.findAllByPost(post)
+        return commentRepository.findAllByPostOrderByVotesDesc(post)
                 .stream()
-                .map(commentMapper::mapToDto)
+                .map(c -> commentMapper.mapToDto(c, user))
                 .collect(Collectors.toList());
     }
 
@@ -76,6 +76,60 @@ public class CommentServiceImpl implements CommentService {
 
         comment.setContent(request.getNewContent());
         comment.setEdited(true);
+
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public void upvote(AppUser user, Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentDoesNotExistException(commentId));
+
+        Optional<CommentVote> vote = commentVoteRepository.findByUserAndComment(user, comment);
+
+        if(vote.isEmpty()){
+            commentVoteRepository.save(CommentVote.builder()
+                    .user(user)
+                    .comment(comment)
+                    .type(VoteType.UP)
+                    .build());
+
+            comment.setVotes(comment.getVotes() + 1);
+        } else if (vote.get().getType() == VoteType.UP) {
+            commentVoteRepository.delete(vote.get());
+            comment.setVotes(comment.getVotes() - 1);
+        } else {
+            vote.get().setType(VoteType.UP);
+            commentVoteRepository.save(vote.get());
+            comment.setVotes(comment.getVotes() + 2);
+        }
+
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public void downvote(AppUser user, Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentDoesNotExistException(commentId));
+
+        Optional<CommentVote> vote = commentVoteRepository.findByUserAndComment(user, comment);
+
+        if(vote.isEmpty()){
+            commentVoteRepository.save(CommentVote.builder()
+                    .user(user)
+                    .comment(comment)
+                    .type(VoteType.DOWN)
+                    .build());
+
+            comment.setVotes(comment.getVotes() - 1);
+        } else if (vote.get().getType() == VoteType.DOWN) {
+            commentVoteRepository.delete(vote.get());
+            comment.setVotes(comment.getVotes() + 1);
+        } else {
+            vote.get().setType(VoteType.DOWN);
+            commentVoteRepository.save(vote.get());
+            comment.setVotes(comment.getVotes() - 2);
+        }
 
         commentRepository.save(comment);
     }

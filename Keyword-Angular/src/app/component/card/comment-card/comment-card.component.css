@@ -7,3 +7,20 @@
 .header{
     margin-bottom: 20px;
 }
+
+.col-1{
+    font-size: xx-large;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: gray;
+}
+
+.active{
+    color: lightgray;
+}
+
+.arrow:hover{
+    cursor: pointer;
+}

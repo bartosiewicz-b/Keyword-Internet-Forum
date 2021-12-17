@@ -14,7 +14,7 @@ import { FeedComponent } from './component/feed/feed.component';
 import { ExcerptPipe } from './pipe/excerpt.pipe';
 import { PostComponent } from './component/post/post.component';
 import { CommentCardComponent } from './component/card/comment-card/comment-card.component';
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -31,7 +31,8 @@ import { CommentCardComponent } from './component/card/comment-card/comment-card
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FontAwesomeModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true},

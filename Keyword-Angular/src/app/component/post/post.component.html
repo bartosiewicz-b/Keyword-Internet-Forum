@@ -1,10 +1,15 @@
 <div class="post">
     <post-card [post]="post"></post-card>
-
-    Comments:
     
     <div *ngFor="let c of comments">
-        <comment-card [comment]="c"></comment-card>
+        <div *ngIf="c.parentCommentId==null">
+            <comment-card [comment]="c"></comment-card>
+        </div>
+        <div *ngFor="let sc of comments" class="sideComment">
+            <div *ngIf="sc.parentCommentId!=null && sc.parentCommentId==c.id">
+                <comment-card [comment]="sc"></comment-card>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -11,6 +11,5 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends CrudRepository<Comment, Long> {
 
-    List<Comment> findAll();
-    List<Comment> findAllByPost(Post post);
+    List<Comment> findAllByPostOrderByVotesDesc(Post post);
 }

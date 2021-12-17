@@ -136,6 +136,18 @@ include::{snippets}/editComment/http-request.adoc[]
 .response
 include::{snippets}/editComment/http-response.adoc[]
 
+== Upvote Comment
+.request
+include::{snippets}/upvote/http-request.adoc[]
+.response
+include::{snippets}/upvote/http-response.adoc[]
+
+== Downvote Comment
+.request
+include::{snippets}/downvote/http-request.adoc[]
+.response
+include::{snippets}/downvote/http-response.adoc[]
+
 == Delete Comment
 .request
 include::{snippets}/deleteComment/http-request.adoc[]
