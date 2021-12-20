@@ -14,3 +14,21 @@
 .card-title{
     margin-bottom: 20px;
 }
+
+.col-1{
+    margin-top: 10px;
+    font-size: xx-large;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content:flex-start;
+    color: gray;
+}
+
+.active{
+    color: lightgray;
+}
+
+.arrow:hover{
+    cursor: pointer;
+}

@@ -11,11 +11,14 @@ public interface PostService {
 
     void createPost(AppUser user, CreatePostRequest request);
 
-    List<PostDto> getPosts(Integer page, String name);
+    List<PostDto> getPosts(Integer page, String name, AppUser user);
 
-    PostDto getPost(Long id);
+    PostDto getPost(Long id, AppUser user);
 
     void editPost(AppUser user, EditPostRequest request);
+
+    void upvote(AppUser user, Long postId);
+    void downvote(AppUser user, Long postId);
 
     void deletePost(AppUser user, Long id);
 }

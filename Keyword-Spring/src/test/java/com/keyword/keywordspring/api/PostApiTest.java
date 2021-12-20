@@ -24,7 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -98,7 +100,7 @@ class PostApiTest {
         List<PostDto> posts = new ArrayList<>();
         posts.add(post);
 
-        when(postService.getPosts(any(), any())).thenReturn(posts);
+        when(postService.getPosts(any(), any(), any())).thenReturn(posts);
 
         MvcResult result = mockMvc.perform(get("/post/get-all")
                 .param("page", "0"))
@@ -115,7 +117,7 @@ class PostApiTest {
     @Test
     void getPost() throws Exception {
 
-        when(postService.getPost(anyLong())).thenReturn(post);
+        when(postService.getPost(anyLong(), any())).thenReturn(post);
 
         MvcResult result = mockMvc.perform(get("/post/get")
                         .param("id", "0"))
@@ -139,6 +141,44 @@ class PostApiTest {
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
 
         mockMvc.perform(post("/post/edit")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void upvotePostApi() throws Exception {
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
+
+        Map<String, Long> postId = new HashMap<>();
+        postId.put("postId", 1L);
+        String request = mapper.writeValueAsString(postId);
+
+        mockMvc.perform(post("/post/upvote")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void downvotePostApi() throws Exception {
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
+
+        Map<String, Long> postId = new HashMap<>();
+        postId.put("postId", 1L);
+        String request = mapper.writeValueAsString(postId);
+
+        mockMvc.perform(post("/post/downvote")
                         .header("Authorization", "token")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON))

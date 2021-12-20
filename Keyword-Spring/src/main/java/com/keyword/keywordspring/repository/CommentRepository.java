@@ -2,7 +2,6 @@ package com.keyword.keywordspring.repository;
 
 import com.keyword.keywordspring.model.Comment;
 import com.keyword.keywordspring.model.Post;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

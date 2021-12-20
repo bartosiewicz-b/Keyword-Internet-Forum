@@ -109,6 +109,18 @@ include::{snippets}/editPost/http-request.adoc[]
 .response
 include::{snippets}/editPost/http-response.adoc[]
 
+== Upvote Post
+.request
+include::{snippets}/upvotePostApi/http-request.adoc[]
+.response
+include::{snippets}/upvotePostApi/http-response.adoc[]
+
+== Downvote Post
+.request
+include::{snippets}/downvotePostApi/http-request.adoc[]
+.response
+include::{snippets}/downvotePostApi/http-response.adoc[]
+
 == Delete Post
 .request
 include::{snippets}/deletePost/http-request.adoc[]
@@ -138,15 +150,15 @@ include::{snippets}/editComment/http-response.adoc[]
 
 == Upvote Comment
 .request
-include::{snippets}/upvote/http-request.adoc[]
+include::{snippets}/upvoteCommentApi/http-request.adoc[]
 .response
-include::{snippets}/upvote/http-response.adoc[]
+include::{snippets}/upvoteCommentApi/http-response.adoc[]
 
 == Downvote Comment
 .request
-include::{snippets}/downvote/http-request.adoc[]
+include::{snippets}/downvoteCommentApi/http-request.adoc[]
 .response
-include::{snippets}/downvote/http-response.adoc[]
+include::{snippets}/downvoteCommentApi/http-response.adoc[]
 
 == Delete Comment
 .request

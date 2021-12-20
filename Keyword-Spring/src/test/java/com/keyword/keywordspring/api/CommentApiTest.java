@@ -132,7 +132,7 @@ class CommentApiTest {
     }
 
     @Test
-    void upvote() throws Exception {
+    void upvoteCommentApi() throws Exception {
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
 
         Map<String, Long> commentId = new HashMap<>();
@@ -151,7 +151,7 @@ class CommentApiTest {
     }
 
     @Test
-    void downvote() throws Exception {
+    void downvoteCommentApi() throws Exception {
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
 
         Map<String, Long> commentId = new HashMap<>();

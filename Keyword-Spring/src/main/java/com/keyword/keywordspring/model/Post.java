@@ -36,4 +36,6 @@ public class Post {
     private Date dateCreated;
 
     private boolean edited;
+
+    private Integer votes;
 }

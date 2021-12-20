@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/post")
@@ -38,11 +39,14 @@ public class PostApi {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<PostDto>> getPosts(@RequestParam Integer page,
-                                                  @RequestParam(required = false) String name) {
+    public ResponseEntity<List<PostDto>> getPosts(@RequestHeader(value = "Authorization", required = false) String token,
+                            @RequestParam Integer page,
+                            @RequestParam(required = false) String name) {
+
+        AppUser user = null == token ? null : jwtUtil.getUserFromToken(token);
 
         try {
-            return ResponseEntity.ok().body(postService.getPosts(page, name));
+            return ResponseEntity.ok().body(postService.getPosts(page, name, user));
         } catch(Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }
@@ -50,10 +54,13 @@ public class PostApi {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<PostDto> getPost(@RequestParam Long id) {
+    public ResponseEntity<PostDto> getPost(@RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam Long id) {
+
+        AppUser user = null == token ? null : jwtUtil.getUserFromToken(token);
 
         try {
-            return ResponseEntity.ok().body(postService.getPost(id));
+            return ResponseEntity.ok().body(postService.getPost(id, user));
         } catch(Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }
@@ -70,6 +77,34 @@ public class PostApi {
             postService.editPost(user, request);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
+        }
+    }
+
+    @PostMapping("/upvote")
+    public ResponseEntity<String> upvote(@RequestHeader("Authorization") String token,
+                                         @RequestBody Map<String, Long> request) {
+
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try {
+            postService.upvote(user, request.get("postId"));
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
+        }
+    }
+
+    @PostMapping("/downvote")
+    public ResponseEntity<Void> downvote(@RequestHeader("Authorization") String token,
+                                         @RequestBody Map<String, Long> request) {
+
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try {
+            postService.downvote(user, request.get("postId"));
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }
     }

@@ -1,17 +1,35 @@
 <div class="card text-white mb-3" style="width: 50rem;">
     <div class="card-body">
-        <div class="flex-container">
-          <p class="card-text header">
-            <small class="text-muted">{{post.username}}</small>
-            <small class="text-muted">{{post.dateCreated | date}}</small>
-          </p>
-          <h5 class="card-title">{{post.title}}</h5>
+      <div class="row">
+        <div class="col-1">
+          <div class="row arrow" [class.active]="post.userVote!=null && (post.userVote==0 || post.userVote.toString()=='UP')"
+          (click)="upvote()">
+            <fa-icon [icon]="faArrowUp"></fa-icon>
+          </div>
+          <div class="row">
+            <small class="text-muted">{{post.votes}}</small>
+          </div>
+          <div class="row arrow" [class.active]="post.userVote!=null && (post.userVote==1 || post.userVote.toString()=='DOWN')" 
+          (click)="downvote()">
+            <fa-icon [icon]="faArrowDown"></fa-icon>
+          </div>
         </div>
-        <div *ngIf="excerpt; else fullText">
-          <p class="card-text">{{post.description|excerpt:1150}}</p>
-        </div>
-        <ng-template #fullText>
-          <p class="card-text">{{post.description}}</p>
-        </ng-template>
+          <div class="col-11">
+            <div class="flex-container">
+              <p class="card-text header">
+                <small class="text-muted">{{post.username}}</small>
+                <small class="text-muted">{{post.dateCreated | date}}</small>
+              </p>
+              <h5 class="card-title">{{post.title}}</h5>
+            </div>
+            <div *ngIf="excerpt; else fullText">
+              <p class="card-text">{{post.description|excerpt:1150}}</p>
+            </div>
+            <ng-template #fullText>
+              <p class="card-text">{{post.description}}</p>
+            </ng-template>
+          </div>
+      
+        
     </div>
   </div>

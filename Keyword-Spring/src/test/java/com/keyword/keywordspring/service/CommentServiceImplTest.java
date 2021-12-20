@@ -37,11 +37,11 @@ class CommentServiceImplTest {
     @InjectMocks
     CommentServiceImpl commentService;
 
-    Comment comment;
+    Comment comment1;
 
     @BeforeEach
     void setUp() {
-        comment = Comment.builder()
+        comment1 = Comment.builder()
                 .id(1L)
                 .user(AppUser.builder()
                         .id(1L)
@@ -54,94 +54,94 @@ class CommentServiceImplTest {
     @Test
     void getComments() {
         List<Comment> comments = new ArrayList<>();
-        comments.add(comment);
+        comments.add(comment1);
 
         when(postRepository.findById(anyLong())).thenReturn(Optional.of(Post.builder().build()));
         when(commentRepository.findAllByPostOrderByVotesDesc(any())).thenReturn(comments);
 
-        List<CommentDto> result = commentService.getComments(1L, comment.getUser());
+        List<CommentDto> result = commentService.getComments(1L, comment1.getUser());
 
-        assertEquals(commentMapper.mapToDto(comment, comment.getUser()), result.get(0));
+        assertEquals(commentMapper.mapToDto(comment1, comment1.getUser()), result.get(0));
     }
 
     @Test
     void editComment() {
-        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment1));
 
         commentService.editComment(AppUser.builder().id(1L).build(),
                 EditCommentRequest.builder().id(1L).newContent("New content.").build());
     }
 
     @Test
-    void upvote() {
-        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+    void upvoteComment() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment1));
         when(commentVoteRepository.findByUserAndComment(any(), any()))
                 .thenReturn(Optional.empty());
 
-        commentService.upvote(comment.getUser(), 1L);
+        commentService.upvote(comment1.getUser(), 1L);
 
         verify(commentVoteRepository, times(1)).save(any());
     }
 
     @Test
-    void upvoteAlreadyUpvoted() {
-        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+    void upvoteAlreadyUpvotedComment() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment1));
         when(commentVoteRepository.findByUserAndComment(any(), any()))
                 .thenReturn(Optional.of(CommentVote.builder()
                         .type(VoteType.UP)
                         .build()));
 
-        commentService.upvote(comment.getUser(), 1L);
+        commentService.upvote(comment1.getUser(), 1L);
 
         verify(commentVoteRepository, times(1)).delete(any());
     }
 
     @Test
-    void upvoteAlreadyDownvoted() {
-        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+    void upvoteAlreadyDownvotedComment() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment1));
         when(commentVoteRepository.findByUserAndComment(any(), any()))
                 .thenReturn(Optional.of(CommentVote.builder()
                         .type(VoteType.DOWN)
                         .build()));
 
-        commentService.upvote(comment.getUser(), 1L);
+        commentService.upvote(comment1.getUser(), 1L);
 
         verify(commentVoteRepository, times(1)).save(any());
     }
 
     @Test
-    void downvote() {
-        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+    void downvoteComment() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment1));
         when(commentVoteRepository.findByUserAndComment(any(), any()))
                 .thenReturn(Optional.empty());
 
-        commentService.downvote(comment.getUser(), 1L);
+        commentService.downvote(comment1.getUser(), 1L);
 
         verify(commentVoteRepository, times(1)).save(any());
     }
 
     @Test
-    void downvoteAlreadyDownvoted() {
-        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+    void downvoteAlreadyDownvotedComment() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment1));
         when(commentVoteRepository.findByUserAndComment(any(), any()))
                 .thenReturn(Optional.of(CommentVote.builder()
                         .type(VoteType.DOWN)
                         .build()));
 
-        commentService.downvote(comment.getUser(), 1L);
+        commentService.downvote(comment1.getUser(), 1L);
 
         verify(commentVoteRepository, times(1)).delete(any());
     }
 
     @Test
-    void downvoteAlreadyUpvoted() {
-        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+    void downvoteAlreadyUpvotedComment() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment1));
         when(commentVoteRepository.findByUserAndComment(any(), any()))
                 .thenReturn(Optional.of(CommentVote.builder()
                         .type(VoteType.UP)
                         .build()));
 
-        commentService.downvote(comment.getUser(), 1L);
+        commentService.downvote(comment1.getUser(), 1L);
 
         verify(commentVoteRepository, times(1)).save(any());
     }
