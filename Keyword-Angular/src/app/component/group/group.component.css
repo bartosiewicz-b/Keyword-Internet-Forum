@@ -1,0 +1,22 @@
+.subscription{
+    margin: 20px 0 50px 0;
+}
+
+button{
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+button:active{
+    color: lightgray;
+    border-color: lightgray;
+}
+
+.line{
+    margin: 100px 0 20px 0;
+    padding: 10px 0 10px 5px;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+}

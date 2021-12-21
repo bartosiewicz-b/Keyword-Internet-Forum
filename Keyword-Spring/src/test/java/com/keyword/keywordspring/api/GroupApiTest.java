@@ -64,7 +64,7 @@ class GroupApiTest {
                 .build();
 
         group = GroupDto.builder()
-                .id(1L)
+                .id("1")
                 .groupName("group")
                 .description("description")
                 .build();
@@ -93,7 +93,7 @@ class GroupApiTest {
         List<GroupDto> groups = new ArrayList<>();
         groups.add(group);
 
-        when(groupService.getGroups(any(), any())).thenReturn(groups);
+        when(groupService.getGroups(any(), any(), any())).thenReturn(groups);
 
         MvcResult result = mockMvc.perform(get("/group/get-all")
                 .param("page", "0"))
@@ -110,7 +110,7 @@ class GroupApiTest {
     @Test
     void getGroup() throws Exception {
 
-        when(groupService.getGroup(anyLong())).thenReturn(group);
+        when(groupService.getGroup(anyString(), any())).thenReturn(group);
 
         MvcResult result = mockMvc.perform(get("/group/get")
                         .param("id", "0"))
@@ -127,7 +127,7 @@ class GroupApiTest {
     @Test
     void editGroup() throws Exception {
         String request = mapper.writeValueAsString(EditGroupRequest.builder()
-                .id(1L)
+                .id("1")
                 .groupName("new group name")
                 .description("new description")
                 .build());
@@ -156,6 +156,23 @@ class GroupApiTest {
         mockMvc.perform(post("/group/validate-new/group-name")
                 .content(request)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void subscribeGroup() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("groupId", "group");
+        String request = mapper.writeValueAsString(map);
+
+        mockMvc.perform(post("/group/subscribe")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",

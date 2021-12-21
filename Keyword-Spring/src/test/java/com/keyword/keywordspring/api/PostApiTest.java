@@ -81,7 +81,7 @@ class PostApiTest {
         String request = mapper.writeValueAsString(CreatePostRequest.builder()
                         .title("post title")
                         .description("description")
-                        .groupId(1L)
+                        .groupId("1")
                 .build());
 
         mockMvc.perform(post("/post/create")

@@ -1,0 +1,10 @@
+Search for posts:
+<input type="text" class="input" #postName (keyup)="search(postName.value)">
+
+<div *ngFor="let p of posts" class="feed">
+    <a routerLink="/{{p.groupId}}/{{p.id}}">
+      <post-card [post]="p" [excerpt]="true"></post-card>
+    </a>
+</div>
+
+

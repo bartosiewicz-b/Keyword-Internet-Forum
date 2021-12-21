@@ -7,7 +7,9 @@ import lombok.Data;
 @Builder
 public class GroupDto {
 
-    private Long id;
+    private String id;
     private String groupName;
     private String description;
+    private Integer subscriptions;
+    private Boolean isSubscribed;
 }

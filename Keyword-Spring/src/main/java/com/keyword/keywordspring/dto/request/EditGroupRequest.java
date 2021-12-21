@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 public class EditGroupRequest {
 
     @NotNull
-    private Long id;
+    private String id;
     @NotNull
     private String groupName;
     @NotNull

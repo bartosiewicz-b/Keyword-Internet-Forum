@@ -20,5 +20,5 @@ public class CreatePostRequest {
     private String description;
 
     @NotNull
-    private Long groupId;
+    private String groupId;
 }

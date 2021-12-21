@@ -30,6 +30,7 @@ public class PostMapperImpl implements PostMapper {
         return PostDto.builder()
                 .id(model.getId())
                 .groupName(model.getForumGroup().getGroupName())
+                .groupId(model.getForumGroup().getId())
                 .title(model.getTitle())
                 .description(model.getDescription())
                 .dateCreated(model.getDateCreated())

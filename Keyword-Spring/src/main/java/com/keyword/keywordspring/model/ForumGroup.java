@@ -15,8 +15,7 @@ import java.util.List;
 public class ForumGroup {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @ManyToOne
     private AppUser owner;
@@ -31,4 +30,6 @@ public class ForumGroup {
     private List<Post> posts;
 
     private Date dateCreated;
+
+    private Integer subscriptions;
 }

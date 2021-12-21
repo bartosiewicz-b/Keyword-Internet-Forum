@@ -22,6 +22,9 @@ public class PostDto {
     private String groupName;
 
     @NotNull
+    private String groupId;
+
+    @NotNull
     private String title;
 
     @NotNull

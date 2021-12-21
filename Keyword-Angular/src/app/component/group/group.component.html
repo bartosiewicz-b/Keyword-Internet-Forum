@@ -1,0 +1,25 @@
+<h1>{{group.groupName}}</h1>
+
+<div class="subscription row">
+    <div class="col-3">
+        <button (click)="subscribe()">
+            <div *ngIf="!group.isSubscribed; else unsubscribe">
+                Subscribe
+            </div>
+            <ng-template #unsubscribe>
+                Unsubscribe
+            </ng-template>
+        </button>
+    </div>
+    <div class="col-9">
+        <small class="text-muted">Subscriptions: {{group.subscriptions}}</small>
+    </div>
+</div>
+
+<p>{{group.description}}</p>
+
+<div class="line">
+    Posts:
+</div>
+
+<post-feed></post-feed>

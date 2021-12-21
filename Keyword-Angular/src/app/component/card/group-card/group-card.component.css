@@ -1,0 +1,18 @@
+.card{
+    margin: 0 auto 0px auto;
+    background-color: #1a1a1a;
+    border: 1px solid rgb(53, 53, 53);
+}
+
+.card-title{
+    margin-bottom: 20px;
+}
+
+
+.active{
+    color: lightgray;
+}
+
+.arrow:hover{
+    cursor: pointer;
+}

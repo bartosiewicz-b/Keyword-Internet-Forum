@@ -37,11 +37,11 @@ class GroupServiceImplTest {
     void setUp() {
         groups = new ArrayList<>();
         groups.add(ForumGroup.builder()
-                        .id(1L)
+                        .id("1")
                         .groupName("first group")
                 .build());
         groups.add(ForumGroup.builder()
-                .id(2L)
+                .id("2")
                 .groupName("second group")
                 .build());
     }
@@ -50,18 +50,18 @@ class GroupServiceImplTest {
     void getGroups() {
         when(groupRepository.findAll(any())).thenReturn(groups);
 
-        List<GroupDto> result = groupService.getGroups(0, null);
+        List<GroupDto> result = groupService.getGroups(0, null, null);
 
-        assertEquals(result, groups.stream().map(groupMapper::mapToDto).collect(Collectors.toList()));
+        assertEquals(result, groups.stream().map(res -> groupMapper.mapToDto(res, null)).collect(Collectors.toList()));
     }
 
     @Test
     void getGroupsLike() {
         when(groupRepository.findByGroupNameLike(anyString(), any())).thenReturn(groups);
 
-        List<GroupDto> result = groupService.getGroups(0, "name");
+        List<GroupDto> result = groupService.getGroups(0, "name", null);
 
-        assertEquals(result, groups.stream().map(groupMapper::mapToDto).collect(Collectors.toList()));
+        assertEquals(result, groups.stream().map(res -> groupMapper.mapToDto(res, null)).collect(Collectors.toList()));
     }
 
     @Test

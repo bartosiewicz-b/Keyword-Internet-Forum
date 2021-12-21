@@ -1,0 +1,8 @@
+Search for groups:
+<input type="text" class="input" #groupName (keyup)="search(groupName.value)">
+
+<div *ngFor="let g of groups" class="feed">
+    <a routerLink="/{{g.id}}">
+      <group-card [group]="g"></group-card>
+    </a>
+</div>

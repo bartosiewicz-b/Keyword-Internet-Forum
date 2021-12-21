@@ -18,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/group")
 @AllArgsConstructor
+@CrossOrigin("http://localhost:4200")
 public class GroupApi {
 
     private final GroupService groupService;
@@ -38,21 +39,27 @@ public class GroupApi {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<GroupDto>> getGroups(@RequestParam Integer page,
+    public ResponseEntity<List<GroupDto>> getGroups(@RequestHeader(value = "Authorization", required = false) String token,
+                                                    @RequestParam Integer page,
                                                     @RequestParam(required = false) String name) {
 
+        AppUser user = jwtUtil.getUserFromToken(token);
+
         try {
-            return ResponseEntity.ok().body(groupService.getGroups(page, name));
+            return ResponseEntity.ok().body(groupService.getGroups(page, name, user));
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }
     }
 
     @GetMapping("/get")
-    public ResponseEntity<GroupDto> getGroup(@RequestParam Long id) {
+    public ResponseEntity<GroupDto> getGroup(@RequestHeader(value = "Authorization", required = false) String token,
+                                             @RequestParam String id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token);
 
         try {
-            return ResponseEntity.ok().body(groupService.getGroup(id));
+            return ResponseEntity.ok().body(groupService.getGroup(id, user));
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }
@@ -71,6 +78,20 @@ public class GroupApi {
             throw new UnexpectedProblemException(e.getMessage());
         }
 
+    }
+
+    @PostMapping("/subscribe")
+    public ResponseEntity<Void> subscribeGroup(@RequestHeader("Authorization") String token,
+                                               @RequestBody Map<String, String> request) {
+
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try {
+            groupService.subscribeGroup(user, request.get("groupId"));
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
+        }
     }
 
     @PostMapping("/validate-new/group-name")

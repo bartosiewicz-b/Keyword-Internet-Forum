@@ -11,11 +11,13 @@ public interface GroupService {
 
     void createGroup(AppUser user, CreateGroupRequest request);
 
-    List<GroupDto> getGroups(Integer page, String name);
+    List<GroupDto> getGroups(Integer page, String name, AppUser user);
 
-    GroupDto getGroup(Long id);
+    GroupDto getGroup(String id, AppUser user);
 
     void editGroup(AppUser user, EditGroupRequest request);
 
     boolean isGroupNameTaken(String name);
+
+    void subscribeGroup(AppUser user, String groupId);
 }

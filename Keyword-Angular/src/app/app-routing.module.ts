@@ -1,13 +1,17 @@
+import { GroupComponent } from './component/group/group.component';
+import { PostFeedComponent } from './component/feed/post-feed/post-feed.component';
+import { GroupFeedComponent } from './component/feed/group-feed/group-feed.component';
 import { PostComponent } from './component/post/post.component';
 import { LoginComponent } from './component/login/login.component';
-import { HomeComponent } from './component/home/home.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: "", component: HomeComponent},
-  { path: ":groupName/:postId", component: PostComponent},
-  { path: "login", component: LoginComponent}
+  { path: "", component: PostFeedComponent},
+  { path: "login", component: LoginComponent},
+  { path: "groups", component: GroupFeedComponent},
+  { path: ":groupId/:postId", component: PostComponent},
+  { path: ":groupId", component: GroupComponent}
 ];
 
 @NgModule({

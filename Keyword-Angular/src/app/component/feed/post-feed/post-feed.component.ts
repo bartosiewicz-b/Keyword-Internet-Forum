@@ -1,20 +1,20 @@
 import { take } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
-import { Post } from '../../model/post';
-import { PostService } from '../../service/post.service';
+import { Post } from '../../../model/post';
+import { PostService } from '../../../service/post.service';
 
 @Component({
-  selector: 'feed',
-  templateUrl: './feed.component.html',
-  styleUrls: ['./feed.component.css']
+  selector: 'post-feed',
+  templateUrl: './post-feed.component.html',
+  styleUrls: ['./post-feed.component.css']
 })
-export class FeedComponent implements OnInit {
+export class PostFeedComponent implements OnInit {
 
   prevValue: string = '';
   posts: Post[] = [];
 
   constructor(private postService: PostService) { 
-    postService.getAll(0, '').pipe(take(1),).subscribe(res => {this.posts = res});
+    postService.getAll(0, '').pipe(take(1),).subscribe(res => this.posts = res);
   }
 
   ngOnInit(): void {

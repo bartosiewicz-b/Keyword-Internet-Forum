@@ -5,28 +5,32 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from  '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './component/home/home.component';
 import { LoginComponent } from './component/login/login.component';
 import { PostCardComponent } from './component/card/post-card/post-card.component';
 import { AuthInterceptorService } from './service/auth-interceptor.service';
 import { NavbarComponent } from './component/navbar/navbar.component';
-import { FeedComponent } from './component/feed/feed.component';
+import { PostFeedComponent } from './component/feed/post-feed/post-feed.component';
 import { ExcerptPipe } from './pipe/excerpt.pipe';
 import { PostComponent } from './component/post/post.component';
 import { CommentCardComponent } from './component/card/comment-card/comment-card.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { GroupFeedComponent } from './component/feed/group-feed/group-feed.component';
+import { GroupCardComponent } from './component/card/group-card/group-card.component';
+import { GroupComponent } from './component/group/group.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     LoginComponent,
     PostCardComponent,
     NavbarComponent,
-    FeedComponent,
+    PostFeedComponent,
     ExcerptPipe,
     PostComponent,
-    CommentCardComponent
+    CommentCardComponent,
+    GroupFeedComponent,
+    GroupCardComponent,
+    GroupComponent
   ],
   imports: [
     BrowserModule,

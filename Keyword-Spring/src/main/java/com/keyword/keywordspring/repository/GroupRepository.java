@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface GroupRepository extends CrudRepository<ForumGroup, Long> {
+public interface GroupRepository extends CrudRepository<ForumGroup, String> {
+
     Optional<ForumGroup> findByGroupName(String name);
 
     List<ForumGroup> findAll(Pageable pageable);
