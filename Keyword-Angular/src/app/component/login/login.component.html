@@ -1,1 +1,11 @@
-<button (click)="login()">Login</button>
+<form #userLogin="ngForm" (ngSubmit)="login(userLogin)">
+    <div class="form-group">
+      <label for="login">Login</label>
+      <input ngModel type="text" class="form-control" id="login" name="login" placeholder="Enter login">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input ngModel type="password" class="form-control" id="password" name="password" placeholder="Password">
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>

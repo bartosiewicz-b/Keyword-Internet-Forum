@@ -1,3 +1,4 @@
+import { take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -29,12 +30,15 @@ export class AuthService {
     return localStorage.getItem('refreshToken');
   }
 
-  login() {
+  login(login: string, password: string) {
       this.httpClient.post<any>('http://localhost:8080/auth/login', 
-      {"login": "testUser1", "password": "password"}).subscribe(
+      {"login": login, "password": password})
+      .pipe(take(1))
+      .subscribe(
         res => {
           sessionStorage.setItem('token', res.token);
           sessionStorage.setItem('refreshToken', res.refreshToken)
+          sessionStorage.setItem('username', login)
         }
       );
   }

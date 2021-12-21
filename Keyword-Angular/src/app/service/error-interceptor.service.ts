@@ -32,7 +32,6 @@ export class ErrorInterceptorService implements HttpInterceptor{
 
       this.authService.refreshToken();
 
-      window.location.reload();
       return next.handle(this.addTokenHeader(request, this.authService.getToken() as string));
 
     } else {
