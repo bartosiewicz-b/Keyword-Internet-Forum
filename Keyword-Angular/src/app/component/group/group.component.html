@@ -22,4 +22,8 @@
     Posts:
 </div>
 
+<div class="space" *ngIf="group.isSubscribed">
+    <button routerLink="/create-post/{{group.id}}">Create Post</button>
+</div>
+
 <post-feed></post-feed>

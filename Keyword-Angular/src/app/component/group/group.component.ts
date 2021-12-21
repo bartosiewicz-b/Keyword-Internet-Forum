@@ -3,7 +3,6 @@ import { Group } from './../../model/group';
 import { GroupService } from './../../service/group.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Post } from 'src/app/model/post';
 
 @Component({
   selector: 'app-group',

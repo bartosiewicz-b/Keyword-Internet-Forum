@@ -1,0 +1,11 @@
+<form #createPost="ngForm" (ngSubmit)="create(createPost)">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input ngModel type="text" class="form-control" id="title" name="title">
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea ngModel class="form-control" id="description" name="description" rows="20"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>

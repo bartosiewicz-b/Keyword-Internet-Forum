@@ -40,4 +40,11 @@ export class PostService {
     .pipe(take(1))
     .subscribe()
   }
+
+  create(title: string, description: string, groupId: string) {
+    this.httpClient.post(this.url + '/create',
+      {'title': title, 'description': description, 'groupId': groupId})
+      .pipe(take(1))
+      .subscribe();
+  }
 }

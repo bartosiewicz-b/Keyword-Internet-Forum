@@ -1,3 +1,4 @@
+import { CreatePostComponent } from './component/forms/create-post/create-post.component';
 import { GroupComponent } from './component/group/group.component';
 import { PostFeedComponent } from './component/feed/post-feed/post-feed.component';
 import { GroupFeedComponent } from './component/feed/group-feed/group-feed.component';
@@ -10,6 +11,7 @@ const routes: Routes = [
   { path: "", component: PostFeedComponent},
   { path: "login", component: LoginComponent},
   { path: "groups", component: GroupFeedComponent},
+  { path: "create-post/:groupId", component: CreatePostComponent},
   { path: ":groupId/:postId", component: PostComponent},
   { path: ":groupId", component: GroupComponent}
 ];
