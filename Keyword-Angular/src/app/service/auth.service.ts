@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class AuthService {
+  private url = 'http://localhost:8080/auth';
 
   constructor(private httpClient: HttpClient) { }
 
@@ -16,7 +17,7 @@ export class AuthService {
     if(refresh == null)
       return;
 
-    this.httpClient.get<any>('http://localhost:8080/auth/refresh/token', {headers: {'refresh': refresh}})
+    this.httpClient.get<any>(this.url + '/refresh/token', {headers: {'refresh': refresh}})
     .subscribe(res => {
         sessionStorage.setItem('token', res.token);
       });
@@ -31,8 +32,8 @@ export class AuthService {
   }
 
   login(login: string, password: string) {
-      this.httpClient.post<any>('http://localhost:8080/auth/login', 
-      {"login": login, "password": password})
+      this.httpClient.post<any>(this.url + '/login', 
+      {'login': login, 'password': password})
       .pipe(take(1))
       .subscribe(
         res => {
@@ -41,5 +42,24 @@ export class AuthService {
           sessionStorage.setItem('username', login)
         }
       );
+  }
+
+  register(email: string, username: string, password: string) {
+    this.httpClient.post(this.url + '/register', 
+      {'email': email, 'username': username, 'password': password})
+      .pipe(take(1))
+      .subscribe();
+  }
+
+  validateNewEmail(email: string) {
+    return this.httpClient.post(this.url + '/validate-new/email', 
+    {'email': email})
+    .pipe(take(1));
+  }
+
+  validateNewUsername(username: string) {
+    return this.httpClient.post(this.url + '/validate-new/username', 
+    {'username': username})
+    .pipe(take(1));
   }
 }

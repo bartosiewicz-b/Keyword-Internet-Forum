@@ -1,0 +1,57 @@
+<form #userRegister="ngForm" (ngSubmit)="register(userRegister)">
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input ngModel #email="ngModel" type="email" class="form-control" id="email" name="email" placeholder="Enter email"
+      (change)="validateNewEmail(userRegister.value.email)" 
+      [class.invalid]="emailTaken || (email.touched && email.invalid)"
+      required>
+    </div>
+
+    <div class="alert" role="alert" *ngIf="emailTaken || (email.touched && email.invalid)">
+        <div *ngIf="emailTaken">
+            User with this email is already registered.
+        </div>
+        <div *ngIf="username.hasError('required')">
+            Email address is required.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input ngModel #username="ngModel" type="text" class="form-control" id="username" name="username" placeholder="Enter username"
+        (change)="validateNewUsername(userRegister.value.username)"
+        [class.invalid]="usernameTaken || (username.touched && username.invalid)"
+        required minlength="4" maxlength="32">
+      </div>
+
+      <div class="alert" role="alert" *ngIf="usernameTaken || (username.touched && username.invalid)">
+        <div *ngIf="usernameTaken">
+            This username is already taken.
+        </div>
+        <div *ngIf="username.hasError('required')">
+            Username is required.
+        </div>
+        <div *ngIf="username.hasError('minlength') || username.hasError('maxlength')">
+            Username needs to be 4-32 characters long.
+        </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input ngModel #password="ngModel" type="password" class="form-control" id="password" name="password" placeholder="Enter password"
+      [class.invalid]="password.touched && password.invalid"
+      required minlength="8">
+
+      <div class="alert" role="alert" *ngIf="password.touched && password.invalid">
+        <div *ngIf="password.hasError('required')">
+            Password is required.
+        </div>
+        <div *ngIf="password.hasError('minlength')">
+            Password needs to be at least 8 characters long.
+        </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>

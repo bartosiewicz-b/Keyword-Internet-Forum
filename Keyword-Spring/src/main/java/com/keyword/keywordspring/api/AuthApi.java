@@ -78,20 +78,20 @@ public class AuthApi {
     }
 
     @PostMapping("/validate-new/username")
-    public ResponseEntity<Void> validateNewUsername(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Boolean> validateNewUsername(@RequestBody Map<String, String> request) {
 
         if(null == request.get("username") || userService.isUsernameTaken(request.get("username")))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok().body(false);
         else
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(true);
     }
 
     @PostMapping("/validate-new/email")
-    public ResponseEntity<Void> validateNewEmail(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Boolean> validateNewEmail(@RequestBody Map<String, String> request) {
 
         if(null == request.get("email") || userService.isEmailTaken(request.get("email")))
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok().body(false);
         else
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(true);
     }
 }

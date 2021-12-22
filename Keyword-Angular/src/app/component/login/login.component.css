@@ -1,3 +1,16 @@
 button{
     margin-top: 40px;
 }
+
+.register{
+    margin-top: 10px;
+}
+
+a{
+    color: white;
+}
+
+input, input:focus{
+    color: white;
+    background-color: transparent;
+}

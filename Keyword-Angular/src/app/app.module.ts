@@ -19,6 +19,7 @@ import { GroupCardComponent } from './component/card/group-card/group-card.compo
 import { GroupComponent } from './component/group/group.component';
 import { FormsModule } from '@angular/forms';
 import { CreatePostComponent } from './component/forms/create-post/create-post.component';
+import { RegisterComponent } from './component/register/register.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { CreatePostComponent } from './component/forms/create-post/create-post.c
     GroupFeedComponent,
     GroupCardComponent,
     GroupComponent,
-    CreatePostComponent
+    CreatePostComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
