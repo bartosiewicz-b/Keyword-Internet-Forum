@@ -31,26 +31,29 @@ public class CommentServiceImpl implements CommentService {
     private final CommentVoteRepository commentVoteRepository;
 
     @Override
-    public void addComment(AppUser user, CreateCommentRequest request) {
+    public CommentDto addComment(AppUser user, CreateCommentRequest request) {
 
         Optional<Post> post = postRepository.findById(request.getPostId());
-        Optional<Comment> comment = request.getParentCommentId() != null ?
+        Optional<Comment> parentComment = request.getParentCommentId() != null ?
                 commentRepository.findById(request.getParentCommentId()) :
                 Optional.empty();
 
         if(post.isEmpty())
             throw new PostDoesNotExistException(request.getPostId());
 
-        commentRepository.save(Comment.builder()
-                        .content(request.getContent())
-                        .user(user)
-                        .post(post.get())
-                        .parentComment(comment.orElse(null))
-                        .dateCreated(new Date(System.currentTimeMillis()))
-                        .votes(0)
-                        .edited(false)
-                .build());
+        Comment comment = Comment.builder()
+                .content(request.getContent())
+                .user(user)
+                .post(post.get())
+                .parentComment(parentComment.orElse(null))
+                .dateCreated(new Date(System.currentTimeMillis()))
+                .votes(0)
+                .edited(false)
+                .build();
 
+        commentRepository.save(comment);
+
+        return commentMapper.mapToDto(comment, user);
     }
 
     @Override

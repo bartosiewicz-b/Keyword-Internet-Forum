@@ -32,4 +32,9 @@ export class CommentService {
     .pipe(take(1))
     .subscribe()
   }
+
+  comment(content: string, postId: number, parentCommentId: number | null){
+    return this.httpClient.post(this.url + '/create',
+    {'content': content, 'postId': postId, 'parentCommentId': parentCommentId});
+  }
 }

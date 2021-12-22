@@ -24,3 +24,28 @@
 .arrow:hover{
     cursor: pointer;
 }
+
+button{
+    font-size:xx-small;
+    color: lightgray;
+    background-color: transparent;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+}
+
+input{
+    width: 70%;
+    border: none;
+    border-bottom: 1px solid white;
+    background-color: transparent;
+    color: white;
+    margin: 0 15px 0 15px;
+}
+
+input:focus{
+    outline: none;
+}
+
+fa-icon:hover{
+    cursor: pointer;
+}

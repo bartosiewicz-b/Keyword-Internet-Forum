@@ -20,6 +20,18 @@
           </div>
         <p class="card-text">{{comment.content}}</p>
         <small class="text-muted">{{comment.dateCreated | date}}</small>
+        <div>
+          <div *ngIf="!isUserWriting; else commentField" (click)="isUserWriting=true">
+            <button>Comment</button>
+          </div>
+          <ng-template #commentField>
+            <fa-icon [icon]="faTimes" (click)="isUserWriting=false"></fa-icon>
+            <form #createComment="ngForm" (ngSubmit)="respondComment(createComment)">
+              <input ngModel type="text" name="content">
+              <button type="submit" class="btn">Comment</button>
+          </form>
+          </ng-template>
+        </div>
       </div>
   </div>
   </div>

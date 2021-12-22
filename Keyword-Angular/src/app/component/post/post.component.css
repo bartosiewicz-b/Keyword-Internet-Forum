@@ -5,3 +5,24 @@
 .sideComment{
     margin-left: 50px;
 }
+
+button{
+    font-size:xx-small;
+    color: lightgray;
+    background-color: transparent;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+}
+
+input{
+    width: 75%;
+    border: none;
+    border-bottom: 1px solid white;
+    background-color: transparent;
+    color: white;
+    margin: 0 15px 0 15px;
+}
+
+input:focus{
+    outline: none;
+}

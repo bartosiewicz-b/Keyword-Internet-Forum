@@ -1,8 +1,10 @@
+import { take } from 'rxjs/operators';
 import { VoteType } from './../../../model/voteType';
 import { CommentService } from './../../../service/comment.service';
 import { Component, Input } from '@angular/core';
 import { Comment } from 'src/app/model/comment';
-import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faArrowDown, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'comment-card',
@@ -11,10 +13,12 @@ import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 })
 export class CommentCardComponent{
   @Input('comment') comment: Comment = {} as Comment;
+  isUserWriting: boolean = false;
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
+  faTimes = faTimes;
 
   constructor(private commentService: CommentService) {}
 
@@ -49,6 +53,14 @@ export class CommentCardComponent{
       this.comment.votes-=2;
       this.comment.userVote = VoteType.DOWN;
     }
+  }
+
+  respondComment(data: NgForm) {
+    this.commentService.comment(data.value.content, this.comment.postId, this.comment.id)
+    .pipe(take(1))
+    .subscribe();
+
+    this.isUserWriting = false;
   }
 
 }

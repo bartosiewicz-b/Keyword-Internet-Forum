@@ -26,14 +26,13 @@ public class CommentApi {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createComment(@RequestHeader("Authorization") String token,
+    public ResponseEntity<CommentDto> createComment(@RequestHeader("Authorization") String token,
                                            @RequestBody CreateCommentRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
 
         try {
-            commentService.addComment(user, request);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(commentService.addComment(user, request));
         } catch(Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }

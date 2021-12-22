@@ -1,9 +1,11 @@
+import { take } from 'rxjs/operators';
 import { PostService } from '../../service/post.service';
 import { Post } from '../../model/post';
 import { CommentService } from '../../service/comment.service';
 import { Component, OnInit } from '@angular/core';
 import { Comment } from '../../model/comment';
 import { ActivatedRoute } from '@angular/router';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-post',
@@ -11,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./post.component.css']
 })
 export class PostComponent implements OnInit {
+  username: string | null;
   comments: Comment[] = [];
   post: Post = new Post;
 
@@ -21,10 +24,19 @@ export class PostComponent implements OnInit {
     let postId = Number(this.route.snapshot.paramMap.get("postId"));
 
     this.postService.get(postId).subscribe(res => this.post = res);
-    this.commentService.getAll(1).subscribe(res => this.comments = res);
+    this.commentService.getAll(postId).subscribe(res => this.comments = res);
+
+    this.username = sessionStorage.getItem('username');
   }
 
   ngOnInit(): void {
+  }
+
+  comment(data: NgForm){
+
+    this.commentService.comment(data.value.content, this.post.id, null)
+    .pipe(take(1))
+    .subscribe(res => this.comments.push(res as Comment));
   }
 
 }

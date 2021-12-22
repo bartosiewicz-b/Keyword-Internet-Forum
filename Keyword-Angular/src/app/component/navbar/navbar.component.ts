@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -9,11 +10,16 @@ export class NavbarComponent implements OnInit {
 
   username: string | null = null;
 
-  constructor() { 
+  constructor(private router: Router) { 
     this.username = sessionStorage.getItem('username');
   }
 
   ngOnInit(): void {
+  }
+
+  logout() {
+    sessionStorage.clear();
+    this.router.navigate(['/']);
   }
 
 }

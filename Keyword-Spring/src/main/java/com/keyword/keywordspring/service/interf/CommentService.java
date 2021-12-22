@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CommentService {
 
-    void addComment(AppUser user, CreateCommentRequest request);
+    CommentDto addComment(AppUser user, CreateCommentRequest request);
 
     List<CommentDto> getComments(Long postId, AppUser user);
 
