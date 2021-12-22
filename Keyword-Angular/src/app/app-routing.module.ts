@@ -7,12 +7,14 @@ import { LoginComponent } from './component/login/login.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RegisterComponent } from './component/register/register.component';
+import { CreateGroupComponent } from './component/forms/create-group/create-group.component';
 
 const routes: Routes = [
   { path: "", component: PostFeedComponent},
   { path: "login", component: LoginComponent},
   { path: "register", component: RegisterComponent},
   { path: "groups", component: GroupFeedComponent},
+  { path: "create-group", component: CreateGroupComponent},
   { path: "create-post/:groupId", component: CreatePostComponent},
   { path: ":groupId/:postId", component: PostComponent},
   { path: ":groupId", component: GroupComponent}

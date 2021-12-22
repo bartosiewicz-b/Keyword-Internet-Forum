@@ -34,4 +34,11 @@ export class GroupService {
       .pipe(take(1))
       .subscribe();
   }
+
+  createGroup(groupName: string, description: string) {
+    this.httpClient.post(this.url + '/create',
+      {'groupName': groupName, 'description': description})
+      .pipe(take(1))
+      .subscribe();
+  }
 }

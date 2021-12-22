@@ -20,6 +20,7 @@ import { GroupComponent } from './component/group/group.component';
 import { FormsModule } from '@angular/forms';
 import { CreatePostComponent } from './component/forms/create-post/create-post.component';
 import { RegisterComponent } from './component/register/register.component';
+import { CreateGroupComponent } from './component/forms/create-group/create-group.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { RegisterComponent } from './component/register/register.component';
     GroupCardComponent,
     GroupComponent,
     CreatePostComponent,
-    RegisterComponent
+    RegisterComponent,
+    CreateGroupComponent
   ],
   imports: [
     BrowserModule,

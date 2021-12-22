@@ -74,6 +74,9 @@ public class JwtUtilImpl implements JwtUtil {
     @Override
     public AppUser getUserFromToken(String token) {
 
+        if(null == token)
+            return null;
+
         if(token.startsWith("Bearer "))
             token = token.substring(7);
 
