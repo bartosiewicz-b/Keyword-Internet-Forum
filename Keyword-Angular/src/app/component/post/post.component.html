@@ -1,13 +1,5 @@
 <div class="post">
     <post-card [post]="post"></post-card>
-    
-    <!--<form #createComment="ngForm" (ngSubmit)="comment(createComment)" *ngIf="username != null">
-        <div class="form-group">
-          <label for="content">Add comment:</label>
-          <input ngModel type="text" class="form-control" id="content" name="content">
-        </div>
-        <button type="submit" class="btn btn-primary">Comment</button>
-    </form>-->
 
     <form #createComment="ngForm" (ngSubmit)="comment(createComment)" *ngIf="username != null">
         <input ngModel type="text" name="content">

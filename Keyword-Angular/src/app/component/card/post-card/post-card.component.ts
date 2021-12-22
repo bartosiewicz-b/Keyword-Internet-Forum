@@ -12,6 +12,7 @@ import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 export class PostCardComponent implements OnInit {
   @Input('post') post: Post = {} as Post;
   @Input('excerpt') excerpt: boolean = false;
+  @Input('enableVoting') enableVoting: boolean = true;
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
@@ -24,6 +25,9 @@ export class PostCardComponent implements OnInit {
   }
 
   upvote() {
+    if(!this.enableVoting)
+      return;
+
     this.PostService.upvote(this.post.id);
 
     if(this.post.userVote == null) {
@@ -40,6 +44,9 @@ export class PostCardComponent implements OnInit {
   }
 
   downvote() {
+    if(!this.enableVoting)
+      return;
+
     this.PostService.downvote(this.post.id);
 
     if(this.post.userVote == null) {

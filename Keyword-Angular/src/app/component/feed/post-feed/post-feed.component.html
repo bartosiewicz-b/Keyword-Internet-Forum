@@ -3,7 +3,7 @@ Search for posts:
 
 <div *ngFor="let p of posts" class="feed">
     <a routerLink="/{{p.groupId}}/{{p.id}}">
-      <post-card [post]="p" [excerpt]="true"></post-card>
+      <post-card [post]="p" [excerpt]="true" [enableVoting]="false"></post-card>
     </a>
 </div>
 

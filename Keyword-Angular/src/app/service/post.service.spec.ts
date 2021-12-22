@@ -34,12 +34,12 @@ describe('PostService', () => {
   it('should retrieve all posts', () => {
     let posts = [post, post];
 
-    service.getAll(0).subscribe(res => {
+    service.getAll(0, '').subscribe(res => {
       expect(res.length).toBe(2);
       expect(res).toEqual(posts);
     });
 
-    const request = httpMock.expectOne(`${service.url}/get-all?page=0`);
+    const request = httpMock.expectOne(`${service.url}/get-all?page=0&name=`);
 
     expect(request.request.method).toBe('GET');
 
