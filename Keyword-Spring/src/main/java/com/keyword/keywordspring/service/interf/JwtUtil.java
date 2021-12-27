@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface JwtUtil {
 
-    TokenResponse generateLoginResponse(AppUser user);
+    TokenResponse generateTokenResponse(AppUser user);
 
     Optional<TokenResponse> refreshJwt(String refreshToken);
 

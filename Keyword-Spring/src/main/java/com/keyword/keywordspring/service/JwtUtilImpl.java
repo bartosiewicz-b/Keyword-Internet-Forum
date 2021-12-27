@@ -30,7 +30,7 @@ public class JwtUtilImpl implements JwtUtil {
     private final InvalidTokenRepository invalidTokenRepository;
 
     @Override
-    public TokenResponse generateLoginResponse(AppUser user) {
+    public TokenResponse generateTokenResponse(AppUser user) {
         return TokenResponse.builder()
                 .token(generateJwt(user))
                 .refreshToken(generateRefreshToken(user))

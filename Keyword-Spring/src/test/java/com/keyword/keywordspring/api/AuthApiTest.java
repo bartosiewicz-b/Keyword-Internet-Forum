@@ -2,7 +2,7 @@ package com.keyword.keywordspring.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
-import com.keyword.keywordspring.dto.request.ChangeUsernameRequest;
+import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
@@ -95,6 +95,7 @@ class AuthApiTest {
     void login() throws Exception {
 
         when(userService.login(any())).thenReturn(Optional.of(user));
+        when(jwtUtil.generateTokenResponse(any())).thenReturn(TokenResponse.builder().build());
 
         String request = mapper.writeValueAsString(LoginRequest.builder()
                 .login(user.getUsername())
@@ -136,13 +137,32 @@ class AuthApiTest {
     @Test
     void changeUsername() throws Exception {
 
-        String request = mapper.writeValueAsString(ChangeUsernameRequest.builder()
-                        .email(user.getEmail())
-                        .password(user.getPassword())
-                        .newUsername("new username")
-                .build());
+        Map<String, String> temp = new HashMap<>();
+        temp.put("username", "newUsername");
+
+        String request = mapper.writeValueAsString(temp);
 
         mockMvc.perform(post("/auth/change/username")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void changeEmail() throws Exception {
+
+        String request = mapper.writeValueAsString(ChangeEmailRequest.builder()
+                .password(user.getPassword())
+                .newEmail("newEmail@email.com")
+                .build());
+
+        mockMvc.perform(post("/auth/change/email")
+                        .header("Authorization", "token")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -154,15 +174,15 @@ class AuthApiTest {
     }
 
     @Test
-    void changeEmail() throws Exception {
+    void changePassword() throws Exception {
 
-        String request = mapper.writeValueAsString(ChangeEmailRequest.builder()
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .newEmail("newEmail@email.com")
+        String request = mapper.writeValueAsString(ChangePasswordRequest.builder()
+                .oldPassword(user.getPassword())
+                .newPassword("newPassword")
                 .build());
 
-        mockMvc.perform(post("/auth/change/email")
+        mockMvc.perform(post("/auth/change/password")
+                        .header("Authorization", "token")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())

@@ -38,8 +38,9 @@ export class AuthService {
       .subscribe(
         res => {
           sessionStorage.setItem('token', res.token);
-          sessionStorage.setItem('refreshToken', res.refreshToken)
-          sessionStorage.setItem('username', login)
+          sessionStorage.setItem('refreshToken', res.refreshToken);
+          sessionStorage.setItem('username', res.username);
+          sessionStorage.setItem('email', res.email);
         }
       );
   }
@@ -61,5 +62,42 @@ export class AuthService {
     return this.httpClient.post(this.url + '/validate-new/username', 
     {'username': username})
     .pipe(take(1));
+  }
+
+  changeUsername(username: string){
+    this.httpClient.post<any>(this.url + '/change/username', 
+    {'username': username})
+    .pipe(take(1)).subscribe(
+      res => {
+        sessionStorage.setItem('token', res.token);
+        sessionStorage.setItem('refreshToken', res.refreshToken);
+      }
+    );
+
+    sessionStorage.setItem('username', username);
+  }
+
+  changeEmail(email: string, password: string){
+    this.httpClient.post<any>(this.url + '/change/email', 
+    {'newEmail': email, 'password': password})
+    .pipe(take(1)).subscribe(
+      res => {
+        sessionStorage.setItem('token', res.token);
+        sessionStorage.setItem('refreshToken', res.refreshToken);
+      }
+    );
+
+    sessionStorage.setItem('email', email);
+  }
+
+  changePassword(oldPassword: string, newPassword: string){
+    this.httpClient.post<any>(this.url + '/change/password', 
+    {'oldPassword': oldPassword, 'newPassword': newPassword})
+    .pipe(take(1)).subscribe(
+      res => {
+        sessionStorage.setItem('token', res.token);
+        sessionStorage.setItem('refreshToken', res.refreshToken);
+      }
+    );
   }
 }

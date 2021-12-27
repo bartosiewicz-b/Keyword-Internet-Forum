@@ -1,12 +1,14 @@
 package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
-import com.keyword.keywordspring.dto.request.ChangeUsernameRequest;
+import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
+import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.exception.*;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.UserRepository;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Override
     public void register(RegisterRequest request) {
@@ -54,37 +57,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUsername(ChangeUsernameRequest request) {
+    public TokenResponse changeUsername(String username, AppUser user) {
 
-        if(isUsernameTaken(request.getNewUsername()))
-            throw new UsernameAlreadyTakenException(request.getNewUsername());
+        if(isUsernameTaken(username))
+            throw new UsernameAlreadyTakenException(username);
 
-        AppUser user = login(LoginRequest.builder()
-                .login(request.getEmail())
-                .password(request.getPassword())
-                .build())
-                .orElseThrow(UnauthorizedException::new);
-
-        user.setUsername(request.getNewUsername());
+        user.setUsername(username);
 
         userRepository.save(user);
+
+        return jwtUtil.generateTokenResponse(user);
     }
 
     @Override
-    public void changeEmail(ChangeEmailRequest request) {
+    public TokenResponse changeEmail(ChangeEmailRequest request, AppUser user) {
 
         if(isEmailTaken(request.getNewEmail()))
             throw new EmailAlreadyTakenException(request.getNewEmail());
 
-        AppUser user = login(LoginRequest.builder()
-                .login(request.getEmail())
-                .password(request.getPassword())
-                .build())
-                .orElseThrow(UnauthorizedException::new);
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+            throw new UnauthorizedException();
 
         user.setEmail(request.getNewEmail());
 
         userRepository.save(user);
+
+        return jwtUtil.generateTokenResponse(user);
+    }
+
+    @Override
+    public TokenResponse changePassword(ChangePasswordRequest request, AppUser user) {
+
+        if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
+            throw new UnauthorizedException();
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        userRepository.save(user);
+
+        return jwtUtil.generateTokenResponse(user);
     }
 
     @Override

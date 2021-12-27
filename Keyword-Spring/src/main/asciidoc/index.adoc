@@ -35,6 +35,12 @@ include::{snippets}/changeEmail/http-request.adoc[]
 .response
 include::{snippets}/changeEmail/http-response.adoc[]
 
+== Change Password
+.request
+include::{snippets}/changePassword/http-request.adoc[]
+.response
+include::{snippets}/changePassword/http-response.adoc[]
+
 == Validate New Username
 .request
 include::{snippets}/validateNewUsername/http-request.adoc[]

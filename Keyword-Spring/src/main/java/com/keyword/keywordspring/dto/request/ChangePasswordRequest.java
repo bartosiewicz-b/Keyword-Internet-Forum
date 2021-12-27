@@ -11,12 +11,9 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangeUsernameRequest {
-
+public class ChangePasswordRequest {
     @NotNull
-    private String email;
+    private String oldPassword;
     @NotNull
-    private String password;
-    @NotNull
-    private String newUsername;
+    private String newPassword;
 }

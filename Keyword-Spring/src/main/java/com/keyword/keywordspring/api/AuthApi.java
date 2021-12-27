@@ -1,7 +1,7 @@
 package com.keyword.keywordspring.api;
 
 import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
-import com.keyword.keywordspring.dto.request.ChangeUsernameRequest;
+import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
@@ -43,7 +43,11 @@ public class AuthApi {
         AppUser user = userService.login(request)
                 .orElseThrow(UnauthorizedException::new);
 
-        return ResponseEntity.ok().body(jwtUtil.generateLoginResponse(user));
+        TokenResponse response = jwtUtil.generateTokenResponse(user);
+        response.setUsername(user.getUsername());
+        response.setEmail(user.getEmail());
+
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/refresh/token")
@@ -56,22 +60,43 @@ public class AuthApi {
     }
 
     @PostMapping("/change/username")
-    public ResponseEntity<Void> changeUsername(@RequestBody ChangeUsernameRequest request) {
+    public ResponseEntity<TokenResponse> changeUsername(@RequestHeader("Authorization") String token,
+            @RequestBody Map<String, String> request) {
 
         try {
-            userService.changeUsername(request);
-            return ResponseEntity.ok().build();
+            AppUser user = jwtUtil.getUserFromToken(token);
+
+            return ResponseEntity.ok().body(
+                    userService.changeUsername(request.get("username"), user)
+            );
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }
     }
 
     @PostMapping("/change/email")
-    public ResponseEntity<Void> changeEmail(@RequestBody ChangeEmailRequest request) {
+    public ResponseEntity<TokenResponse> changeEmail(@RequestHeader("Authorization") String token,
+            @RequestBody ChangeEmailRequest request) {
 
         try {
-            userService.changeEmail(request);
-            return ResponseEntity.ok().build();
+            AppUser user = jwtUtil.getUserFromToken(token);
+            return ResponseEntity.ok().body(
+                    userService.changeEmail(request, user)
+            );
+        } catch (Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
+        }
+    }
+
+    @PostMapping("/change/password")
+    public ResponseEntity<TokenResponse> changePassword(@RequestHeader("Authorization") String token,
+                                                     @RequestBody ChangePasswordRequest request) {
+
+        try {
+            AppUser user = jwtUtil.getUserFromToken(token);
+            return ResponseEntity.ok().body(
+                    userService.changePassword(request, user)
+            );
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }

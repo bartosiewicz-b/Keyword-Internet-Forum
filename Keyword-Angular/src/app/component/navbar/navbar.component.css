@@ -9,3 +9,12 @@
 .nav-link:hover{
     cursor: pointer;
 }
+
+.dropdown-menu{
+    
+    background-color: black;
+}
+
+.dropdown-item{
+    color: white;
+}

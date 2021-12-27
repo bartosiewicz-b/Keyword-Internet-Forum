@@ -23,7 +23,7 @@ class JwtUtilImplTest {
     @Test
     void generateLoginResponse() {
 
-        TokenResponse response = jwtUtil.generateLoginResponse(AppUser.builder().username("username").build());
+        TokenResponse response = jwtUtil.generateTokenResponse(AppUser.builder().username("username").build());
 
         jwtUtil.validateJwt(response.getToken());
     }
@@ -37,14 +37,14 @@ class JwtUtilImplTest {
 
     @Test
     void getUsernameFromJwt() {
-        String token = jwtUtil.generateLoginResponse(AppUser.builder().username("username").build()).getToken();
+        String token = jwtUtil.generateTokenResponse(AppUser.builder().username("username").build()).getToken();
 
         assertEquals(jwtUtil.getUsernameFromJwt(token), "username");
     }
 
     @Test
     void getTypeFromJwt() {
-        TokenResponse response = jwtUtil.generateLoginResponse(AppUser.builder().username("username").build());
+        TokenResponse response = jwtUtil.generateTokenResponse(AppUser.builder().username("username").build());
 
         assertEquals(jwtUtil.getTypeFromJwt(response.getToken()), "token");
         assertEquals(jwtUtil.getTypeFromJwt(response.getRefreshToken()), "refresh");

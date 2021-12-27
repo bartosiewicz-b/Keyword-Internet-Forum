@@ -1,0 +1,129 @@
+<h1>Profile:</h1>
+
+<div class="divider"></div>
+
+<div class="row" *ngIf="!editingEmail && !editingPassword">
+    <div class="col-4">
+        <h2>Username:</h2>
+    </div>
+    <div class="col-4">
+        <div *ngIf="!editingUsername; else editUsername">
+            {{currentUsername}}
+        </div>
+        <ng-template #editUsername>
+            <form #usernameForm="ngForm" (ngSubmit)="changeUsername(usernameForm.value.username)" id="usernameForm">
+                <input [ngModel]="currentUsername" #username="ngModel" type="text" class="form-control" id="username" name="username" placeholder="Enter username"
+                    (change)="validateNewUsername(usernameForm.value.username)"
+                    [class.invalid]="newUsernameTaken || (username.touched && username.invalid)"
+                    required minlength="4" maxlength="32" >
+
+                    <button class="btn btn-warning" type="submit" [disabled]="username.value==currentUsername || username.invalid || newUsernameTaken">Change username</button>
+
+                    <div class="alert" role="alert" *ngIf="username.touched && (username.value==currentUsername || username.invalid || newUsernameTaken)">
+                        <div *ngIf="username.value==currentUsername">
+                            The account already uses this username.
+                        </div>
+                        <div *ngIf="newUsernameTaken && username.value!=currentUsername">
+                            This username is already taken.
+                        </div>
+                        <div *ngIf="username.hasError('required')">
+                            Username is required.
+                        </div>
+                        <div *ngIf="username.hasError('minlength') || username.hasError('maxlength')">
+                            Username needs to be 4-32 characters long.
+                        </div>
+                      </div>
+              </form>
+        </ng-template>
+    </div>
+    <div class="col-4">
+        <div *ngIf="!editingUsername; else editUsername2">
+            <button class="btn btn-warning" (click)="editingUsername=true">Edit</button>
+        </div>
+        <ng-template #editUsername2>
+            <button class="btn btn-primary" (click)="editingUsername=false">Don't change</button>
+        </ng-template>
+    </div>
+</div>
+
+<div class="row" *ngIf="!editingUsername && !editingPassword">
+    <div class="col-4">
+        <h2>Email:</h2>
+    </div>
+    <div class="col-4">
+        <div *ngIf="!editingEmail; else editEmail">
+            {{currentEmail}}
+        </div>
+        <ng-template #editEmail>
+            <form #emailForm="ngForm" (ngSubmit)="changeEmail(emailForm.value.email, emailForm.value.password)" id="emailForm">
+                <input [ngModel]="currentEmail" #email="ngModel" type="email" class="form-control" id="email" name="email" placeholder="Enter email"
+                    (change)="validateNewEmail(emailForm.value.email)"
+                    [class.invalid]="newEmailTaken || (email.touched && email.invalid)"
+                    required>
+
+                    <input ngModel #password="ngModel" type="password" class="form-control" id="password" name="password" 
+                    placeholder="Enter password" required>
+
+                    <button class="btn btn-warning" type="submit" [disabled]="email.value==currentEmail || email.invalid || newEmailTaken || password.hasError('required')">Change email</button>
+
+                    <div class="alert" role="alert" *ngIf="email.touched && (email.value==currentEmail || email.invalid || newEmailTaken)">
+                        <div *ngIf="email.value==currentEmail">
+                            The account already uses this email.
+                        </div>
+                        <div *ngIf="newEmailTaken && email.value!=currentEmail">
+                            This email is already taken.
+                        </div>
+                        <div *ngIf="email.hasError('required')">
+                            Email is required.
+                        </div>
+                      </div>
+              </form>
+        </ng-template>
+    </div>
+    <div class="col-4">
+        <div *ngIf="!editingEmail; else editEmail2">
+            <button class="btn btn-warning" (click)="editingEmail=true">Edit</button>
+        </div>
+        <ng-template #editEmail2>
+            <button class="btn btn-primary" (click)="editingEmail=false">Don't change</button>
+        </ng-template>
+    </div>
+</div>
+
+<div class="row" *ngIf="!editingUsername && !editingEmail">
+    <div class="col-4">
+        <h2>Password:</h2>
+    </div>
+    <div class="col-4">
+        <div *ngIf="!editingPassword; else editPassword">
+            **********
+        </div>
+        <ng-template #editPassword>
+            <form #passwordForm="ngForm" (ngSubmit)="changePassword(passwordForm.value.oldPassword, passwordForm.value.newPassword)" id="passwordForm">
+                <input ngModel #oldPassword="ngModel" type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="Enter old password"
+                    [class.invalid]="oldPassword.touched && oldPassword.invalid"
+                    required>
+
+                <input ngModel #newPassword="ngModel" type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Enter new password"
+                    [class.invalid]="newPassword.touched && newPassword.invalid"
+                    required minlength="8">
+
+                <div class="alert" role="alert" *ngIf="newPassword.hasError('minlength')">
+                    The password must be at least 8 characters long.
+                </div>
+
+                <button class="btn btn-warning" type="submit" [disabled]="oldPassword.invalid || newPassword.invalid">Change password</button>
+
+              </form>
+        </ng-template>
+    </div>
+    <div class="col-4">
+        <div *ngIf="!editingPassword; else editPassword2">
+            <button class="btn btn-warning" (click)="editingPassword=true">Edit</button>
+        </div>
+        <ng-template #editPassword2>
+            <button class="btn btn-primary" (click)="editingPassword=false">Don't change</button>
+        </ng-template>
+    </div>
+</div>
+

@@ -13,14 +13,27 @@
             <a class="nav-link" routerLink="/groups">Groups</a>
           </li>
         </ul>
+        
+         
+
         <div class="nav-item">
-          <div *ngIf="username==null; else user">
+          <div *ngIf="sessionStorage.getItem('username')==null; else user">
             <a class="nav-link active" routerLink="/login">Login</a>
           </div>
           <ng-template #user>
-            <a class="nav-link active" (click)="logout()">Logout</a>
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{sessionStorage.getItem('username')}}
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
+                <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
+              </ul>
+            </div>
           </ng-template>
         </div>
       </div>
+
+      
     </div>
   </nav>
