@@ -8,11 +8,11 @@
 
     <div *ngFor="let c of comments">
         <div *ngIf="c.parentCommentId==null">
-            <comment-card [comment]="c"></comment-card>
+            <comment-card [comment]="c" (deleteId)="delete($event)"></comment-card>
         </div>
         <div *ngFor="let sc of comments" class="sideComment">
             <div *ngIf="sc.parentCommentId!=null && sc.parentCommentId==c.id">
-                <comment-card [comment]="sc"></comment-card>
+                <comment-card [comment]="sc" (deleteId)="delete($event)"></comment-card>
             </div>
         </div>
     </div>

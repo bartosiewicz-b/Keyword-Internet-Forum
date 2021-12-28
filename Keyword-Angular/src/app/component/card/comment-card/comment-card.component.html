@@ -15,14 +15,29 @@
     </div>
       <div class="card-body col-11">
           <div class="flex-container">
-            <p class="card-text header">
+            <p class="card-text header" *ngIf="!isUserWriting && !isUserEditing">
               <small class="text-muted">{{comment.user}}</small>
+              <button *ngIf="comment.user==username" (click)="isUserEditing=true; editedContent=this.comment.content">Edit</button>
+              <button *ngIf="comment.user==username" (click)="deleteComment()">Delete</button>
+            </p>
           </div>
-        <p class="card-text">{{comment.content}}</p>
+        <div *ngIf="!isUserEditing; else editing">
+          <p class="card-text">
+            {{comment.content}}
+          </p>
+        </div>
+        <ng-template #editing>
+          <fa-icon [icon]="faTimes" (click)="isUserEditing=false; editedContent=comment.content"></fa-icon>
+            <form #editForm="ngForm" (ngSubmit)="editComment()">
+              <textarea [(ngModel)]="editedContent" class="form-control" id="content" name="content" rows="3"></textarea>
+              <button type="submit" class="btn btn-big">Edit</button>
+          </form>
+        </ng-template>
+
         <small class="text-muted">{{comment.dateCreated | date}}</small>
-        <div>
+        <div *ngIf="!isUserEditing">
           <div *ngIf="!isUserWriting; else commentField" (click)="isUserWriting=true">
-            <button>Comment</button>
+            <button>Comment this</button>
           </div>
           <ng-template #commentField>
             <fa-icon [icon]="faTimes" (click)="isUserWriting=false"></fa-icon>

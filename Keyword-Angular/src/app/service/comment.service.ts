@@ -37,4 +37,18 @@ export class CommentService {
     return this.httpClient.post(this.url + '/create',
     {'content': content, 'postId': postId, 'parentCommentId': parentCommentId});
   }
+
+  delete(id: number){
+    this.httpClient.post(this.url + '/delete',
+    {'id': id})
+    .pipe(take(1))
+    .subscribe();
+  }
+
+  edit(id: number, newContent: string) {
+    this.httpClient.post(this.url + '/edit',
+    {'id': id, 'newContent': newContent})
+    .pipe(take(1))
+    .subscribe();
+  }
 }

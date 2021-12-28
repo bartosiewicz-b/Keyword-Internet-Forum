@@ -1,7 +1,7 @@
 import { take } from 'rxjs/operators';
 import { VoteType } from './../../../model/voteType';
 import { CommentService } from './../../../service/comment.service';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Comment } from 'src/app/model/comment';
 import { faArrowUp, faArrowDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { NgForm } from '@angular/forms';
@@ -13,7 +13,13 @@ import { NgForm } from '@angular/forms';
 })
 export class CommentCardComponent{
   @Input('comment') comment: Comment = {} as Comment;
+  @Output() deleteId = new EventEmitter<number>();
+
+  editedContent: string = this.comment.content;
+
   isUserWriting: boolean = false;
+  isUserEditing: boolean = false;
+  username: string | null = sessionStorage.getItem('username');
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
@@ -61,6 +67,16 @@ export class CommentCardComponent{
     .subscribe();
 
     this.isUserWriting = false;
+  }
+
+  deleteComment(){
+    this.deleteId.emit(this.comment.id);
+  }
+
+  editComment(){
+    this.isUserEditing = false;
+    this.comment.content = this.editedContent;
+    this.commentService.edit(this.comment.id, this.comment.content);
   }
 
 }

@@ -29,8 +29,8 @@ button{
     font-size:xx-small;
     color: lightgray;
     background-color: transparent;
-    border: 1px solid lightgray;
-    border-radius: 4px;
+    border: none;
+    margin-left: 20px;
 }
 
 input{
@@ -48,4 +48,14 @@ input:focus{
 
 fa-icon:hover{
     cursor: pointer;
+}
+
+textarea, textarea:focus{
+    background-color: transparent;
+    color: white;
+}
+
+.btn-big{
+    font-size: large;
+    margin-left: 0;
 }

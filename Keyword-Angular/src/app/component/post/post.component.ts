@@ -39,4 +39,10 @@ export class PostComponent implements OnInit {
     .subscribe(res => this.comments.push(res as Comment));
   }
 
+  delete(id: number) {
+    this.commentService.delete(id);
+    this.comments.forEach((value, index) => {
+      if(value.id == id) this.comments.splice(index, 1);
+    })
+  }
 }
