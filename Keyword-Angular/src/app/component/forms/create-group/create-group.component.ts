@@ -1,23 +1,38 @@
-import { Router } from '@angular/router';
+import { take } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService } from './../../../service/group.service';
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-create-group',
   templateUrl: './create-group.component.html',
   styleUrls: ['./create-group.component.css']
 })
-export class CreateGroupComponent implements OnInit {
+export class CreateGroupComponent {
+  groupId = this.route.snapshot.paramMap.get('groupId');
 
-  constructor(private router: Router,
-    private groupService: GroupService) { }
+  groupName: string = '';
+  description: string = '';
 
-  ngOnInit(): void {
-  }
+  constructor(private route: ActivatedRoute,
+    private router: Router,
+    private groupService: GroupService) { 
 
-  create(data: NgForm){
-    this.groupService.createGroup(data.value.groupName, data.value.description);
-    this.router.navigate(['/']);
+      if(this.groupId != null)
+        this.groupService.get(this.groupId).pipe(take(1)).subscribe(res => {
+          this.groupName = res.groupName;
+          this.description = res.description;
+        });
+    }
+
+  create(){
+    if(this.groupId == null) {
+      this.groupService.createGroup(this.groupName, this.description);
+      this.router.navigate(['/']);
+    } else {
+      this.groupService.editGroup(this.groupId, this.groupName, this.description);
+      this.router.navigate(['/']);
+    }
+    
   }
 }

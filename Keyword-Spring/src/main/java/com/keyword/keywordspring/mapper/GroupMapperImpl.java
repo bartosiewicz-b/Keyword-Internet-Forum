@@ -29,6 +29,7 @@ public class GroupMapperImpl implements GroupMapper {
                 .description(group.getDescription())
                 .subscriptions(group.getSubscriptions())
                 .isSubscribed(null != user && (subscriptionRepository.findByUserAndGroup(user, group).isPresent()))
+                .owner(group.getOwner().getUsername())
                 .build();
     }
 

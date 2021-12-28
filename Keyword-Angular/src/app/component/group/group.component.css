@@ -7,6 +7,7 @@ button{
     color: white;
     border: 1px solid white;
     border-radius: 5px;
+    margin-right: 5px;
 }
 
 button:active{

@@ -1,8 +1,10 @@
 <h1>{{group.groupName}}</h1>
 
+<small class="text-muted">Owner: {{group.owner}}</small>
+
 <div class="subscription row">
     <div class="col-3">
-        <button (click)="subscribe()">
+        <button *ngIf="group.owner != username; else ownerPanel" (click)="subscribe()">
             <div *ngIf="!group.isSubscribed; else unsubscribe">
                 Subscribe
             </div>
@@ -10,6 +12,11 @@
                 Unsubscribe
             </ng-template>
         </button>
+
+        <ng-template #ownerPanel>
+            <button routerLink="/create-group/{{group.id}}">Edit</button>
+            <button (click)="delete()">Delete</button>
+        </ng-template>
     </div>
     <div class="col-9">
         <small class="text-muted">Subscriptions: {{group.subscriptions}}</small>

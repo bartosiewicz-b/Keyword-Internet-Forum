@@ -102,4 +102,18 @@ public class GroupApi {
         else
             return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Void> deleteGroup(@RequestHeader("Authorization") String token,
+            @RequestBody Map<String, String> request) {
+
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try {
+            groupService.deleteGroup(user, request.get("groupId"));
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
+        }
+    }
 }

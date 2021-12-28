@@ -4,4 +4,5 @@ export class Group {
     description: string = 'description';
     subscriptions: number = 0;
     isSubscribed: boolean = false;
+    owner: string = '';
 }

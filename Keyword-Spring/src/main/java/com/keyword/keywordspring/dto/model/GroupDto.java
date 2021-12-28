@@ -12,4 +12,5 @@ public class GroupDto {
     private String description;
     private Integer subscriptions;
     private Boolean isSubscribed;
+    private String owner;
 }

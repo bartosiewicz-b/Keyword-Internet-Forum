@@ -20,4 +20,6 @@ public interface GroupService {
     boolean isGroupNameTaken(String name);
 
     void subscribeGroup(AppUser user, String groupId);
+
+    void deleteGroup(AppUser user, String groupId);
 }

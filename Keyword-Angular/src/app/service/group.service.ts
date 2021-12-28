@@ -41,4 +41,18 @@ export class GroupService {
       .pipe(take(1))
       .subscribe();
   }
+
+  editGroup(id: string, groupName: string, description: string) {
+    this.httpClient.post(this.url + '/edit',
+      {'id': id, 'groupName': groupName, 'description': description})
+      .pipe(take(1))
+      .subscribe();
+  }
+
+  deleteGroup(groupId: string) {
+    this.httpClient.post(this.url + '/delete',
+      {'groupId': groupId})
+      .pipe(take(1))
+      .subscribe();
+  }
 }

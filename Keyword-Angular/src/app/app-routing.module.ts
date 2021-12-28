@@ -16,6 +16,7 @@ const routes: Routes = [
   { path: "register", component: RegisterComponent},
   { path: "groups", component: GroupFeedComponent},
   { path: "create-group", component: CreateGroupComponent},
+  { path: "create-group/:groupId", component: CreateGroupComponent},
   { path: "profile", component: ProfileComponent},
   { path: "create-post/:groupId", component: CreatePostComponent},
   { path: "create-post/:groupId/:postId", component: CreatePostComponent},

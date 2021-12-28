@@ -42,6 +42,8 @@ public class GroupServiceImpl implements GroupService {
                 .build();
 
         groupRepository.save(forumGroup);
+
+        subscribeGroup(user, forumGroup.getId());
     }
 
     @Override
@@ -104,5 +106,14 @@ public class GroupServiceImpl implements GroupService {
             group.setSubscriptions(group.getSubscriptions() - 1);
             groupRepository.save(group);
         }
+    }
+
+    @Override
+    public void deleteGroup(AppUser user, String groupId) {
+        if(groupRepository.findById(groupId).isEmpty() ||
+                !Objects.equals(user.getId(), groupRepository.findById(groupId).get().getOwner().getId()))
+            throw new UnauthorizedException();
+
+        groupRepository.deleteById(groupId);
     }
 }
