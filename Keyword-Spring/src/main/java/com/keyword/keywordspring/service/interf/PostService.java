@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface PostService {
 
-    void createPost(AppUser user, CreatePostRequest request);
+    Long createPost(AppUser user, CreatePostRequest request);
 
     List<PostDto> getPosts(Integer page, String name, AppUser user);
 
     PostDto getPost(Long id, AppUser user);
 
-    void editPost(AppUser user, EditPostRequest request);
+    Long editPost(AppUser user, EditPostRequest request);
 
     void upvote(AppUser user, Long postId);
     void downvote(AppUser user, Long postId);

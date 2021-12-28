@@ -66,7 +66,7 @@ class PostServiceImplTest {
         when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
 
         postService.editPost(AppUser.builder().id(1L).build(),
-                EditPostRequest.builder().id(1L).title("New title").description("new description").build());
+                EditPostRequest.builder().postId(1L).title("New title").description("new description").build());
     }
 
     @Test

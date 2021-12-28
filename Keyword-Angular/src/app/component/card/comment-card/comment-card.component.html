@@ -3,19 +3,19 @@
     <div class="col-1">
       <div class="row arrow" [class.active]="comment.userVote!=null && (comment.userVote==0 || comment.userVote.toString()=='UP')"
         (click)="upvote()">
-        <fa-icon [icon]="faArrowUp"></fa-icon>
+        <fa-icon [icon]="faArrowUp" *ngIf="username!=null"></fa-icon>
       </div>
       <div class="row">
         <small class="text-muted">{{comment.votes}}</small>
       </div>
       <div class="row arrow" [class.active]="comment.userVote!=null && (comment.userVote==1 || comment.userVote.toString()=='DOWN')" 
         (click)="downvote()">
-        <fa-icon [icon]="faArrowDown"></fa-icon>
+        <fa-icon [icon]="faArrowDown" *ngIf="username!=null"></fa-icon>
       </div>
     </div>
       <div class="card-body col-11">
           <div class="flex-container">
-            <p class="card-text header" *ngIf="!isUserWriting && !isUserEditing">
+            <p class="card-text header" *ngIf="!isUserWriting && !isUserEditing && username!=null">
               <small class="text-muted">{{comment.user}}</small>
               <button *ngIf="comment.user==username" (click)="isUserEditing=true; editedContent=this.comment.content">Edit</button>
               <button *ngIf="comment.user==username" (click)="deleteComment()">Delete</button>
@@ -35,7 +35,7 @@
         </ng-template>
 
         <small class="text-muted">{{comment.dateCreated | date}}</small>
-        <div *ngIf="!isUserEditing">
+        <div *ngIf="!isUserEditing && username!=null">
           <div *ngIf="!isUserWriting; else commentField" (click)="isUserWriting=true">
             <button>Comment this</button>
           </div>

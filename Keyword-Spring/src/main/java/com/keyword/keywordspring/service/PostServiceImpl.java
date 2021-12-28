@@ -34,14 +34,14 @@ public class PostServiceImpl implements PostService {
     private final PostVoteRepository postVoteRepository;
 
     @Override
-    public void createPost(AppUser user, CreatePostRequest request) {
+    public Long createPost(AppUser user, CreatePostRequest request) {
 
         Optional<ForumGroup> group = groupRepository.findById(request.getGroupId());
 
         if(group.isEmpty())
             throw new GroupDoesNotExistException(request.getGroupId());
 
-        postRepository.save(Post.builder()
+        Post saved = postRepository.save(Post.builder()
                         .user(user)
                         .forumGroup(group.get())
                         .title(request.getTitle())
@@ -50,6 +50,8 @@ public class PostServiceImpl implements PostService {
                         .edited(false)
                         .votes(0)
                 .build());
+
+        return saved.getId();
     }
 
     @Override
@@ -71,20 +73,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void editPost(AppUser user, EditPostRequest request) {
+    public Long editPost(AppUser user, EditPostRequest request) {
 
-        if(postRepository.findById(request.getId()).isEmpty() ||
-                !Objects.equals(user.getId(), postRepository.findById(request.getId()).get().getUser().getId()))
+        if(postRepository.findById(request.getPostId()).isEmpty() ||
+                !Objects.equals(user.getId(), postRepository.findById(request.getPostId()).get().getUser().getId()))
             throw new UnauthorizedException();
 
-        Post post = postRepository.findById(request.getId())
-                .orElseThrow(() -> new CommentDoesNotExistException(request.getId()));
+        Post post = postRepository.findById(request.getPostId())
+                .orElseThrow(() -> new CommentDoesNotExistException(request.getPostId()));
 
         post.setTitle(request.getTitle());
         post.setDescription(request.getDescription());
         post.setEdited(true);
 
         postRepository.save(post);
+
+        return post.getId();
     }
 
     @Override

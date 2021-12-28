@@ -32,3 +32,11 @@
 .arrow:hover{
     cursor: pointer;
 }
+
+
+button{
+    font-size:small;
+    color: lightgray;
+    background-color: transparent;
+    border: none;
+}

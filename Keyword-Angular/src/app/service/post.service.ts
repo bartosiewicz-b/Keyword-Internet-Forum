@@ -42,9 +42,20 @@ export class PostService {
   }
 
   create(title: string, description: string, groupId: string) {
-    this.httpClient.post(this.url + '/create',
+    return this.httpClient.post(this.url + '/create',
       {'title': title, 'description': description, 'groupId': groupId})
-      .pipe(take(1))
-      .subscribe();
+      .pipe(take(1));
+  }
+
+  edit(postId: number, title: string, description: string) {
+    return this.httpClient.post(this.url + '/edit',
+      {'postId': postId, 'title': title, 'description': description})
+      .pipe(take(1));
+  }
+
+  delete(postId: number) {
+    return this.httpClient.post(this.url + '/delete',
+      {'id': postId})
+      .pipe(take(1)).subscribe();
   }
 }

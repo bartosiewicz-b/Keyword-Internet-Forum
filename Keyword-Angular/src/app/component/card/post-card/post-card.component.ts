@@ -1,7 +1,8 @@
+import { Router } from '@angular/router';
 import { VoteType } from './../../../model/voteType';
 import { PostService } from './../../../service/post.service';
 import { Post } from '../../../model/post';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -9,26 +10,23 @@ import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
   templateUrl: './post-card.component.html',
   styleUrls: ['./post-card.component.css']
 })
-export class PostCardComponent implements OnInit {
+export class PostCardComponent {
   @Input('post') post: Post = {} as Post;
   @Input('excerpt') excerpt: boolean = false;
   @Input('enableVoting') enableVoting: boolean = true;
+
+  username: string | null = sessionStorage.getItem('username');
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
 
-  constructor(private PostService: PostService) { 
-  }
-
-  ngOnInit(): void {
+  constructor(private router: Router,
+    private postService: PostService) { 
   }
 
   upvote() {
-    if(!this.enableVoting)
-      return;
-
-    this.PostService.upvote(this.post.id);
+    this.postService.upvote(this.post.id);
 
     if(this.post.userVote == null) {
       this.post.votes++;
@@ -44,10 +42,7 @@ export class PostCardComponent implements OnInit {
   }
 
   downvote() {
-    if(!this.enableVoting)
-      return;
-
-    this.PostService.downvote(this.post.id);
+    this.postService.downvote(this.post.id);
 
     if(this.post.userVote == null) {
       this.post.votes--;
@@ -62,4 +57,8 @@ export class PostCardComponent implements OnInit {
     }
   }
 
+  delete() {
+    this.postService.delete(this.post.id);
+    this.router.navigate(['/']);
+  }
 }

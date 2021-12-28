@@ -25,14 +25,13 @@ public class PostApi {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createPost(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Long> createPost(@RequestHeader("Authorization") String token,
             @RequestBody CreatePostRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
 
         try {
-            postService.createPost(user, request);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(postService.createPost(user, request));
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }
@@ -68,14 +67,13 @@ public class PostApi {
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<Void> editPost(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Long> editPost(@RequestHeader("Authorization") String token,
                                            @RequestBody EditPostRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
 
         try {
-            postService.editPost(user, request);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(postService.editPost(user, request));
         } catch(Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }

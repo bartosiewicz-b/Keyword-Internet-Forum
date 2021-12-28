@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 public class EditPostRequest {
 
     @NotNull
-    private Long id;
+    private Long postId;
 
     @NotNull
     private String title;

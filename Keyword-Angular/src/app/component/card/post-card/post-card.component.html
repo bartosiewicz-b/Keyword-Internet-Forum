@@ -1,20 +1,21 @@
 <div class="card text-white mb-3" style="width: 50rem;">
-    <div class="card-body">
-      <div class="row">
+  <div class="card-body">
+    <div class="row">
         <div class="col-1">
           <div class="row arrow" [class.active]="post.userVote!=null && (post.userVote==0 || post.userVote.toString()=='UP')"
           (click)="upvote()">
-            <fa-icon [icon]="faArrowUp"></fa-icon>
+            <fa-icon [icon]="faArrowUp" *ngIf="username!=null"></fa-icon>
           </div>
           <div class="row">
             <small class="text-muted">{{post.votes}}</small>
           </div>
           <div class="row arrow" [class.active]="post.userVote!=null && (post.userVote==1 || post.userVote.toString()=='DOWN')" 
           (click)="downvote()">
-            <fa-icon [icon]="faArrowDown"></fa-icon>
+            <fa-icon [icon]="faArrowDown" *ngIf="username!=null"></fa-icon>
           </div>
         </div>
-          <div class="col-11">
+
+        <div class="col-11">
             <div class="flex-container">
               <p class="card-text header">
                 <small class="text-muted">{{post.username}}</small>
@@ -28,8 +29,12 @@
             <ng-template #fullText>
               <p class="card-text">{{post.description}}</p>
             </ng-template>
-          </div>
-      
-        
+
+            <div *ngIf="username!=null && username==post.username && enableVoting">
+              <button routerLink="/create-post/{{post.groupId}}/{{post.id}}">Edit</button>
+              <button (click)="delete()">Delete</button>
+            </div>
+        </div>
     </div>
   </div>
+</div>
