@@ -38,7 +38,7 @@ export class CreatePostComponent {
         });
       }
       else {
-        this.postService.edit(Number(this.postId), this.title, this.description).subscribe();
+        this.postService.edit(Number(this.postId), this.title, this.description);
         this.router.navigate(['/' + this.groupId + '/' + this.postId]);
       }
     }

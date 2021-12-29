@@ -23,7 +23,7 @@ public class CommentMapperImpl implements CommentMapper {
     @Override
     public CommentDto mapToDto(Comment model, AppUser user) {
 
-        Optional<CommentVote> vote = null;
+        Optional<CommentVote> vote = Optional.empty();
         if(user != null)
             vote = commentVoteRepository.findByUserAndComment(user, model);
 
@@ -37,7 +37,7 @@ public class CommentMapperImpl implements CommentMapper {
                 .postId(model.getPost().getId())
                 .dateCreated(model.getDateCreated())
                 .votes(model.getVotes())
-                .userVote(null == vote || vote.isEmpty() ? null : vote.get().getType())
+                .userVote(vote.isEmpty() ? null : vote.get().getType())
                 .build();
     }
 

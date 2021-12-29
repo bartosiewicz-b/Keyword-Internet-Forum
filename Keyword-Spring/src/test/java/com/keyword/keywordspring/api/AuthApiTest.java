@@ -1,11 +1,8 @@
 package com.keyword.keywordspring.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
-import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
-import com.keyword.keywordspring.dto.request.LoginRequest;
-import com.keyword.keywordspring.dto.response.TokenResponse;
-import com.keyword.keywordspring.dto.request.RegisterRequest;
+import com.keyword.keywordspring.dto.request.*;
+import com.keyword.keywordspring.dto.response.AuthResponse;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.UserService;
@@ -24,8 +21,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,7 +90,7 @@ class AuthApiTest {
     void login() throws Exception {
 
         when(userService.login(any())).thenReturn(Optional.of(user));
-        when(jwtUtil.generateTokenResponse(any())).thenReturn(TokenResponse.builder().build());
+        when(jwtUtil.generateTokenResponse(any())).thenReturn(AuthResponse.builder().build());
 
         String request = mapper.writeValueAsString(LoginRequest.builder()
                 .login(user.getUsername())
@@ -115,7 +110,7 @@ class AuthApiTest {
     @Test
     void refreshToken() throws Exception {
 
-        TokenResponse response = TokenResponse.builder()
+        AuthResponse response = AuthResponse.builder()
                 .token("token")
                 .refreshToken("refreshToken")
                 .build();
@@ -136,11 +131,7 @@ class AuthApiTest {
 
     @Test
     void changeUsername() throws Exception {
-
-        Map<String, String> temp = new HashMap<>();
-        temp.put("username", "newUsername");
-
-        String request = mapper.writeValueAsString(temp);
+        String request = mapper.writeValueAsString(NameRequest.builder().name("newUsername").build());
 
         mockMvc.perform(post("/auth/change/username")
                         .header("Authorization", "token")
@@ -195,10 +186,7 @@ class AuthApiTest {
 
     @Test
     void validateNewUsername() throws Exception {
-
-        Map<String, String> map = new HashMap<>();
-        map.put("username", "newUsername");
-        String request = mapper.writeValueAsString(map);
+        String request = mapper.writeValueAsString(NameRequest.builder().name("newUsername").build());
 
         when(userService.isUsernameTaken(anyString())).thenReturn(false);
 
@@ -214,10 +202,7 @@ class AuthApiTest {
 
     @Test
     void validateNewEmail() throws Exception {
-
-        Map<String, String> map = new HashMap<>();
-        map.put("email", "newEmail@email.com");
-        String request = mapper.writeValueAsString(map);
+        String request = mapper.writeValueAsString(EmailRequest.builder().email("newEmail@email.com").build());
 
         when(userService.isEmailTaken(anyString())).thenReturn(false);
 

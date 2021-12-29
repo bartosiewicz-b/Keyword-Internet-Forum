@@ -4,7 +4,6 @@ import com.keyword.keywordspring.dto.model.PostDto;
 import com.keyword.keywordspring.exception.PostDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.PostMapper;
 import com.keyword.keywordspring.model.AppUser;
-import com.keyword.keywordspring.model.CommentVote;
 import com.keyword.keywordspring.model.Post;
 import com.keyword.keywordspring.model.PostVote;
 import com.keyword.keywordspring.repository.PostRepository;
@@ -23,7 +22,8 @@ public class PostMapperImpl implements PostMapper {
 
     @Override
     public PostDto mapToDto(Post model, AppUser user) {
-        Optional<PostVote> vote = null;
+
+        Optional<PostVote> vote = Optional.empty();
         if(user != null)
             vote = postVoteRepository.findByUserAndPost(user, model);
 
@@ -37,7 +37,7 @@ public class PostMapperImpl implements PostMapper {
                 .username(model.getUser().getUsername())
                 .numberOfComments(model.getComments().size())
                 .votes(model.getVotes())
-                .userVote(null == vote || vote.isEmpty() ? null : vote.get().getType())
+                .userVote(vote.isEmpty() ? null : vote.get().getType())
                 .build();
     }
 

@@ -1,15 +1,15 @@
 package com.keyword.keywordspring.service.interf;
 
-import com.keyword.keywordspring.dto.response.TokenResponse;
+import com.keyword.keywordspring.dto.response.AuthResponse;
 import com.keyword.keywordspring.model.AppUser;
 
 import java.util.Optional;
 
 public interface JwtUtil {
 
-    TokenResponse generateTokenResponse(AppUser user);
+    AuthResponse generateTokenResponse(AppUser user);
 
-    Optional<TokenResponse> refreshJwt(String refreshToken);
+    Optional<AuthResponse> refreshJwt(String refreshToken);
 
     boolean validateJwt(String token);
 

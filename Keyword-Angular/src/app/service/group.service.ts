@@ -13,6 +13,13 @@ export class GroupService {
 
   constructor(private httpClient: HttpClient) { }
 
+  create(groupName: string, description: string) {
+    this.httpClient.post(this.url + '/create',
+      {'groupName': groupName, 'description': description})
+      .pipe(take(1))
+      .subscribe();
+  }
+
   getAll(page: number, keyword: string): Observable<Group[]> {
     return this.httpClient.get<Group[]>(this.url + '/get-all',
     {params: {"page": page, "name": keyword}})
@@ -30,26 +37,19 @@ export class GroupService {
   }
 
   subscribe(groupId: string) {
-    this.httpClient.post(this.url + '/subscribe', {'groupId': groupId})
+    this.httpClient.post(this.url + '/subscribe', {'id': groupId})
       .pipe(take(1))
       .subscribe();
   }
 
-  createGroup(groupName: string, description: string) {
-    this.httpClient.post(this.url + '/create',
-      {'groupName': groupName, 'description': description})
-      .pipe(take(1))
-      .subscribe();
-  }
-
-  editGroup(id: string, groupName: string, description: string) {
+  edit(id: string, groupName: string, description: string) {
     this.httpClient.post(this.url + '/edit',
       {'id': id, 'groupName': groupName, 'description': description})
       .pipe(take(1))
       .subscribe();
   }
 
-  deleteGroup(groupId: string) {
+  delete(groupId: string) {
     this.httpClient.post(this.url + '/delete',
       {'groupId': groupId})
       .pipe(take(1))

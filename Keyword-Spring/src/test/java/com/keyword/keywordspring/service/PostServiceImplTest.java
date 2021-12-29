@@ -75,7 +75,7 @@ class PostServiceImplTest {
         when(postVoteRepository.findByUserAndPost(any(), any()))
                 .thenReturn(Optional.empty());
 
-        postService.upvote(post.getUser(), 1L);
+        postService.vote(post.getUser(), 1L, VoteType.UP);
 
         verify(postVoteRepository, times(1)).save(any());
     }
@@ -88,7 +88,7 @@ class PostServiceImplTest {
                         .type(VoteType.UP)
                         .build()));
 
-        postService.upvote(post.getUser(), 1L);
+        postService.vote(post.getUser(), 1L, VoteType.UP);
 
         verify(postVoteRepository, times(1)).delete(any());
     }
@@ -101,7 +101,7 @@ class PostServiceImplTest {
                         .type(VoteType.DOWN)
                         .build()));
 
-        postService.upvote(post.getUser(), 1L);
+        postService.vote(post.getUser(), 1L, VoteType.UP);
 
         verify(postVoteRepository, times(1)).save(any());
     }
@@ -112,7 +112,7 @@ class PostServiceImplTest {
         when(postVoteRepository.findByUserAndPost(any(), any()))
                 .thenReturn(Optional.empty());
 
-        postService.downvote(post.getUser(), 1L);
+        postService.vote(post.getUser(), 1L, VoteType.DOWN);
 
         verify(postVoteRepository, times(1)).save(any());
     }
@@ -125,7 +125,7 @@ class PostServiceImplTest {
                         .type(VoteType.DOWN)
                         .build()));
 
-        postService.downvote(post.getUser(), 1L);
+        postService.vote(post.getUser(), 1L, VoteType.DOWN);
 
         verify(postVoteRepository, times(1)).delete(any());
     }
@@ -138,7 +138,7 @@ class PostServiceImplTest {
                         .type(VoteType.UP)
                         .build()));
 
-        postService.downvote(post.getUser(), 1L);
+        postService.vote(post.getUser(), 1L, VoteType.DOWN);
 
         verify(postVoteRepository, times(1)).save(any());
     }

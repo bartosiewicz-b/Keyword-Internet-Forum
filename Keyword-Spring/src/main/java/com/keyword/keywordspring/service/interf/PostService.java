@@ -4,6 +4,7 @@ import com.keyword.keywordspring.dto.model.PostDto;
 import com.keyword.keywordspring.dto.request.CreatePostRequest;
 import com.keyword.keywordspring.dto.request.EditPostRequest;
 import com.keyword.keywordspring.model.AppUser;
+import com.keyword.keywordspring.model.VoteType;
 
 import java.util.List;
 
@@ -15,10 +16,9 @@ public interface PostService {
 
     PostDto getPost(Long id, AppUser user);
 
-    Long editPost(AppUser user, EditPostRequest request);
+    void editPost(AppUser user, EditPostRequest request);
 
-    void upvote(AppUser user, Long postId);
-    void downvote(AppUser user, Long postId);
+    void vote(AppUser user, Long postId, VoteType voteType);
 
     void deletePost(AppUser user, Long id);
 }

@@ -24,9 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -155,9 +153,7 @@ class PostApiTest {
     void upvotePostApi() throws Exception {
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
 
-        Map<String, Long> postId = new HashMap<>();
-        postId.put("postId", 1L);
-        String request = mapper.writeValueAsString(postId);
+        String request = mapper.writeValueAsString(IdRequest.builder().id(1L).build());
 
         mockMvc.perform(post("/post/upvote")
                         .header("Authorization", "token")
@@ -174,9 +170,7 @@ class PostApiTest {
     void downvotePostApi() throws Exception {
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
 
-        Map<String, Long> postId = new HashMap<>();
-        postId.put("postId", 1L);
-        String request = mapper.writeValueAsString(postId);
+        String request = mapper.writeValueAsString(IdRequest.builder().id(1L).build());
 
         mockMvc.perform(post("/post/downvote")
                         .header("Authorization", "token")

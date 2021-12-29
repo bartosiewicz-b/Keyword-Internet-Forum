@@ -4,7 +4,6 @@ import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.request.CreateGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
 import com.keyword.keywordspring.exception.UnauthorizedException;
-import com.keyword.keywordspring.exception.CommentDoesNotExistException;
 import com.keyword.keywordspring.exception.GroupDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.GroupMapper;
 import com.keyword.keywordspring.model.AppUser;
@@ -30,7 +29,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupMapper groupMapper;
 
     @Override
-    public void createGroup(AppUser user, CreateGroupRequest request) {
+    public String createGroup(AppUser user, CreateGroupRequest request) {
 
         ForumGroup forumGroup = ForumGroup.builder()
                 .id(request.getGroupName().toLowerCase(Locale.ROOT).replace(' ', '-'))
@@ -44,6 +43,8 @@ public class GroupServiceImpl implements GroupService {
         groupRepository.save(forumGroup);
 
         subscribeGroup(user, forumGroup.getId());
+
+        return forumGroup.getId();
     }
 
     @Override
@@ -98,14 +99,14 @@ public class GroupServiceImpl implements GroupService {
                     .build());
 
             group.setSubscriptions(group.getSubscriptions() + 1);
-            groupRepository.save(group);
         }
         else {
             groupSubscriptionRepository.delete(subscription.get());
 
             group.setSubscriptions(group.getSubscriptions() - 1);
-            groupRepository.save(group);
         }
+
+        groupRepository.save(group);
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.request.CreateGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
+import com.keyword.keywordspring.dto.request.IdStringRequest;
+import com.keyword.keywordspring.dto.request.NameRequest;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.GroupService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
@@ -23,9 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -147,9 +147,7 @@ class GroupApiTest {
 
     @Test
     void validateNewGroupName() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("groupName", "new group name");
-        String request = mapper.writeValueAsString(map);
+        String request = mapper.writeValueAsString(NameRequest.builder().name("new group name").build());
 
         when(groupService.isGroupNameTaken(anyString())).thenReturn(false);
 
@@ -165,11 +163,24 @@ class GroupApiTest {
 
     @Test
     void subscribeGroup() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("groupId", "group");
-        String request = mapper.writeValueAsString(map);
+        String request = mapper.writeValueAsString(IdStringRequest.builder().id("group").build());
 
         mockMvc.perform(post("/group/subscribe")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void deleteGroup() throws Exception {
+        String request = mapper.writeValueAsString(IdStringRequest.builder().id("group").build());
+
+        mockMvc.perform(post("/group/delete")
                         .header("Authorization", "token")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON))

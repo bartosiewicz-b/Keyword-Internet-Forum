@@ -78,7 +78,7 @@ class CommentServiceImplTest {
         when(commentVoteRepository.findByUserAndComment(any(), any()))
                 .thenReturn(Optional.empty());
 
-        commentService.upvote(comment1.getUser(), 1L);
+        commentService.vote(comment1.getUser(), 1L, VoteType.UP);
 
         verify(commentVoteRepository, times(1)).save(any());
     }
@@ -91,7 +91,7 @@ class CommentServiceImplTest {
                         .type(VoteType.UP)
                         .build()));
 
-        commentService.upvote(comment1.getUser(), 1L);
+        commentService.vote(comment1.getUser(), 1L, VoteType.UP);
 
         verify(commentVoteRepository, times(1)).delete(any());
     }
@@ -104,7 +104,7 @@ class CommentServiceImplTest {
                         .type(VoteType.DOWN)
                         .build()));
 
-        commentService.upvote(comment1.getUser(), 1L);
+        commentService.vote(comment1.getUser(), 1L, VoteType.UP);
 
         verify(commentVoteRepository, times(1)).save(any());
     }
@@ -115,7 +115,7 @@ class CommentServiceImplTest {
         when(commentVoteRepository.findByUserAndComment(any(), any()))
                 .thenReturn(Optional.empty());
 
-        commentService.downvote(comment1.getUser(), 1L);
+        commentService.vote(comment1.getUser(), 1L, VoteType.DOWN);
 
         verify(commentVoteRepository, times(1)).save(any());
     }
@@ -128,7 +128,7 @@ class CommentServiceImplTest {
                         .type(VoteType.DOWN)
                         .build()));
 
-        commentService.downvote(comment1.getUser(), 1L);
+        commentService.vote(comment1.getUser(), 1L, VoteType.DOWN);
 
         verify(commentVoteRepository, times(1)).delete(any());
     }
@@ -141,7 +141,7 @@ class CommentServiceImplTest {
                         .type(VoteType.UP)
                         .build()));
 
-        commentService.downvote(comment1.getUser(), 1L);
+        commentService.vote(comment1.getUser(), 1L, VoteType.DOWN);
 
         verify(commentVoteRepository, times(1)).save(any());
     }

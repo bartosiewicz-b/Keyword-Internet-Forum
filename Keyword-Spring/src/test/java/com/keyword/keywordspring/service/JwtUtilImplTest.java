@@ -1,6 +1,6 @@
 package com.keyword.keywordspring.service;
 
-import com.keyword.keywordspring.dto.response.TokenResponse;
+import com.keyword.keywordspring.dto.response.AuthResponse;
 import com.keyword.keywordspring.model.AppUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class JwtUtilImplTest {
     @Test
     void generateLoginResponse() {
 
-        TokenResponse response = jwtUtil.generateTokenResponse(AppUser.builder().username("username").build());
+        AuthResponse response = jwtUtil.generateTokenResponse(AppUser.builder().username("username").build());
 
         jwtUtil.validateJwt(response.getToken());
     }
@@ -44,7 +44,7 @@ class JwtUtilImplTest {
 
     @Test
     void getTypeFromJwt() {
-        TokenResponse response = jwtUtil.generateTokenResponse(AppUser.builder().username("username").build());
+        AuthResponse response = jwtUtil.generateTokenResponse(AppUser.builder().username("username").build());
 
         assertEquals(jwtUtil.getTypeFromJwt(response.getToken()), "token");
         assertEquals(jwtUtil.getTypeFromJwt(response.getRefreshToken()), "refresh");
