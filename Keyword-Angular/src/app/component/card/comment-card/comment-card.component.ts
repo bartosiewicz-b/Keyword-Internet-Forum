@@ -1,4 +1,3 @@
-import { MemoryService } from './../../../service/memory.service';
 import { take } from 'rxjs/operators';
 import { VoteType } from './../../../model/voteType';
 import { CommentService } from './../../../service/comment.service';
@@ -20,15 +19,14 @@ export class CommentCardComponent{
 
   isUserWriting: boolean = false;
   isUserEditing: boolean = false;
-  username: string | null = this.memoryService.getUsername();
+  username: string | null = sessionStorage.getItem('username');
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
   faTimes = faTimes;
 
-  constructor(private memoryService: MemoryService,
-    private commentService: CommentService) {}
+  constructor(private commentService: CommentService) {}
 
 
   upvote() {
@@ -64,7 +62,7 @@ export class CommentCardComponent{
   }
 
   respondComment(data: NgForm) {
-    this.commentService.create(data.value.content, this.comment.postId, this.comment.id)
+    this.commentService.comment(data.value.content, this.comment.postId, this.comment.id)
     .pipe(take(1))
     .subscribe();
 

@@ -4,7 +4,7 @@ import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
 import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
-import com.keyword.keywordspring.dto.response.AuthResponse;
+import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.exception.*;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.UserRepository;
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthResponse changeUsername(String username, AppUser user) {
+    public TokenResponse changeUsername(String username, AppUser user) {
 
         if(isUsernameTaken(username))
             throw new UsernameAlreadyTakenException(username);
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthResponse changeEmail(ChangeEmailRequest request, AppUser user) {
+    public TokenResponse changeEmail(ChangeEmailRequest request, AppUser user) {
 
         if(isEmailTaken(request.getNewEmail()))
             throw new EmailAlreadyTakenException(request.getNewEmail());
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthResponse changePassword(ChangePasswordRequest request, AppUser user) {
+    public TokenResponse changePassword(ChangePasswordRequest request, AppUser user) {
 
         if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
             throw new UnauthorizedException();

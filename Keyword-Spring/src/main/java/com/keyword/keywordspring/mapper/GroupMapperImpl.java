@@ -7,6 +7,7 @@ import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ForumGroup;
 import com.keyword.keywordspring.repository.GroupRepository;
 import com.keyword.keywordspring.repository.GroupSubscriptionRepository;
+import com.keyword.keywordspring.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -27,10 +27,10 @@ export class CreateGroupComponent {
 
   create(){
     if(this.groupId == null) {
-      this.groupService.create(this.groupName, this.description);
+      this.groupService.createGroup(this.groupName, this.description);
       this.router.navigate(['/']);
     } else {
-      this.groupService.edit(this.groupId, this.groupName, this.description);
+      this.groupService.editGroup(this.groupId, this.groupName, this.description);
       this.router.navigate(['/']);
     }
     

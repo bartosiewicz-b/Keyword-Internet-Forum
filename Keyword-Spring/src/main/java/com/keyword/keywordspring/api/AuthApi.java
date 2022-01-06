@@ -1,7 +1,10 @@
 package com.keyword.keywordspring.api;
 
-import com.keyword.keywordspring.dto.request.*;
-import com.keyword.keywordspring.dto.response.AuthResponse;
+import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
+import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
+import com.keyword.keywordspring.dto.request.LoginRequest;
+import com.keyword.keywordspring.dto.response.TokenResponse;
+import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.UnexpectedProblemException;
 import com.keyword.keywordspring.model.AppUser;
@@ -12,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 
 @RestController
@@ -25,7 +29,6 @@ public class AuthApi {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequest request) {
-
         try {
             userService.register(request);
             return ResponseEntity.ok().build();
@@ -35,12 +38,12 @@ public class AuthApi {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
 
         AppUser user = userService.login(request)
                 .orElseThrow(UnauthorizedException::new);
 
-        AuthResponse response = jwtUtil.generateTokenResponse(user);
+        TokenResponse response = jwtUtil.generateTokenResponse(user);
         response.setUsername(user.getUsername());
         response.setEmail(user.getEmail());
 
@@ -48,23 +51,23 @@ public class AuthApi {
     }
 
     @GetMapping("/refresh/token")
-    public ResponseEntity<AuthResponse> refreshToken(@RequestHeader("refresh") String refresh) {
+    public ResponseEntity<TokenResponse> refreshToken(@RequestHeader("refresh") String refresh) {
 
-        AuthResponse response = jwtUtil.refreshJwt(refresh)
+        TokenResponse response = jwtUtil.refreshJwt(refresh)
                 .orElseThrow(UnauthorizedException::new);
 
         return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/change/username")
-    public ResponseEntity<AuthResponse> changeUsername(@RequestHeader("Authorization") String token,
-                                                       @RequestBody NameRequest request) {
+    public ResponseEntity<TokenResponse> changeUsername(@RequestHeader("Authorization") String token,
+            @RequestBody Map<String, String> request) {
 
         try {
             AppUser user = jwtUtil.getUserFromToken(token);
 
             return ResponseEntity.ok().body(
-                    userService.changeUsername(request.getName(), user)
+                    userService.changeUsername(request.get("username"), user)
             );
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
@@ -72,8 +75,8 @@ public class AuthApi {
     }
 
     @PostMapping("/change/email")
-    public ResponseEntity<AuthResponse> changeEmail(@RequestHeader("Authorization") String token,
-                                                    @RequestBody ChangeEmailRequest request) {
+    public ResponseEntity<TokenResponse> changeEmail(@RequestHeader("Authorization") String token,
+            @RequestBody ChangeEmailRequest request) {
 
         try {
             AppUser user = jwtUtil.getUserFromToken(token);
@@ -86,8 +89,8 @@ public class AuthApi {
     }
 
     @PostMapping("/change/password")
-    public ResponseEntity<AuthResponse> changePassword(@RequestHeader("Authorization") String token,
-                                                       @RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<TokenResponse> changePassword(@RequestHeader("Authorization") String token,
+                                                     @RequestBody ChangePasswordRequest request) {
 
         try {
             AppUser user = jwtUtil.getUserFromToken(token);
@@ -100,18 +103,18 @@ public class AuthApi {
     }
 
     @PostMapping("/validate-new/username")
-    public ResponseEntity<Boolean> validateNewUsername(@RequestBody NameRequest request) {
+    public ResponseEntity<Boolean> validateNewUsername(@RequestBody Map<String, String> request) {
 
-        if(null == request.getName()|| userService.isUsernameTaken(request.getName()))
+        if(null == request.get("username") || userService.isUsernameTaken(request.get("username")))
             return ResponseEntity.ok().body(false);
         else
             return ResponseEntity.ok().body(true);
     }
 
     @PostMapping("/validate-new/email")
-    public ResponseEntity<Boolean> validateNewEmail(@RequestBody EmailRequest request) {
+    public ResponseEntity<Boolean> validateNewEmail(@RequestBody Map<String, String> request) {
 
-        if(null == request.getEmail() || userService.isEmailTaken(request.getEmail()))
+        if(null == request.get("email") || userService.isEmailTaken(request.get("email")))
             return ResponseEntity.ok().body(false);
         else
             return ResponseEntity.ok().body(true);

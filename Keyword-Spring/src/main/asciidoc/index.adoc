@@ -87,12 +87,6 @@ include::{snippets}/subscribeGroup/http-request.adoc[]
 .response
 include::{snippets}/subscribeGroup/http-response.adoc[]
 
-== Delete Group
-.request
-include::{snippets}/deleteGroup/http-request.adoc[]
-.response
-include::{snippets}/deleteGroup/http-response.adoc[]
-
 == Validate New Group Name
 .request
 include::{snippets}/validateNewGroupName/http-request.adoc[]

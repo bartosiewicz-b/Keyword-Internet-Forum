@@ -1,4 +1,3 @@
-import { MemoryService } from './../../service/memory.service';
 import { PostService } from './../../service/post.service';
 import { Group } from './../../model/group';
 import { GroupService } from './../../service/group.service';
@@ -13,12 +12,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class GroupComponent {
   group: Group = new Group;
 
-  username: string | null = this.memoryService.getUsername();
+  username: string | null = sessionStorage.getItem('username');
 
-  constructor(private memoryService: MemoryService,
+  constructor(private postService: PostService,
     private groupService: GroupService,
     private router: Router,
-    route: ActivatedRoute) { 
+    private route: ActivatedRoute) { 
 
       this.groupService.get(route.snapshot.paramMap.get('groupId') as string)
         .subscribe(res => this.group = res);
@@ -36,7 +35,7 @@ export class GroupComponent {
   }
 
   delete() {
-    this.groupService.delete(this.group.id);
+    this.groupService.deleteGroup(this.group.id);
     this.router.navigate(['/']);
   }
 

@@ -4,7 +4,6 @@ import com.keyword.keywordspring.dto.model.CommentDto;
 import com.keyword.keywordspring.dto.request.CreateCommentRequest;
 import com.keyword.keywordspring.dto.request.EditCommentRequest;
 import com.keyword.keywordspring.model.AppUser;
-import com.keyword.keywordspring.model.VoteType;
 
 import java.util.List;
 
@@ -16,7 +15,8 @@ public interface CommentService {
 
     void editComment(AppUser user, EditCommentRequest request);
 
-    void vote(AppUser user, Long commentId, VoteType voteType);
+    void upvote(AppUser user, Long commentId);
+    void downvote(AppUser user, Long commentId);
 
     void deleteComment(AppUser user, Long id);
 }

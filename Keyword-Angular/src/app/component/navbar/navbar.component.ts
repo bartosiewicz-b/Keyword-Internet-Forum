@@ -1,4 +1,3 @@
-import { MemoryService } from './../../service/memory.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 
@@ -8,16 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
+  sessionStorage = sessionStorage;
 
-  constructor(public memoryService: MemoryService,
-    private router: Router) { 
+  constructor(private router: Router) { 
   }
 
   ngOnInit(): void {
   }
 
   logout() {
-    this.memoryService.deleteLoginData();
+    sessionStorage.clear();
     this.router.navigate(['/']);
     window.location.reload();
   }

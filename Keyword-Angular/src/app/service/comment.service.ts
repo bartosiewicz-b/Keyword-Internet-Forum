@@ -13,14 +13,6 @@ export class CommentService {
 
   constructor(private httpClient: HttpClient) { }
 
-  create(content: string, postId: number, parentCommentId: number | null){
-    return this.httpClient.post(this.url + '/create',
-    {'content': content, 'postId': postId, 'parentCommentId': parentCommentId})
-    .pipe(map(res => {
-      return res as Comment;
-    }));
-  }
-
   getAll(postId: number): Observable<Comment[]> {
     return this.httpClient.get<Comment[]>(this.url + '/get',
       {params: {"postId": postId}})
@@ -29,28 +21,33 @@ export class CommentService {
       }));
   }
 
-  upvote(id: number) {
-    this.httpClient.post(this.url + '/upvote', {'id': id})
+  upvote(commentId: number) {
+    this.httpClient.post(this.url + '/upvote', {'commentId': commentId})
     .pipe(take(1))
     .subscribe()
   }
 
-  downvote(id: number) {
-    this.httpClient.post(this.url + '/downvote', {'id': id})
+  downvote(commentId: number) {
+    this.httpClient.post(this.url + '/downvote', {'commentId': commentId})
     .pipe(take(1))
     .subscribe()
   }
 
-  edit(id: number, newContent: string) {
-    this.httpClient.post(this.url + '/edit',
-    {'id': id, 'newContent': newContent})
-    .pipe(take(1))
-    .subscribe();
+  comment(content: string, postId: number, parentCommentId: number | null){
+    return this.httpClient.post(this.url + '/create',
+    {'content': content, 'postId': postId, 'parentCommentId': parentCommentId});
   }
 
   delete(id: number){
     this.httpClient.post(this.url + '/delete',
     {'id': id})
+    .pipe(take(1))
+    .subscribe();
+  }
+
+  edit(id: number, newContent: string) {
+    this.httpClient.post(this.url + '/edit',
+    {'id': id, 'newContent': newContent})
     .pipe(take(1))
     .subscribe();
   }

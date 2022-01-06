@@ -1,4 +1,3 @@
-import { MemoryService } from './memory.service';
 import { take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -9,28 +8,27 @@ import { Injectable } from '@angular/core';
 export class AuthService {
   private url = 'http://localhost:8080/auth';
 
-  constructor(private httpClient: HttpClient,
-      private memoryService: MemoryService) { }
+  constructor(private httpClient: HttpClient) { }
 
   refreshToken() {
 
-    let refresh = this.memoryService.getRefreshToken();
+    let refresh = sessionStorage.getItem('refreshToken');
 
     if(refresh == null)
       return;
 
     this.httpClient.get<any>(this.url + '/refresh/token', {headers: {'refresh': refresh}})
     .subscribe(res => {
-      this.memoryService.setToken(res.token);
+        sessionStorage.setItem('token', res.token);
       });
   }
 
   getToken() {
-    return this.memoryService.getToken();
+    return localStorage.getItem('token');
   }
 
   getRefresh() {
-    return this.memoryService.getRefreshToken();
+    return localStorage.getItem('refreshToken');
   }
 
   login(login: string, password: string) {
@@ -39,7 +37,10 @@ export class AuthService {
       .pipe(take(1))
       .subscribe(
         res => {
-          this.memoryService.saveLoginData(res.token, res.refreshToken, res.username, res.email);
+          sessionStorage.setItem('token', res.token);
+          sessionStorage.setItem('refreshToken', res.refreshToken);
+          sessionStorage.setItem('username', res.username);
+          sessionStorage.setItem('email', res.email);
         }
       );
   }
@@ -59,17 +60,17 @@ export class AuthService {
 
   validateNewUsername(username: string) {
     return this.httpClient.post(this.url + '/validate-new/username', 
-    {'name': username})
+    {'username': username})
     .pipe(take(1));
   }
 
   changeUsername(username: string){
     this.httpClient.post<any>(this.url + '/change/username', 
-    {'name': username})
+    {'username': username})
     .pipe(take(1)).subscribe(
       res => {
-        this.memoryService.setToken(res.token);
-        this.memoryService.setRefreshToken(res.refreshToken);
+        sessionStorage.setItem('token', res.token);
+        sessionStorage.setItem('refreshToken', res.refreshToken);
       }
     );
 
@@ -81,8 +82,8 @@ export class AuthService {
     {'newEmail': email, 'password': password})
     .pipe(take(1)).subscribe(
       res => {
-        this.memoryService.setToken(res.token);
-        this.memoryService.setRefreshToken(res.refreshToken);
+        sessionStorage.setItem('token', res.token);
+        sessionStorage.setItem('refreshToken', res.refreshToken);
       }
     );
 
@@ -94,8 +95,8 @@ export class AuthService {
     {'oldPassword': oldPassword, 'newPassword': newPassword})
     .pipe(take(1)).subscribe(
       res => {
-        this.memoryService.setToken(res.token);
-        this.memoryService.setRefreshToken(res.refreshToken);
+        sessionStorage.setItem('token', res.token);
+        sessionStorage.setItem('refreshToken', res.refreshToken);
       }
     );
   }

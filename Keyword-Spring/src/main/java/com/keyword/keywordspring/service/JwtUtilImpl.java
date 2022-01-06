@@ -1,6 +1,6 @@
 package com.keyword.keywordspring.service;
 
-import com.keyword.keywordspring.dto.response.AuthResponse;
+import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.InvalidToken;
 import com.keyword.keywordspring.repository.InvalidTokenRepository;
@@ -30,24 +30,24 @@ public class JwtUtilImpl implements JwtUtil {
     private final InvalidTokenRepository invalidTokenRepository;
 
     @Override
-    public AuthResponse generateTokenResponse(AppUser user) {
-        return AuthResponse.builder()
+    public TokenResponse generateTokenResponse(AppUser user) {
+        return TokenResponse.builder()
                 .token(generateJwt(user))
                 .refreshToken(generateRefreshToken(user))
                 .build();
     }
 
     @Override
-    public Optional<AuthResponse> refreshJwt(String refreshToken) {
+    public Optional<TokenResponse> refreshJwt(String refreshToken) {
 
-        Optional<AuthResponse> response = Optional.empty();
+        Optional<TokenResponse> response = Optional.empty();
 
         if(validateRefreshToken(refreshToken)) {
 
             Optional<AppUser> user = userRepository.findByUsername(getUsernameFromJwt(refreshToken));
 
             if(user.isPresent()) {
-                response = Optional.of(AuthResponse.builder()
+                response = Optional.of(TokenResponse.builder()
                         .token(generateJwt(user.get()))
                         .build());
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface GroupService {
 
-    String createGroup(AppUser user, CreateGroupRequest request);
+    void createGroup(AppUser user, CreateGroupRequest request);
 
     List<GroupDto> getGroups(Integer page, String name, AppUser user);
 

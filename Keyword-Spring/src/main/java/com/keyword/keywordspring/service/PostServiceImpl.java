@@ -73,7 +73,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void editPost(AppUser user, EditPostRequest request) {
+    public Long editPost(AppUser user, EditPostRequest request) {
 
         if(postRepository.findById(request.getPostId()).isEmpty() ||
                 !Objects.equals(user.getId(), postRepository.findById(request.getPostId()).get().getUser().getId()))
@@ -87,10 +87,12 @@ public class PostServiceImpl implements PostService {
         post.setEdited(true);
 
         postRepository.save(post);
+
+        return post.getId();
     }
 
     @Override
-    public void vote(AppUser user, Long postId, VoteType voteType) {
+    public void upvote(AppUser user, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostDoesNotExistException(postId));
 
@@ -100,17 +102,44 @@ public class PostServiceImpl implements PostService {
             postVoteRepository.save(PostVote.builder()
                     .user(user)
                     .post(post)
-                    .type(voteType)
+                    .type(VoteType.UP)
                     .build());
 
-            post.setVotes(post.getVotes() + voteType.getValue());
-        } else if (vote.get().getType() == voteType) {
+            post.setVotes(post.getVotes() + 1);
+        } else if (vote.get().getType() == VoteType.UP) {
             postVoteRepository.delete(vote.get());
-            post.setVotes(post.getVotes() - voteType.getValue());
+            post.setVotes(post.getVotes() - 1);
         } else {
-            vote.get().setType(voteType);
+            vote.get().setType(VoteType.UP);
             postVoteRepository.save(vote.get());
-            post.setVotes(post.getVotes() + (2 * voteType.getValue()));
+            post.setVotes(post.getVotes() + 2);
+        }
+
+        postRepository.save(post);
+    }
+
+    @Override
+    public void downvote(AppUser user, Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostDoesNotExistException(postId));
+
+        Optional<PostVote> vote = postVoteRepository.findByUserAndPost(user, post);
+
+        if(vote.isEmpty()){
+            postVoteRepository.save(PostVote.builder()
+                    .user(user)
+                    .post(post)
+                    .type(VoteType.DOWN)
+                    .build());
+
+            post.setVotes(post.getVotes() - 1);
+        } else if (vote.get().getType() == VoteType.DOWN) {
+            postVoteRepository.delete(vote.get());
+            post.setVotes(post.getVotes() + 1);
+        } else {
+            vote.get().setType(VoteType.DOWN);
+            postVoteRepository.save(vote.get());
+            post.setVotes(post.getVotes() - 2);
         }
 
         postRepository.save(post);

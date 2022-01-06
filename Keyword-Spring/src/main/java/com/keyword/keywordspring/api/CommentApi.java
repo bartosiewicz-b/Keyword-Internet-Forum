@@ -3,22 +3,23 @@ package com.keyword.keywordspring.api;
 import com.keyword.keywordspring.dto.model.CommentDto;
 import com.keyword.keywordspring.dto.request.CreateCommentRequest;
 import com.keyword.keywordspring.dto.request.EditCommentRequest;
-import com.keyword.keywordspring.dto.request.IdRequest;
 import com.keyword.keywordspring.exception.UnexpectedProblemException;
 import com.keyword.keywordspring.model.AppUser;
-import com.keyword.keywordspring.model.VoteType;
 import com.keyword.keywordspring.service.interf.CommentService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/comment")
 @CrossOrigin(origins = "http://localhost:4200")
 @AllArgsConstructor
+@Slf4j
 public class CommentApi {
 
     private final CommentService commentService;
@@ -27,9 +28,10 @@ public class CommentApi {
     @PostMapping("/create")
     public ResponseEntity<CommentDto> createComment(@RequestHeader("Authorization") String token,
                                            @RequestBody CreateCommentRequest request) {
-        try {
-            AppUser user = jwtUtil.getUserFromToken(token);
 
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try {
             return ResponseEntity.ok().body(commentService.addComment(user, request));
         } catch(Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
@@ -38,10 +40,11 @@ public class CommentApi {
 
     @GetMapping("/get")
     public ResponseEntity<List<CommentDto>> getComments(@RequestHeader(value = "Authorization", required = false) String token,
-                                            @RequestParam Long postId) {
-        try {
-            AppUser user = jwtUtil.getUserFromToken(token);
+            @RequestParam Long postId) {
 
+        AppUser user = null == token ? null : jwtUtil.getUserFromToken(token);
+
+        try {
             return ResponseEntity.ok().body(commentService.getComments(postId, user));
         } catch(Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
@@ -50,10 +53,11 @@ public class CommentApi {
 
     @PostMapping("/edit")
     public ResponseEntity<Void> editComment(@RequestHeader("Authorization") String token,
-                                            @RequestBody EditCommentRequest request) {
-        try{
-            AppUser user = jwtUtil.getUserFromToken(token);
+                                         @RequestBody EditCommentRequest request) {
 
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try{
             commentService.editComment(user, request);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
@@ -62,12 +66,13 @@ public class CommentApi {
     }
 
     @PostMapping("/upvote")
-    public ResponseEntity<Void> upvote(@RequestHeader("Authorization") String token,
-            @RequestBody IdRequest request) {
-        try {
-            AppUser user = jwtUtil.getUserFromToken(token);
+    public ResponseEntity<String> upvote(@RequestHeader("Authorization") String token,
+            @RequestBody Map<String, Long> request) {
 
-            commentService.vote(user, request.getId(), VoteType.UP);
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try {
+            commentService.upvote(user, request.get("commentId"));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
@@ -76,11 +81,12 @@ public class CommentApi {
 
     @PostMapping("/downvote")
     public ResponseEntity<Void> downvote(@RequestHeader("Authorization") String token,
-                                       @RequestBody IdRequest request) {
-        try {
-            AppUser user = jwtUtil.getUserFromToken(token);
+                                       @RequestBody Map<String, Long> request) {
 
-            commentService.vote(user, request.getId(), VoteType.DOWN);
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try {
+            commentService.downvote(user, request.get("commentId"));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
@@ -89,11 +95,12 @@ public class CommentApi {
 
     @PostMapping("/delete")
     public ResponseEntity<Void> deleteComment(@RequestHeader("Authorization") String token,
-                                              @RequestBody IdRequest request) {
-        try{
-            AppUser user = jwtUtil.getUserFromToken(token);
+                                              @RequestBody Map<String, Long> request) {
 
-            commentService.deleteComment(user, request.getId());
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        try{
+            commentService.deleteComment(user, request.get("id"));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
