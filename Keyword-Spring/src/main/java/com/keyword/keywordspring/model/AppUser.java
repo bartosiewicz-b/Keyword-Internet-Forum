@@ -3,6 +3,7 @@ package com.keyword.keywordspring.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -20,6 +21,10 @@ public class AppUser {
     private String username;
     private String email;
     private String password;
+
+    private Date dateCreated;
+    private int nrOfComments;
+    private int nrOfPosts;
 
     @OneToMany
     @JoinColumn(name = "owner_id", referencedColumnName = "id")

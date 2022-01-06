@@ -12,6 +12,7 @@ import com.keyword.keywordspring.model.*;
 import com.keyword.keywordspring.repository.GroupRepository;
 import com.keyword.keywordspring.repository.PostRepository;
 import com.keyword.keywordspring.repository.PostVoteRepository;
+import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +33,7 @@ public class PostServiceImpl implements PostService {
     private final GroupRepository groupRepository;
     private final PostMapper postMapper;
     private final PostVoteRepository postVoteRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Long createPost(AppUser user, CreatePostRequest request) {
@@ -50,6 +52,9 @@ public class PostServiceImpl implements PostService {
                         .edited(false)
                         .votes(0)
                 .build());
+
+        user.setNrOfPosts(user.getNrOfPosts() + 1);
+        userRepository.save(user);
 
         return saved.getId();
     }
@@ -151,6 +156,9 @@ public class PostServiceImpl implements PostService {
         if(postRepository.findById(id).isEmpty() ||
                 !Objects.equals(user.getId(), postRepository.findById(id).get().getUser().getId()))
             throw new UnauthorizedException();
+
+        user.setNrOfPosts(user.getNrOfPosts() - 1);
+        userRepository.save(user);
 
         postRepository.deleteById(id);
     }

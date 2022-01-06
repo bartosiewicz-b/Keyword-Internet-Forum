@@ -11,6 +11,7 @@ import com.keyword.keywordspring.model.*;
 import com.keyword.keywordspring.repository.CommentRepository;
 import com.keyword.keywordspring.repository.CommentVoteRepository;
 import com.keyword.keywordspring.repository.PostRepository;
+import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class CommentServiceImpl implements CommentService {
     private final PostRepository postRepository;
     private final CommentMapper commentMapper;
     private final CommentVoteRepository commentVoteRepository;
+    private final UserRepository userRepository;
 
     @Override
     public CommentDto addComment(AppUser user, CreateCommentRequest request) {
@@ -52,6 +54,9 @@ public class CommentServiceImpl implements CommentService {
                 .build();
 
         commentRepository.save(comment);
+
+        user.setNrOfComments(user.getNrOfComments() + 1);
+        userRepository.save(user);
 
         return commentMapper.mapToDto(comment, user);
     }
@@ -143,6 +148,9 @@ public class CommentServiceImpl implements CommentService {
         if(commentRepository.findById(id).isEmpty() ||
                 !Objects.equals(user.getId(), commentRepository.findById(id).get().getUser().getId()))
             throw new UnauthorizedException();
+
+        user.setNrOfComments(user.getNrOfComments() - 1);
+        userRepository.save(user);
 
         commentRepository.deleteById(id);
     }

@@ -1,11 +1,13 @@
 package com.keyword.keywordspring.service;
 
+import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
 import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.exception.*;
+import com.keyword.keywordspring.mapper.interf.UserMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.JwtUtil;
@@ -14,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -23,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final UserMapper userMapper;
 
     @Override
     public void register(RegisterRequest request) {
@@ -36,6 +40,9 @@ public class UserServiceImpl implements UserService {
         AppUser user = AppUser.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
+                .dateCreated(new Date(System.currentTimeMillis()))
+                .nrOfComments(0)
+                .nrOfPosts(0)
                 .password(passwordEncoder.encode(request.getPassword())).build();
 
         userRepository.save(user);
@@ -108,5 +115,13 @@ public class UserServiceImpl implements UserService {
     public boolean isEmailTaken(String email) {
 
         return userRepository.findByEmail(email).isPresent();
+    }
+
+    @Override
+    public UserDto getUser(String username) {
+        AppUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserDoesNotExistException(username));
+
+        return userMapper.mapToDto(user);
     }
 }

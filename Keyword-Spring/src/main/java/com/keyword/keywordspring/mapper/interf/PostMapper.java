@@ -7,6 +7,4 @@ import com.keyword.keywordspring.model.Post;
 public interface PostMapper {
 
     PostDto mapToDto(Post model, AppUser user);
-
-    Post mapToModel(PostDto dto);
 }

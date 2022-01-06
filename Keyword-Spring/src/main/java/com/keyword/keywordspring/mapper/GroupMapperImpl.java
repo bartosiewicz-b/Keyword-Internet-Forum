@@ -32,14 +32,4 @@ public class GroupMapperImpl implements GroupMapper {
                 .owner(group.getOwner().getUsername())
                 .build();
     }
-
-    @Override
-    public ForumGroup mapToModel(GroupDto dto) {
-        Optional<ForumGroup> group = groupRepository.findById(dto.getId());
-
-        if(group.isPresent())
-            return group.get();
-
-        throw new GroupDoesNotExistException(dto.getId());
-    }
 }

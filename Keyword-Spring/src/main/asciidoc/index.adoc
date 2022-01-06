@@ -54,6 +54,16 @@ include::{snippets}/validateNewEmail/http-request.adoc[]
 include::{snippets}/validateNewEmail/http-response.adoc[]
 
 
+= User
+
+
+== Get User
+.request
+include::{snippets}/getUser/http-request.adoc[]
+.response
+include::{snippets}/getUser/http-response.adoc[]
+
+
 = Group
 
 

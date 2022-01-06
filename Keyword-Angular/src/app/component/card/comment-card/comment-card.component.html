@@ -16,7 +16,11 @@
       <div class="card-body col-11">
           <div class="flex-container">
             <p class="card-text header" *ngIf="!isUserWriting && !isUserEditing && username!=null">
-              <small class="text-muted">{{comment.user}}</small>
+              <small class="text-muted">
+                <a routerLink="/user/{{comment.user}}">
+                  {{comment.user}}
+                </a>
+              </small>
               <button *ngIf="comment.user==username" (click)="isUserEditing=true; editedContent=this.comment.content">Edit</button>
               <button *ngIf="comment.user==username" (click)="deleteComment()">Delete</button>
             </p>

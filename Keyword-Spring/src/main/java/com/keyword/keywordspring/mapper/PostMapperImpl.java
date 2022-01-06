@@ -40,14 +40,4 @@ public class PostMapperImpl implements PostMapper {
                 .userVote(null == vote || vote.isEmpty() ? null : vote.get().getType())
                 .build();
     }
-
-    @Override
-    public Post mapToModel(PostDto dto) {
-        Optional<Post> post = postRepository.findById(dto.getId());
-
-        if(post.isPresent())
-            return post.get();
-
-        throw new PostDoesNotExistException(dto.getId());
-    }
 }

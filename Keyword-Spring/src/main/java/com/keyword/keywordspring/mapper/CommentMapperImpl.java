@@ -40,15 +40,4 @@ public class CommentMapperImpl implements CommentMapper {
                 .userVote(null == vote || vote.isEmpty() ? null : vote.get().getType())
                 .build();
     }
-
-    @Override
-    public Comment mapToModel(CommentDto dto) {
-
-        Optional<Comment> comment = commentRepository.findById(dto.getId());
-
-        if(comment.isPresent())
-            return comment.get();
-
-        throw new CommentDoesNotExistException(dto.getId());
-    }
 }

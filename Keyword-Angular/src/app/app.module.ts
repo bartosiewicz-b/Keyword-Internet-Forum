@@ -22,6 +22,7 @@ import { CreatePostComponent } from './component/forms/create-post/create-post.c
 import { RegisterComponent } from './component/register/register.component';
 import { CreateGroupComponent } from './component/forms/create-group/create-group.component';
 import { ProfileComponent } from './component/profile/profile.component';
+import { UserComponent } from './component/user/user.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ProfileComponent } from './component/profile/profile.component';
     CreatePostComponent,
     RegisterComponent,
     CreateGroupComponent,
-    ProfileComponent
+    ProfileComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,

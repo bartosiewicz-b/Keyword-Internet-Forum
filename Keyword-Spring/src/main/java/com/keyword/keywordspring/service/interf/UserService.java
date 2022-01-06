@@ -1,5 +1,6 @@
 package com.keyword.keywordspring.service.interf;
 
+import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
 import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
@@ -21,4 +22,6 @@ public interface UserService {
 
     boolean isUsernameTaken(String username);
     boolean isEmailTaken(String email);
+
+    UserDto getUser(String username);
 }

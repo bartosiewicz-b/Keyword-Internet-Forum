@@ -7,5 +7,4 @@ import com.keyword.keywordspring.model.ForumGroup;
 public interface GroupMapper {
 
     GroupDto mapToDto(ForumGroup group, AppUser user);
-    ForumGroup mapToModel(GroupDto dto);
 }
