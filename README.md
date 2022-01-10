@@ -20,7 +20,7 @@ This is a simple internet forum application, that allows it's users to register,
 
 ### Frontend With Angular:
 
-Download the "Keyword-Angular" folder, in terminal run
+Download the "Keyword-Angular" folder. In terminal run
 ```
 $ npm install
 ```
@@ -28,8 +28,30 @@ to install dependencies, and
 ```
 $ ng serve
 ```
-to run.
+to run on default port 4200.
 
 ### Backend with Spring:
 
-Download the "Keyword-Spring" folder, import to your IDE and run as Java Application.
+Download the "Keyword-Spring" folder. Add to path "src/main/resources", "application.properties" file and configure your database provider like this:
+
+```
+spring.datasource.driver-class-name=<paste your driver name here>
+spring.datasource.url=<paste your url here>
+spring.datasource.username=<paste your username here>
+spring.datasource.password=<paste your password here>
+```
+
+In terminal run
+
+```
+$ mvn clean install
+```
+
+to install the dependencies, and
+
+```
+$ mvn spring-boot:run
+```
+
+to run on default port 8080.
+
