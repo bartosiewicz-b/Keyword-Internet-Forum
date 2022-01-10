@@ -3,21 +3,21 @@
     <div class="col-1">
       <div class="row arrow" [class.active]="comment.userVote!=null && (comment.userVote==0 || comment.userVote.toString()=='UP')"
         (click)="upvote()">
-        <fa-icon [icon]="faArrowUp" *ngIf="username!=null"></fa-icon>
+        <fa-icon [icon]="faArrowUp" ></fa-icon>
       </div>
       <div class="row">
         <small class="text-muted">{{comment.votes}}</small>
       </div>
       <div class="row arrow" [class.active]="comment.userVote!=null && (comment.userVote==1 || comment.userVote.toString()=='DOWN')" 
         (click)="downvote()">
-        <fa-icon [icon]="faArrowDown" *ngIf="username!=null"></fa-icon>
+        <fa-icon [icon]="faArrowDown"></fa-icon>
       </div>
     </div>
       <div class="card-body col-11">
           <div class="flex-container">
             <p class="card-text header" *ngIf="!isUserWriting && !isUserEditing && username!=null">
               <small class="text-muted">
-                <a routerLink="/user/{{comment.user}}">
+                <a routerLink="/user/{{comment.user}}" class="name">
                   {{comment.user}}
                 </a>
               </small>

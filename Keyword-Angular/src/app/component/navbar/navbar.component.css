@@ -1,20 +1,28 @@
 .container-fluid{
-    margin: 0 50px 0 50px;
+    margin: 0 15% 0 15%;
 }
 
 .nav-link {
-    color: white;
+    color: #dfdfdf;
 }
 
 .nav-link:hover{
     cursor: pointer;
 }
 
+.left{
+    display: flex;
+}
+
 .dropdown-menu{
-    
     background-color: black;
 }
 
-.dropdown-item{
-    color: white;
+.dropdown-menu>li:hover{
+    background-color: #1d1d1d;
+}
+
+.logo{
+    width: 30px;
+    margin-right: 20px;
 }

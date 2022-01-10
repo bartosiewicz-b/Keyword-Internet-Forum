@@ -7,3 +7,11 @@ a{
     text-decoration: none;
     color: white;
 }
+
+.name{
+    color: white;
+}
+
+.name:hover{
+    color: lightgray;
+}

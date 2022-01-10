@@ -7,6 +7,10 @@ export class MemoryService {
 
   constructor() { }
 
+  isLoggedIn() {
+    return this.getEmail()!=null;
+  }
+
   saveLogin(refresh: string, token: string, username: string, email: string) {
     this.setRefresh(refresh);
     this.setToken(token);

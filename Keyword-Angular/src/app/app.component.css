@@ -3,15 +3,11 @@
 }
 
 .flex-container {
-    width: 50%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
 }
 
 .card {
     margin: 5px;
-}
-
-.left{
-    width: 50%;
 }

@@ -7,3 +7,13 @@
     margin-bottom: 50px;
     font-size: large;
 }
+
+.search{
+    width: 60%;
+    margin: 0 auto 0 auto;
+}
+
+.feed{
+    width: 50%;
+    margin: 5px auto 5px auto;
+}

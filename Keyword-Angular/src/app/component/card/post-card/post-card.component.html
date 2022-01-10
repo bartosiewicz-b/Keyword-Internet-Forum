@@ -4,21 +4,21 @@
         <div class="col-1">
           <div class="row arrow" [class.active]="post.userVote!=null && (post.userVote==0 || post.userVote.toString()=='UP')"
           (click)="upvote()">
-            <fa-icon [icon]="faArrowUp" *ngIf="username!=null"></fa-icon>
+            <fa-icon [icon]="faArrowUp"></fa-icon>
           </div>
           <div class="row">
             <small class="text-muted">{{post.votes}}</small>
           </div>
           <div class="row arrow" [class.active]="post.userVote!=null && (post.userVote==1 || post.userVote.toString()=='DOWN')" 
           (click)="downvote()">
-            <fa-icon [icon]="faArrowDown" *ngIf="username!=null"></fa-icon>
+            <fa-icon [icon]="faArrowDown"></fa-icon>
           </div>
         </div>
 
         <div class="col-11">
             <div class="flex-container">
               <p class="card-text header">
-                <small class="text-muted">{{post.username}}</small>
+                <small class="text-muted"><a routerLink="/user/{{post.username}}" class="name">{{post.username}}</a></small>
                 <small class="text-muted">{{post.dateCreated | date}}</small>
               </p>
               <h5 class="card-title">{{post.title}}</h5>

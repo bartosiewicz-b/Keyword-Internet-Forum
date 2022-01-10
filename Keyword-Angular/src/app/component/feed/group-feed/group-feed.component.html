@@ -1,7 +1,9 @@
-Search for groups:
-<input type="text" class="input" #groupName (keyup)="search(groupName.value)">
+<div class="search">
+  Search for groups:
+  <input type="text" class="input" #groupName (keyup)="search(groupName.value)">
 
-<button routerLink="/create-group">Create Group</button>
+  <button routerLink="/create-group">Create Group</button>
+</div>
 
 <div *ngFor="let g of groups" class="feed">
     <a routerLink="/{{g.id}}">

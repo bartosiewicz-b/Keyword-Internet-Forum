@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { MemoryService } from './../../../service/memory.service';
 import { take } from 'rxjs/operators';
 import { VoteType } from './../../../model/voteType';
@@ -28,10 +29,16 @@ export class CommentCardComponent{
   faTimes = faTimes;
 
   constructor(private memoryService: MemoryService,
+    private router: Router,
     private commentService: CommentService) {}
 
 
   upvote() {
+    if(!this.memoryService.isLoggedIn()) {
+      this.router.navigateByUrl('login');
+      return;
+    }
+
     this.commentService.upvote(this.comment.id);
 
     if(this.comment.userVote == null) {
@@ -48,6 +55,11 @@ export class CommentCardComponent{
   }
 
   downvote() {
+    if(!this.memoryService.isLoggedIn()) {
+      this.router.navigateByUrl('login');
+      return;
+    }
+    
     this.commentService.downvote(this.comment.id);
 
     if(this.comment.userVote == null) {

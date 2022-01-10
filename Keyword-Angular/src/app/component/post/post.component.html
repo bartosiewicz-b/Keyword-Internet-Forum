@@ -1,18 +1,20 @@
 <div class="post">
     <post-card [post]="post"></post-card>
 
-    <form #createComment="ngForm" (ngSubmit)="comment(createComment)" *ngIf="username != null">
+    <form class="form" #createComment="ngForm" (ngSubmit)="comment(createComment)" *ngIf="username != null">
         <input ngModel type="text" name="content">
         <button type="submit" class="btn">Comment</button>
     </form>
 
-    <div *ngFor="let c of comments">
-        <div *ngIf="c.parentCommentId==null">
-            <comment-card [comment]="c" (deleteId)="delete($event)"></comment-card>
-        </div>
-        <div *ngFor="let sc of comments" class="sideComment">
-            <div *ngIf="sc.parentCommentId!=null && sc.parentCommentId==c.id">
-                <comment-card [comment]="sc" (deleteId)="delete($event)"></comment-card>
+    <div class="comments">
+        <div *ngFor="let c of comments">
+            <div *ngIf="c.parentCommentId==null">
+                <comment-card [comment]="c" (deleteId)="delete($event)"></comment-card>
+            </div>
+            <div *ngFor="let sc of comments" class="sideComment">
+                <div *ngIf="sc.parentCommentId!=null && sc.parentCommentId==c.id">
+                    <comment-card [comment]="sc" (deleteId)="delete($event)"></comment-card>
+                </div>
             </div>
         </div>
     </div>

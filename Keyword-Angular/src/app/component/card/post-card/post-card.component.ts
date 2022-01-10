@@ -28,6 +28,11 @@ export class PostCardComponent {
   }
 
   upvote() {
+    if(!this.memoryService.isLoggedIn()) {
+      this.router.navigateByUrl('login');
+      return;
+    }
+
     this.postService.upvote(this.post.id);
 
     if(this.post.userVote == null) {
@@ -44,6 +49,11 @@ export class PostCardComponent {
   }
 
   downvote() {
+    if(!this.memoryService.isLoggedIn()) {
+      this.router.navigateByUrl('login');
+      return;
+    }
+
     this.postService.downvote(this.post.id);
 
     if(this.post.userVote == null) {
