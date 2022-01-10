@@ -1,3 +1,4 @@
+import { MemoryService } from './../../../service/memory.service';
 import { take } from 'rxjs/operators';
 import { VoteType } from './../../../model/voteType';
 import { CommentService } from './../../../service/comment.service';
@@ -19,14 +20,15 @@ export class CommentCardComponent{
 
   isUserWriting: boolean = false;
   isUserEditing: boolean = false;
-  username: string | null = sessionStorage.getItem('username');
+  username: string | null = this.memoryService.getUsername();
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
   faTimes = faTimes;
 
-  constructor(private commentService: CommentService) {}
+  constructor(private memoryService: MemoryService,
+    private commentService: CommentService) {}
 
 
   upvote() {

@@ -39,11 +39,9 @@ public class JwtUtilImpl implements JwtUtil {
 
     @Override
     public Optional<TokenResponse> refreshJwt(String refreshToken) {
-
         Optional<TokenResponse> response = Optional.empty();
 
         if(validateRefreshToken(refreshToken)) {
-
             Optional<AppUser> user = userRepository.findByUsername(getUsernameFromJwt(refreshToken));
 
             if(user.isPresent()) {

@@ -1,3 +1,4 @@
+import { MemoryService } from './../../service/memory.service';
 import { PostService } from './../../service/post.service';
 import { Group } from './../../model/group';
 import { GroupService } from './../../service/group.service';
@@ -12,9 +13,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class GroupComponent {
   group: Group = new Group;
 
-  username: string | null = sessionStorage.getItem('username');
+  username: string | null = this.memoryService.getUsername();
 
-  constructor(private postService: PostService,
+  constructor(private memoryService: MemoryService,
+    private postService: PostService,
     private groupService: GroupService,
     private router: Router,
     private route: ActivatedRoute) { 

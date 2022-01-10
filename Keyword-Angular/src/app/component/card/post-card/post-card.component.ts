@@ -1,3 +1,4 @@
+import { MemoryService } from './../../../service/memory.service';
 import { Router } from '@angular/router';
 import { VoteType } from './../../../model/voteType';
 import { PostService } from './../../../service/post.service';
@@ -15,13 +16,14 @@ export class PostCardComponent {
   @Input('excerpt') excerpt: boolean = false;
   @Input('enableVoting') enableVoting: boolean = true;
 
-  username: string | null = sessionStorage.getItem('username');
+  username: string | null = this.memoryService.getUsername();
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
 
-  constructor(private router: Router,
+  constructor(private memoryService: MemoryService,
+    private router: Router,
     private postService: PostService) { 
   }
 

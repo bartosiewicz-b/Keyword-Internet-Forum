@@ -1,3 +1,4 @@
+import { MemoryService } from './../../service/memory.service';
 import { AuthService } from './../../service/auth.service';
 import { Component, OnInit } from '@angular/core';
 
@@ -14,12 +15,11 @@ export class ProfileComponent implements OnInit {
   newUsernameTaken: boolean = false;
   newEmailTaken: boolean = false;
 
-  sessionStorage = sessionStorage;
+  currentUsername: string | null = this.memoryService.getUsername();
+  currentEmail: string | null = this.memoryService.getEmail();
 
-  currentUsername: string | null = sessionStorage.getItem('username');
-  currentEmail: string | null = sessionStorage.getItem('email');
-
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,
+    private memoryService: MemoryService) { }
 
   ngOnInit(): void {
   }

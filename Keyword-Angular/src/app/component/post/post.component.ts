@@ -1,3 +1,4 @@
+import { MemoryService } from './../../service/memory.service';
 import { take } from 'rxjs/operators';
 import { PostService } from '../../service/post.service';
 import { Post } from '../../model/post';
@@ -17,7 +18,8 @@ export class PostComponent implements OnInit {
   comments: Comment[] = [];
   post: Post = new Post;
 
-  constructor(private postService: PostService,
+  constructor(private memoryService: MemoryService,
+    private postService: PostService,
       private commentService: CommentService,
       private route: ActivatedRoute) { 
 
@@ -26,7 +28,7 @@ export class PostComponent implements OnInit {
     this.postService.get(postId).subscribe(res => this.post = res);
     this.commentService.getAll(postId).subscribe(res => this.comments = res);
 
-    this.username = sessionStorage.getItem('username');
+    this.username = memoryService.getUsername();
   }
 
   ngOnInit(): void {
