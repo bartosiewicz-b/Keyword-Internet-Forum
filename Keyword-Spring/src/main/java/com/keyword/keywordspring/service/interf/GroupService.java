@@ -21,5 +21,7 @@ public interface GroupService {
 
     void subscribeGroup(AppUser user, String groupId);
 
+    List<GroupDto> getSubscribedGroups(AppUser user);
+
     void deleteGroup(AppUser user, String groupId);
 }

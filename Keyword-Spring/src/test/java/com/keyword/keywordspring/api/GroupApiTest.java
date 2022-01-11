@@ -179,4 +179,17 @@ class GroupApiTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
     }
+
+    @Test
+    void getSubscribedGroups() throws Exception {
+
+        mockMvc.perform(get("/group/get-subscribed")
+                        .header("Authorization", "token")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
 }

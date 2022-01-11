@@ -11,6 +11,9 @@
         </a>
       </div>
 
+      <a class="nav-link" routerLink="/create-post">
+        Create Post
+      </a>
       <div *ngIf="memoryService.getUsername()==null; else user">
         <a class="nav-link active" routerLink="/login">Login</a>
       </div>

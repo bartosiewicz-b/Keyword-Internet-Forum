@@ -1,6 +1,6 @@
 import { AuthService } from '../../service/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,6 +19,6 @@ export class LoginComponent implements OnInit {
   login(data: NgForm) {
     this.authService.login(data.value.login, data.value.password);
     
-    this.router.navigate(['/']);
+    this.router.navigateByUrl('/');
   }
 }

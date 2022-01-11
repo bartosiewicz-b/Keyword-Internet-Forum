@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Post implements Serializable {
 
     @Id

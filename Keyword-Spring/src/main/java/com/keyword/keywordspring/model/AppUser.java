@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class AppUser implements Serializable {
 
     @Id
@@ -37,4 +38,7 @@ public class AppUser implements Serializable {
     @OneToMany
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private List<Comment> comments;
+
+    @ManyToMany
+    private List<ForumGroup> subscribed;
 }

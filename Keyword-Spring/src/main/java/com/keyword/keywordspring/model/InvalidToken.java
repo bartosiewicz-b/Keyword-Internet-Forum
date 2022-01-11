@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class InvalidToken implements Serializable {
 
     @Id

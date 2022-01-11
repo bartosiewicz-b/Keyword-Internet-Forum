@@ -1,5 +1,13 @@
 <form #createPost="ngForm" (ngSubmit)="create()">
-    <div class="form-group">
+
+  <div class="form-group">
+    <label for="group">Group</label>
+    <select [(ngModel)]="group" class="form-control" id="group" name="group" [disabled]="routeGroupId!=null">
+      <option *ngFor="let g of groups" value="{{g.id}}">{{g.groupName}}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
       <label for="title">Title</label>
       <input [(ngModel)]="title" type="text" class="form-control" id="title" name="title">
     </div>

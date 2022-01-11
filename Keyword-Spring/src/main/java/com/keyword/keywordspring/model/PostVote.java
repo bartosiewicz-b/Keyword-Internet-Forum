@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class PostVote implements Serializable {
 
     @Id

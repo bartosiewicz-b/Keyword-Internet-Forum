@@ -20,6 +20,7 @@ const routes: Routes = [
   { path: "create-group/:groupId", component: CreateGroupComponent},
   { path: "profile", component: ProfileComponent},
   { path: "user/:username", component: UserComponent },
+  { path: "create-post", component: CreatePostComponent},
   { path: "create-post/:groupId", component: CreatePostComponent},
   { path: "create-post/:groupId/:postId", component: CreatePostComponent},
   { path: ":groupId/:postId", component: PostComponent},

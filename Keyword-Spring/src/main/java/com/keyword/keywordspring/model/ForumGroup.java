@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ForumGroup implements Serializable {
 
     @Id
@@ -32,4 +33,7 @@ public class ForumGroup implements Serializable {
     private Date dateCreated;
 
     private Integer subscriptions;
+
+    @ManyToMany
+    private List<AppUser> subscribers;
 }

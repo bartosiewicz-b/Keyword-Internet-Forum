@@ -9,6 +9,7 @@ import com.keyword.keywordspring.service.interf.GroupService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,10 +28,9 @@ public class GroupApi {
     @PostMapping("/create")
     public ResponseEntity<Void> createGroup(@RequestHeader("Authorization") String token,
                                               @RequestBody CreateGroupRequest request) {
-
-        AppUser user = jwtUtil.getUserFromToken(token);
-
         try {
+            AppUser user = jwtUtil.getUserFromToken(token);
+
             groupService.createGroup(user, request);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
@@ -42,10 +42,9 @@ public class GroupApi {
     public ResponseEntity<List<GroupDto>> getGroups(@RequestHeader(value = "Authorization", required = false) String token,
                                                     @RequestParam Integer page,
                                                     @RequestParam(required = false) String name) {
-
-        AppUser user = jwtUtil.getUserFromToken(token);
-
         try {
+            AppUser user = jwtUtil.getUserFromToken(token);
+
             return ResponseEntity.ok().body(groupService.getGroups(page, name, user));
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
@@ -55,10 +54,9 @@ public class GroupApi {
     @GetMapping("/get")
     public ResponseEntity<GroupDto> getGroup(@RequestHeader(value = "Authorization", required = false) String token,
                                              @RequestParam String id) {
-
-        AppUser user = jwtUtil.getUserFromToken(token);
-
         try {
+            AppUser user = jwtUtil.getUserFromToken(token);
+
             return ResponseEntity.ok().body(groupService.getGroup(id, user));
         } catch (Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
@@ -68,10 +66,9 @@ public class GroupApi {
     @PostMapping("/edit")
     public ResponseEntity<Void> editGroup(@RequestHeader("Authorization") String token,
                                             @RequestBody EditGroupRequest request) {
-
-        AppUser user = jwtUtil.getUserFromToken(token);
-
         try {
+            AppUser user = jwtUtil.getUserFromToken(token);
+
             groupService.editGroup(user, request);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
@@ -83,13 +80,23 @@ public class GroupApi {
     @PostMapping("/subscribe")
     public ResponseEntity<Void> subscribeGroup(@RequestHeader("Authorization") String token,
                                                @RequestBody Map<String, String> request) {
-
-        AppUser user = jwtUtil.getUserFromToken(token);
-
         try {
+            AppUser user = jwtUtil.getUserFromToken(token);
+
             groupService.subscribeGroup(user, request.get("groupId"));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get-subscribed")
+    public ResponseEntity<List<GroupDto>> getSubscribedGroups(@RequestHeader("Authorization") String token) {
+        try {
+            AppUser user = jwtUtil.getUserFromToken(token);
+
+            return ResponseEntity.ok().body(groupService.getSubscribedGroups(user));
+        } catch(Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }
     }
@@ -105,11 +112,10 @@ public class GroupApi {
 
     @PostMapping("/delete")
     public ResponseEntity<Void> deleteGroup(@RequestHeader("Authorization") String token,
-            @RequestBody Map<String, String> request) {
-
-        AppUser user = jwtUtil.getUserFromToken(token);
-
+                                            @RequestBody Map<String, String> request) {
         try {
+            AppUser user = jwtUtil.getUserFromToken(token);
+
             groupService.deleteGroup(user, request.get("groupId"));
             return ResponseEntity.ok().build();
         } catch (Exception e) {

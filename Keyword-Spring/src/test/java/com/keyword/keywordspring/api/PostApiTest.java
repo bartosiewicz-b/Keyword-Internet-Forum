@@ -100,7 +100,7 @@ class PostApiTest {
         List<PostDto> posts = new ArrayList<>();
         posts.add(post);
 
-        when(postService.getPosts(any(), any(), any())).thenReturn(posts);
+        when(postService.getPosts(any(), any(), any(), any())).thenReturn(posts);
 
         MvcResult result = mockMvc.perform(get("/post/get-all")
                 .param("page", "0"))

@@ -11,21 +11,23 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./group.component.css']
 })
 export class GroupComponent {
-  group: Group = new Group;
+  group: Group | null = null;
 
   username: string | null = this.memoryService.getUsername();
 
   constructor(private memoryService: MemoryService,
-    private postService: PostService,
     private groupService: GroupService,
     private router: Router,
-    private route: ActivatedRoute) { 
+    route: ActivatedRoute) { 
 
       this.groupService.get(route.snapshot.paramMap.get('groupId') as string)
         .subscribe(res => this.group = res);
     }
 
   subscribe() {
+    if(this.group==null)
+      return;
+
     this.groupService.subscribe(this.group.id);
 
     if(this.group.isSubscribed)
@@ -37,8 +39,11 @@ export class GroupComponent {
   }
 
   delete() {
+    if(this.group==null)
+      return;
+      
     this.groupService.deleteGroup(this.group.id);
-    this.router.navigate(['/']);
+    this.router.navigateByUrl('/');
   }
 
 }

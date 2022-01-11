@@ -40,12 +40,13 @@ public class PostApi {
     @GetMapping("/get-all")
     public ResponseEntity<List<PostDto>> getPosts(@RequestHeader(value = "Authorization", required = false) String token,
                             @RequestParam Integer page,
+                            @RequestParam(required = false) String groupId,
                             @RequestParam(required = false) String name) {
 
         AppUser user = null == token ? null : jwtUtil.getUserFromToken(token);
 
         try {
-            return ResponseEntity.ok().body(postService.getPosts(page, name, user));
+            return ResponseEntity.ok().body(postService.getPosts(page, name, groupId, user));
         } catch(Exception e) {
             throw new UnexpectedProblemException(e.getMessage());
         }

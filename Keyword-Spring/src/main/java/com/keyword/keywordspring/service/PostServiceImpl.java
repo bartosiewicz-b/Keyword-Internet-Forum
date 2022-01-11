@@ -60,12 +60,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getPosts(Integer page, String name, AppUser user) {
+    public List<PostDto> getPosts(Integer page, String name, String groupId, AppUser user) {
 
-        return (name == null ?
-                postRepository.findAll(PageRequest.of(page, 10, Sort.by("votes").descending())) :
-                postRepository.findByTitleLike("%"+name+"%", PageRequest.of(page, 10, Sort.by("votes").descending())))
-                .stream()
+        ForumGroup group = groupId==null ? null : groupRepository.findById(groupId).orElse(null);
+        List<Post> posts;
+
+        if(name!=null && group!=null)
+            posts = postRepository.findByTitleLikeAndForumGroupLike("%"+name+"%", group, PageRequest.of(page, 10, Sort.by("votes").descending()));
+        else if(name==null && group!=null)
+            posts = postRepository.findByForumGroupLike(group, PageRequest.of(page, 10, Sort.by("votes").descending()));
+        else if(name!=null)
+            posts = postRepository.findByTitleLike("%"+name+"%", PageRequest.of(page, 10, Sort.by("votes").descending()));
+        else
+            posts = postRepository.findAll(PageRequest.of(page, 10, Sort.by("votes").descending()));
+
+        return posts.stream()
                 .map(p -> postMapper.mapToDto(p, user))
                 .collect(Collectors.toList());
     }

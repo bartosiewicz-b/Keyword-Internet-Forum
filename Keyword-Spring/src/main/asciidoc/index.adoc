@@ -97,6 +97,12 @@ include::{snippets}/subscribeGroup/http-request.adoc[]
 .response
 include::{snippets}/subscribeGroup/http-response.adoc[]
 
+== Get Subscribed Groups
+.request
+include::{snippets}/getSubscribedGroups/http-request.adoc[]
+.response
+include::{snippets}/getSubscribedGroups/http-response.adoc[]
+
 == Validate New Group Name
 .request
 include::{snippets}/validateNewGroupName/http-request.adoc[]

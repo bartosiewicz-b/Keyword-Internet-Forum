@@ -56,7 +56,7 @@ class PostServiceImplTest {
 
         when(postRepository.findAll(any())).thenReturn(posts);
 
-        List<PostDto> result = postService.getPosts(0, null, null);
+        List<PostDto> result = postService.getPosts(0, null, null, null);
 
         assertEquals(postMapper.mapToDto(post, post.getUser()), result.get(0));
     }

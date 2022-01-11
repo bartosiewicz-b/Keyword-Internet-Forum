@@ -13,9 +13,16 @@ export class PostService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getAll(page: number, keyword: string): Observable<Post[]> {
+  getAll(page: number, groupId: string | any, keyword: string): Observable<Post[]> {
+    let pars: any;
+
+    if(groupId==null)
+      pars = {"page": page, "name": keyword};
+    else
+      pars = {"page": page, "groupId": groupId, "name": keyword};
+
     return this.httpClient.get<Post[]>(this.url + '/get-all',
-    {params: {"page": page, "name": keyword}})
+    {params: pars})
       .pipe(map(res => {
         return res as Post[];
       }));

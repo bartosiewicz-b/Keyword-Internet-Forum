@@ -11,6 +11,7 @@ import java.util.Date;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Comment implements Serializable {
 
     @Id

@@ -12,6 +12,7 @@ import com.keyword.keywordspring.model.ForumGroup;
 import com.keyword.keywordspring.model.GroupSubscription;
 import com.keyword.keywordspring.repository.GroupRepository;
 import com.keyword.keywordspring.repository.GroupSubscriptionRepository;
+import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
+    private final UserRepository userRepository;
     private final GroupSubscriptionRepository groupSubscriptionRepository;
     private final GroupMapper groupMapper;
 
@@ -39,6 +41,7 @@ public class GroupServiceImpl implements GroupService {
                 .description(request.getDescription())
                 .dateCreated(new Date(System.currentTimeMillis()))
                 .subscriptions(0)
+                .subscribers(new ArrayList<>())
                 .build();
 
         groupRepository.save(forumGroup);
@@ -98,14 +101,27 @@ public class GroupServiceImpl implements GroupService {
                     .build());
 
             group.setSubscriptions(group.getSubscriptions() + 1);
+            group.getSubscribers().add(user);
+            user.getSubscribed().add(group);
             groupRepository.save(group);
+            userRepository.save(user);
         }
         else {
             groupSubscriptionRepository.delete(subscription.get());
 
             group.setSubscriptions(group.getSubscriptions() - 1);
+            group.getSubscribers().remove(user);
+            user.getSubscribed().remove(group);
             groupRepository.save(group);
+            userRepository.save(user);
         }
+    }
+
+    @Override
+    public List<GroupDto> getSubscribedGroups(AppUser user) {
+        return user.getSubscribed().stream()
+                .map(g -> groupMapper.mapToDto(g, user))
+                .collect(Collectors.toList());
     }
 
     @Override

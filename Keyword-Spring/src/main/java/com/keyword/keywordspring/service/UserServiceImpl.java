@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
                 .dateCreated(new Date(System.currentTimeMillis()))
                 .nrOfComments(0)
                 .nrOfPosts(0)
+                .subscribed(new ArrayList<>())
                 .password(passwordEncoder.encode(request.getPassword())).build();
 
         userRepository.save(user);

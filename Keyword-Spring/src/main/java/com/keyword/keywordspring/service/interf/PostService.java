@@ -11,7 +11,7 @@ public interface PostService {
 
     Long createPost(AppUser user, CreatePostRequest request);
 
-    List<PostDto> getPosts(Integer page, String name, AppUser user);
+    List<PostDto> getPosts(Integer page, String name, String groupId, AppUser user);
 
     PostDto getPost(Long id, AppUser user);
 

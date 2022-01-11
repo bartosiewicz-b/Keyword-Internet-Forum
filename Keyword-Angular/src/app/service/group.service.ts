@@ -21,6 +21,13 @@ export class GroupService {
       }));
   }
 
+  getSubscribed(): Observable<Group[]> {
+    return this.httpClient.get<Group[]>(this.url + '/get-subscribed')
+      .pipe(map(res => {
+        return res as Group[];
+      }));
+  }
+
   get(groupId: string): Observable<Group> {
     return this.httpClient.get<Group>(this.url + '/get',
     {params: {"id": groupId}})
