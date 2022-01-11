@@ -3,16 +3,16 @@ package com.keyword.keywordspring.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Builder
-@Setter
 @Getter
-@AllArgsConstructor
+@Setter
+@Builder
 @NoArgsConstructor
-public class Post {
+public class Post implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

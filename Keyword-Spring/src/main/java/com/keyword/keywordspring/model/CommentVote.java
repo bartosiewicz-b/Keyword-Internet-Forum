@@ -3,14 +3,14 @@ package com.keyword.keywordspring.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class CommentVote {
+public class CommentVote implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

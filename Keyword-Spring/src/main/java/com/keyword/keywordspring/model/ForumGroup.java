@@ -3,6 +3,7 @@ package com.keyword.keywordspring.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -11,8 +12,7 @@ import java.util.List;
 @Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class ForumGroup {
+public class ForumGroup implements Serializable {
 
     @Id
     private String id;
