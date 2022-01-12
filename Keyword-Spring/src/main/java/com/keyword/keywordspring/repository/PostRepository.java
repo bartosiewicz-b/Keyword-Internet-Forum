@@ -15,4 +15,9 @@ public interface PostRepository extends CrudRepository<Post, Long> {
     List<Post> findByTitleLike(String title, Pageable pageable);
     List<Post> findByForumGroupLike(ForumGroup group, Pageable pageable);
     List<Post> findByTitleLikeAndForumGroupLike(String title, ForumGroup group, Pageable pageable);
+
+    List<Post> findAll();
+    List<Post> findByTitleLike(String title);
+    List<Post> findByForumGroupLike(ForumGroup group);
+    List<Post> findByTitleLikeAndForumGroupLike(String title, ForumGroup group);
 }

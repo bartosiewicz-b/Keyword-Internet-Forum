@@ -125,6 +125,12 @@ include::{snippets}/getPosts/http-request.adoc[]
 .response
 include::{snippets}/getPosts/http-response.adoc[]
 
+== Get Posts Count
+.request
+include::{snippets}/getPostsCount/http-request.adoc[]
+.response
+include::{snippets}/getPostsCount/http-response.adoc[]
+
 == Get Post
 .request
 include::{snippets}/getPost/http-request.adoc[]

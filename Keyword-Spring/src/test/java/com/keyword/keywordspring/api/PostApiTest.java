@@ -115,6 +115,21 @@ class PostApiTest {
     }
 
     @Test
+    void getPostsCount() throws Exception {
+        when(postService.getPostsCount(anyString(), anyString())).thenReturn(0);
+
+        MvcResult result = mockMvc.perform(get("/post/get-all-count"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(), "0");
+    }
+
+    @Test
     void getPost() throws Exception {
 
         when(postService.getPost(anyLong(), any())).thenReturn(post);

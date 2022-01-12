@@ -28,6 +28,21 @@ export class PostService {
       }));
   }
 
+  getCount(groupId: string | null, keyword: string | null) {
+    let pars: any = {};
+
+    if(groupId != null)
+      pars.groupId = groupId;
+    if(keyword != null)
+      pars.name = keyword;
+
+    return this.httpClient.get<number>(this.url + '/get-all-count',
+    {params: pars})
+      .pipe(map(res => {
+        return res;
+      }));
+  }
+
   get(postId: number): Observable<Post> {
     return this.httpClient.get<Post>(this.url + '/get',
     {params: {"id": postId}})

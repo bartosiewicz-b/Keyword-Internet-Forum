@@ -80,6 +80,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Integer getPostsCount(String groupId, String name) {
+
+        ForumGroup group = groupId==null ? null : groupRepository.findById(groupId).orElse(null);
+
+        if(name!=null && group!=null)
+            return postRepository.findByTitleLikeAndForumGroupLike("%"+name+"%", group).size();
+        else if(name==null && group!=null)
+            return postRepository.findByForumGroupLike(group).size();
+        else if(name!=null)
+            return postRepository.findByTitleLike("%"+name+"%").size();
+        else
+            return postRepository.findAll().size();
+    }
+
+    @Override
     public PostDto getPost(Long id, AppUser user) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostDoesNotExistException(id));
 

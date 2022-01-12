@@ -53,6 +53,17 @@ public class PostApi {
 
     }
 
+    @GetMapping("/get-all-count")
+    public ResponseEntity<Integer> getPostsCount(@RequestParam(required = false) String groupId,
+                                                  @RequestParam(required = false) String name) {
+        try {
+            return ResponseEntity.ok().body(postService.getPostsCount(groupId, name));
+        } catch(Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
+        }
+
+    }
+
     @GetMapping("/get")
     public ResponseEntity<PostDto> getPost(@RequestHeader(value = "Authorization", required = false) String token,
             @RequestParam Long id) {
