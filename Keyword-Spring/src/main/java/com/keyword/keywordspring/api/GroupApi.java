@@ -51,6 +51,15 @@ public class GroupApi {
         }
     }
 
+    @GetMapping("/get-all-count")
+    public ResponseEntity<Integer> getGroupsCount(@RequestParam(required = false) String name) {
+        try {
+            return ResponseEntity.ok().body(groupService.getGroupsCount(name));
+        } catch (Exception e) {
+            throw new UnexpectedProblemException(e.getMessage());
+        }
+    }
+
     @GetMapping("/get")
     public ResponseEntity<GroupDto> getGroup(@RequestHeader(value = "Authorization", required = false) String token,
                                              @RequestParam String id) {

@@ -21,6 +21,19 @@ export class GroupService {
       }));
   }
 
+  getCount(keyword: string | null) {
+    let pars: any = {};
+
+    if(keyword != null)
+      pars.name = keyword;
+
+    return this.httpClient.get<number>(this.url + '/get-all-count',
+    {params: pars})
+      .pipe(map(res => {
+        return res;
+      }));
+  }
+
   getSubscribed(): Observable<Group[]> {
     return this.httpClient.get<Group[]>(this.url + '/get-subscribed')
       .pipe(map(res => {

@@ -4,7 +4,6 @@ import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.request.CreateGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
 import com.keyword.keywordspring.exception.UnauthorizedException;
-import com.keyword.keywordspring.exception.CommentDoesNotExistException;
 import com.keyword.keywordspring.exception.GroupDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.GroupMapper;
 import com.keyword.keywordspring.model.AppUser;
@@ -61,6 +60,14 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public Integer getGroupsCount(String name) {
+        if(null==name)
+            return groupRepository.findAll().size();
+        else
+            return groupRepository.findByGroupNameLike("%"+name+"%").size();
+    }
+
+    @Override
     public GroupDto getGroup(String id, AppUser user) {
         ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
 
@@ -103,8 +110,7 @@ public class GroupServiceImpl implements GroupService {
             group.setSubscriptions(group.getSubscriptions() + 1);
             group.getSubscribers().add(user);
             user.getSubscribed().add(group);
-            groupRepository.save(group);
-            userRepository.save(user);
+
         }
         else {
             groupSubscriptionRepository.delete(subscription.get());
@@ -112,9 +118,10 @@ public class GroupServiceImpl implements GroupService {
             group.setSubscriptions(group.getSubscriptions() - 1);
             group.getSubscribers().remove(user);
             user.getSubscribed().remove(group);
-            groupRepository.save(group);
-            userRepository.save(user);
         }
+
+        groupRepository.save(group);
+        userRepository.save(user);
     }
 
     @Override

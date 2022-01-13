@@ -13,6 +13,8 @@ public interface GroupService {
 
     List<GroupDto> getGroups(Integer page, String name, AppUser user);
 
+    Integer getGroupsCount(String name);
+
     GroupDto getGroup(String id, AppUser user);
 
     void editGroup(AppUser user, EditGroupRequest request);

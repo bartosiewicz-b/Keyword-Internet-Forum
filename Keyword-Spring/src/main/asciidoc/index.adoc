@@ -79,6 +79,12 @@ include::{snippets}/getGroups/http-request.adoc[]
 .response
 include::{snippets}/getGroups/http-response.adoc[]
 
+== Get Groups Count
+.request
+include::{snippets}/getGroupsCount/http-request.adoc[]
+.response
+include::{snippets}/getGroupsCount/http-response.adoc[]
+
 == Get Group
 .request
 include::{snippets}/getGroup/http-request.adoc[]

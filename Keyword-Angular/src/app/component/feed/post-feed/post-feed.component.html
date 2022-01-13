@@ -1,6 +1,6 @@
 <div class="search">
   Search for posts:
-  <input type="text" class="input" #postName (keyup)="search(postName.value)">
+  <input [(ngModel)]="searchPhrase" type="text" class="input" (keyup)="search()">
 </div>
 
 <div class="border-horiz">

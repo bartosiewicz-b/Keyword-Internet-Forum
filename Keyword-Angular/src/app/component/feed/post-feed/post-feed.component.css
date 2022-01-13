@@ -14,13 +14,14 @@
 }
 
 .feed{
-    width: 50%;
+    width: 70%;
     margin: 5px auto 5px auto;
 }
 
 .pageSelect{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .selector{
@@ -31,6 +32,6 @@
 .border-horiz{
     border-top: 1px solid #aaaaaa;
     border-bottom: 1px solid #aaaaaa;
-    margin: 50px 0 50px 0;
+    margin: 50px 100px 50px 100px;
     padding: 0 100px 0 100px;
 }

@@ -108,6 +108,21 @@ class GroupApiTest {
     }
 
     @Test
+    void getGroupsCount() throws Exception {
+        when(groupService.getGroupsCount(anyString())).thenReturn(0);
+
+        MvcResult result = mockMvc.perform(get("/group/get-all-count"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(), "0");
+    }
+
+    @Test
     void getGroup() throws Exception {
 
         when(groupService.getGroup(anyString(), any())).thenReturn(group);

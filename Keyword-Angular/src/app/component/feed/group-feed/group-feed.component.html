@@ -1,12 +1,30 @@
 <div class="search">
   Search for groups:
-  <input type="text" class="input" #groupName (keyup)="search(groupName.value)">
+  <input [(ngModel)]="searchPhrase" type="text" class="input" (keyup)="search()">
 
   <button routerLink="/create-group">Create Group</button>
+</div>
+
+<div class="border-horiz">
+  Page:
+  <div class="pageSelect">
+    <div *ngFor="let i of pages" (click)="goToPage(i)" class="selector">
+      {{i}}
+    </div>
+  </div>
 </div>
 
 <div *ngFor="let g of groups" class="feed">
     <a routerLink="/{{g.id}}">
       <group-card [group]="g"></group-card>
     </a>
+</div>
+
+<div class="border-horiz">
+  Page:
+  <div class="pageSelect">
+    <div *ngFor="let i of pages" (click)="goToPage(i)" class="selector">
+      {{i}}
+    </div>
+  </div>
 </div>

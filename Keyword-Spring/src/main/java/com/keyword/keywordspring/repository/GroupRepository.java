@@ -15,4 +15,7 @@ public interface GroupRepository extends CrudRepository<ForumGroup, String> {
 
     List<ForumGroup> findAll(Pageable pageable);
     List<ForumGroup> findByGroupNameLike(String groupName, Pageable pageable);
+
+    List<ForumGroup> findAll();
+    List<ForumGroup> findByGroupNameLike(String groupName);
 }

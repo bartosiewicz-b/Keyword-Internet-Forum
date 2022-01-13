@@ -18,23 +18,38 @@ export class PostFeedComponent implements OnInit {
   pages: number[] = [];
   currentPage: number = 0;
 
+  searchPhrase: string = '';
+
   constructor(private postService: PostService,
     private router: Router,
     private route: ActivatedRoute) {
+      this.updateSearchPhrase()
   }
 
   ngOnInit(): void {
+    this.updateDisplay();
+  }
+
+  search() {
+    if(this.searchPhrase != this.prevValue){
+      this.updateDisplay();  
+
+      this.prevValue = this.searchPhrase;
+    }
+    
+  }
+
+  updateDisplay(){
     this.route.queryParams.subscribe(res => {
       this.currentPage = res['page']!=null ? res['page'] : 1;
+      
 
-      this.postService.getAll(this.currentPage - 1, this.groupId, '').pipe(take(1),)
+      this.postService.getAll(this.currentPage - 1, this.groupId, this.searchPhrase).pipe(take(1),)
       .subscribe(res => this.posts = res);
 
     })
 
-    
-
-    this.postService.getCount(null, null).pipe(take(1))
+    this.postService.getCount(this.groupId, this.searchPhrase).pipe(take(1))
     .subscribe(res => {
       this.pages =  Array(Math.floor(res/10 + 1));
 
@@ -43,19 +58,18 @@ export class PostFeedComponent implements OnInit {
     });
   }
 
-  search(value: string) {
-    if(value != this.prevValue){
-      if(value.length > 3) 
-        this.postService.getAll(0, this.groupId, value).pipe(take(1),).subscribe(res => {this.posts = res});
-      else if(this.prevValue.length > 3)
-        this.postService.getAll(0, this.groupId, '').pipe(take(1),).subscribe(res => {this.posts = res});
-
-      this.prevValue = value;
-    }
-    
+  updateSearchPhrase() {
+    this.route.queryParams.subscribe(res => {
+      this.searchPhrase = res['keyword']!=null ? res['keyword'] : '';
+    });
   }
 
   goToPage(i: number) {
-    this.router.navigate(['/'], {queryParams: {page: i}});
+    console.log(this.searchPhrase)
+    let destination: string = '/';
+    if(this.groupId!=null)
+      destination = '/'  + this.groupId;
+
+    this.router.navigate([destination], {queryParams: {page: i, keyword: this.searchPhrase}});
   }
 }
