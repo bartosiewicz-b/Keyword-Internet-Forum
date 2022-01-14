@@ -116,6 +116,10 @@ public class GroupServiceImpl implements GroupService {
             groupSubscriptionRepository.delete(subscription.get());
 
             group.setSubscriptions(group.getSubscriptions() - 1);
+
+            if(group.getSubscriptions()<0)
+                group.setSubscriptions(0);
+
             group.getSubscribers().remove(user);
             user.getSubscribed().remove(group);
         }
