@@ -1,11 +1,14 @@
 package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.model.GroupDto;
+import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.dto.request.CreateGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
 import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.GroupDoesNotExistException;
+import com.keyword.keywordspring.exception.UserDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.GroupMapper;
+import com.keyword.keywordspring.mapper.interf.UserMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ForumGroup;
 import com.keyword.keywordspring.model.GroupSubscription;
@@ -29,6 +32,7 @@ public class GroupServiceImpl implements GroupService {
     private final UserRepository userRepository;
     private final GroupSubscriptionRepository groupSubscriptionRepository;
     private final GroupMapper groupMapper;
+    private final UserMapper userMapper;
 
     @Override
     public void createGroup(AppUser user, CreateGroupRequest request) {
@@ -41,6 +45,7 @@ public class GroupServiceImpl implements GroupService {
                 .dateCreated(new Date(System.currentTimeMillis()))
                 .subscriptions(0)
                 .subscribers(new ArrayList<>())
+                .moderators(new ArrayList<>())
                 .build();
 
         groupRepository.save(forumGroup);
@@ -142,5 +147,76 @@ public class GroupServiceImpl implements GroupService {
             throw new UnauthorizedException();
 
         groupRepository.deleteById(groupId);
+    }
+
+    @Override
+    public List<UserDto> getSubscribers(String groupId, String username) {
+        ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
+
+        List<UserDto> result = new ArrayList<>();
+
+        for(AppUser user: group.getSubscribers()) {
+            if(user.getUsername().contains(username) &&
+                    !user.equals(group.getOwner()) &&
+                    !user.getModeratedGroups().contains(group)) {
+                result.add(userMapper.mapToDto(user));
+
+                if (result.size() > 9)
+                    break;
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public void addModerator(AppUser owner, String moderatorUsername, String groupId) {
+        ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
+
+        AppUser moderator = userRepository.findByUsername(moderatorUsername)
+                .orElseThrow(() -> new UserDoesNotExistException(moderatorUsername));
+
+        if(!group.getOwner().equals(owner)) throw new UnauthorizedException();
+
+        group.getModerators().add(moderator);
+        moderator.getModeratedGroups().add(group);
+
+        groupRepository.save(group);
+        userRepository.save(moderator);
+
+    }
+
+    @Override
+    public void removeModerator(AppUser owner, String moderatorUsername, String groupId) {
+        ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
+
+        AppUser moderator = userRepository.findByUsername(moderatorUsername)
+                .orElseThrow(() -> new UserDoesNotExistException(moderatorUsername));
+
+        if(!group.getOwner().equals(owner)) throw new UnauthorizedException();
+
+        group.getModerators().remove(moderator);
+        moderator.getModeratedGroups().remove(group);
+
+        groupRepository.save(group);
+        userRepository.save(moderator);
+    }
+
+    @Override
+    public List<UserDto> getModerators(String groupId) {
+        ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
+
+        return group.getModerators().stream()
+                .map(userMapper::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isModerator(String username, String groupId) {
+        ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
+
+        AppUser user = userRepository.findByUsername(username).orElseThrow(() -> new UserDoesNotExistException(username));
+
+        return group.getModerators().contains(user);
     }
 }

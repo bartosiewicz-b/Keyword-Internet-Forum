@@ -29,12 +29,7 @@ public class PostApi {
             @RequestBody CreatePostRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
-
-        try {
-            return ResponseEntity.ok().body(postService.createPost(user, request));
-        } catch (Exception e) {
-            throw new UnexpectedProblemException(e.getMessage());
-        }
+        return ResponseEntity.ok().body(postService.createPost(user, request));
     }
 
     @GetMapping("/get-all")
@@ -43,39 +38,23 @@ public class PostApi {
                             @RequestParam(required = false) String groupId,
                             @RequestParam(required = false) String name) {
 
-        AppUser user = null == token ? null : jwtUtil.getUserFromToken(token);
-
-        try {
-            return ResponseEntity.ok().body(postService.getPosts(page, name, groupId, user));
-        } catch(Exception e) {
-            throw new UnexpectedProblemException(e.getMessage());
-        }
-
+        AppUser user = jwtUtil.getUserFromToken(token);
+        return ResponseEntity.ok().body(postService.getPosts(page, name, groupId, user));
     }
 
     @GetMapping("/get-all-count")
     public ResponseEntity<Integer> getPostsCount(@RequestParam(required = false) String groupId,
                                                   @RequestParam(required = false) String name) {
-        try {
-            return ResponseEntity.ok().body(postService.getPostsCount(groupId, name));
-        } catch(Exception e) {
-            throw new UnexpectedProblemException(e.getMessage());
-        }
 
+        return ResponseEntity.ok().body(postService.getPostsCount(groupId, name));
     }
 
     @GetMapping("/get")
     public ResponseEntity<PostDto> getPost(@RequestHeader(value = "Authorization", required = false) String token,
             @RequestParam Long id) {
 
-        AppUser user = null == token ? null : jwtUtil.getUserFromToken(token);
-
-        try {
-            return ResponseEntity.ok().body(postService.getPost(id, user));
-        } catch(Exception e) {
-            throw new UnexpectedProblemException(e.getMessage());
-        }
-
+        AppUser user = jwtUtil.getUserFromToken(token);
+        return ResponseEntity.ok().body(postService.getPost(id, user));
     }
 
     @PostMapping("/edit")
@@ -83,12 +62,7 @@ public class PostApi {
                                            @RequestBody EditPostRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
-
-        try {
-            return ResponseEntity.ok().body(postService.editPost(user, request));
-        } catch(Exception e) {
-            throw new UnexpectedProblemException(e.getMessage());
-        }
+        return ResponseEntity.ok().body(postService.editPost(user, request));
     }
 
     @PostMapping("/upvote")
@@ -97,12 +71,8 @@ public class PostApi {
 
         AppUser user = jwtUtil.getUserFromToken(token);
 
-        try {
-            postService.upvote(user, request.get("postId"));
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            throw new UnexpectedProblemException(e.getMessage());
-        }
+        postService.upvote(user, request.get("postId"));
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/downvote")
@@ -111,12 +81,8 @@ public class PostApi {
 
         AppUser user = jwtUtil.getUserFromToken(token);
 
-        try {
-            postService.downvote(user, request.get("postId"));
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            throw new UnexpectedProblemException(e.getMessage());
-        }
+        postService.downvote(user, request.get("postId"));
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/delete")
@@ -124,11 +90,7 @@ public class PostApi {
                                              @RequestBody IdRequest request) {
         AppUser user = jwtUtil.getUserFromToken(token);
 
-        try{
-            postService.deletePost(user, request.getId());
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            throw new UnexpectedProblemException(e.getMessage());
-        }
+        postService.deletePost(user, request.getId());
+        return ResponseEntity.ok().build();
     }
 }

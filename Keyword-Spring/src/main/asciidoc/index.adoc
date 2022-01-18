@@ -97,6 +97,36 @@ include::{snippets}/editGroup/http-request.adoc[]
 .response
 include::{snippets}/editGroup/http-response.adoc[]
 
+== Add Moderator
+.request
+include::{snippets}/addModerator/http-request.adoc[]
+.response
+include::{snippets}/addModerator/http-response.adoc[]
+
+== Delete Moderator
+.request
+include::{snippets}/deleteModerator/http-request.adoc[]
+.response
+include::{snippets}/deleteModerator/http-response.adoc[]
+
+== Get Subscribers
+.request
+include::{snippets}/getSubscribers/http-request.adoc[]
+.response
+include::{snippets}/getSubscribers/http-response.adoc[]
+
+== Get Moderators
+.request
+include::{snippets}/getModerators/http-request.adoc[]
+.response
+include::{snippets}/getModerators/http-response.adoc[]
+
+== Is Moderator
+.request
+include::{snippets}/isModerator/http-request.adoc[]
+.response
+include::{snippets}/isModerator/http-response.adoc[]
+
 == Subscribe Group
 .request
 include::{snippets}/subscribeGroup/http-request.adoc[]

@@ -21,6 +21,9 @@ public class ForumGroup implements Serializable {
     @ManyToOne
     private AppUser owner;
 
+    @ManyToMany
+    private List<AppUser> moderators;
+
     private String groupName;
 
     @Lob

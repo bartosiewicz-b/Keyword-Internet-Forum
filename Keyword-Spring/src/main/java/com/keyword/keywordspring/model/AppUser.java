@@ -31,6 +31,9 @@ public class AppUser implements Serializable {
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private List<ForumGroup> ownedGroups;
 
+    @ManyToMany
+    private List<ForumGroup> moderatedGroups;
+
     @OneToMany
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private List<Post> posts;

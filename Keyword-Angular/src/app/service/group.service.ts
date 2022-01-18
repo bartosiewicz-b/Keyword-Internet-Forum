@@ -1,3 +1,4 @@
+import { AppUser } from './../model/AppUser';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -74,5 +75,35 @@ export class GroupService {
       {'groupId': groupId})
       .pipe(take(1))
       .subscribe();
+  }
+
+  getModerators(groupId: string): Observable<AppUser[]> {
+    return this.httpClient.get<AppUser[]>(this.url + '/get-moderators',
+    {params: {"groupId": groupId}})
+    .pipe(map(res => {
+      return res;
+    }));
+  }
+
+  addModerator(groupId: string, username: string) {
+    this.httpClient.post(this.url + '/add-moderator',
+      {'groupId': groupId, 'username': username})
+      .pipe(take(1))
+      .subscribe();
+  }
+
+  deleteModerator(groupId: string, username: string) {
+    this.httpClient.post(this.url + '/delete-moderator',
+      {'groupId': groupId, 'username': username})
+      .pipe(take(1))
+      .subscribe();
+  }
+
+  getSubscribers(groupId: string, username: string): Observable<AppUser[]> {
+    return this.httpClient.get<AppUser[]>(this.url + '/get-subscribers',
+    {params: {"groupId": groupId, "username": username}})
+    .pipe(map(res => {
+      return res;
+    }));
   }
 }

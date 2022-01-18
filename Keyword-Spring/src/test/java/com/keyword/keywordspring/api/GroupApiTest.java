@@ -2,8 +2,8 @@ package com.keyword.keywordspring.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keyword.keywordspring.dto.model.GroupDto;
-import com.keyword.keywordspring.dto.request.CreateGroupRequest;
-import com.keyword.keywordspring.dto.request.EditGroupRequest;
+import com.keyword.keywordspring.dto.model.UserDto;
+import com.keyword.keywordspring.dto.request.*;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.GroupService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
@@ -206,5 +206,110 @@ class GroupApiTest {
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void addModerator() throws Exception {
+
+        String request = mapper.writeValueAsString(
+                GroupModeratorRequest.builder()
+                        .username("username")
+                        .groupId("groupId")
+                        .build());
+
+        mockMvc.perform(post("/group/add-moderator")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void deleteModerator() throws Exception {
+        String request = mapper.writeValueAsString(
+                GroupModeratorRequest.builder()
+                        .username("username")
+                        .groupId("groupId")
+                        .build());
+
+        mockMvc.perform(post("/group/delete-moderator")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void getSubscribers() throws Exception {
+        List<UserDto> users = new ArrayList<>();
+        users.add(UserDto.builder().username("username").build());
+
+        when(groupService.getSubscribers(anyString(), anyString())).thenReturn(users);
+
+        MvcResult result = mockMvc.perform(get("/group/get-subscribers")
+                        .param("username", "username")
+                        .param("groupId", "groupId")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(users));
+    }
+
+    @Test
+    void getModerators() throws Exception {
+        List<UserDto> users = new ArrayList<>();
+        users.add(UserDto.builder().username("username").build());
+
+        when(groupService.getModerators(anyString())).thenReturn(users);
+
+        MvcResult result = mockMvc.perform(get("/group/get-moderators")
+                        .header("Authorization", "token")
+                        .param("groupId", "groupId")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(users));
+    }
+
+    @Test
+    void isModerator() throws Exception {
+        String request = mapper.writeValueAsString(
+                GroupModeratorRequest.builder()
+                        .username("username")
+                        .groupId("groupId")
+                        .build());
+
+        when(groupService.isModerator(anyString(), anyString())).thenReturn(true);
+
+        MvcResult result = mockMvc.perform(get("/group/is-moderator")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(), "true");
     }
 }

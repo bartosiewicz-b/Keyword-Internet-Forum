@@ -1,0 +1,36 @@
+<h1>Manage Roles for Group:</h1>
+<div class="row">
+    <div class="col-6">
+        <button class="btn btn-primary" *ngIf="!addingModerator" (click)="addingModerator = !addingModerator">Add Moderator</button>
+
+        <div *ngIf="addingModerator">
+            
+            <input [(ngModel)]="searchPhrase" type="text" class="input" (keyup)="searchUser()" placeholder="username">
+
+            <div class="row row-select" *ngFor="let u of findUsers; let i = index" 
+            [class.active]="selectId!=null && u.username==findUsers[selectId].username"
+            (click)="selectId = i">
+                <div class="col-2">select</div>
+                <div class="col-10">{{u.username}}</div>
+            </div>
+
+            <button class="btn btn-primary" (click)="addModerator()">Add as Moderator</button>
+        </div>
+
+
+        <h2>Moderators:</h2>
+        
+        <div class="row" *ngFor="let m of moderators">
+                <div class="col-4">{{m.username}}</div>
+                <div class="col-8">
+                    <button class="btn btn-danger" (click)="removeModerator(m)">
+                        Remove Moderator
+                    </button>
+                </div>
+            </div>
+    </div>
+    <div class="col-6">
+        <h2>Owner:</h2>
+        {{group.owner}}
+    </div>
+</div>

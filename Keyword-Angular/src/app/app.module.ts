@@ -23,6 +23,7 @@ import { RegisterComponent } from './component/register/register.component';
 import { CreateGroupComponent } from './component/forms/create-group/create-group.component';
 import { ProfileComponent } from './component/profile/profile.component';
 import { UserComponent } from './component/user/user.component';
+import { ManageGroupComponent } from './component/manage-group/manage-group.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { UserComponent } from './component/user/user.component';
     RegisterComponent,
     CreateGroupComponent,
     ProfileComponent,
-    UserComponent
+    UserComponent,
+    ManageGroupComponent
   ],
   imports: [
     BrowserModule,

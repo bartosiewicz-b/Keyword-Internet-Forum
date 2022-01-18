@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
                 .nrOfComments(0)
                 .nrOfPosts(0)
                 .subscribed(new ArrayList<>())
+                .moderatedGroups(new ArrayList<>())
                 .password(passwordEncoder.encode(request.getPassword())).build();
 
         userRepository.save(user);

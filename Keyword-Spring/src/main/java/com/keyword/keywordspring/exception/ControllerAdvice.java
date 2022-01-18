@@ -17,7 +17,7 @@ public class ControllerAdvice{
                 .body(new HashMap<String, String>().put("error", e.getMessage()));
     }
 
-    @ExceptionHandler(value = {UnexpectedProblemException.class})
+    @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Object> handleUnexpectedProblemException(UnexpectedProblemException e) {
         log.error("Unexpected problem: " + e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
