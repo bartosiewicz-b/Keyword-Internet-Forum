@@ -23,11 +23,11 @@
         <div class="row" *ngFor="let m of moderators">
                 <div class="col-4">{{m.username}}</div>
                 <div class="col-8">
-                    <button class="btn btn-danger" (click)="removeModerator(m)">
+                    <button class="btn btn-danger" (click)="removeModerator(m)" *ngIf="m.username!=group.owner">
                         Remove Moderator
                     </button>
                 </div>
-            </div>
+        </div>
     </div>
     <div class="col-6">
         <h2>Owner:</h2>

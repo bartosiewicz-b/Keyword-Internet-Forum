@@ -10,3 +10,7 @@ h1, h2, input, select{
 .active{
     color: darksalmon;
 }
+
+.row{
+    margin-bottom: 20px;
+}

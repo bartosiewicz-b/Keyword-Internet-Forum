@@ -177,13 +177,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(AppUser user, Long id) {
 
-        if(postRepository.findById(id).isEmpty() ||
-                !Objects.equals(user.getId(), postRepository.findById(id).get().getUser().getId()))
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostDoesNotExistException(id));
+
+        if(!post.getUser().equals(user) && !post.getForumGroup().getModerators().contains(user))
             throw new UnauthorizedException();
 
-        user.setNrOfPosts(user.getNrOfPosts() - 1);
-        userRepository.save(user);
+        AppUser postOwner = post.getUser();
+        postOwner.setNrOfPosts(postOwner.getNrOfPosts() - 1);
 
+
+        userRepository.save(postOwner);
         postRepository.deleteById(id);
     }
 }

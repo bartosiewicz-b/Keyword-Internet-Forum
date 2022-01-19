@@ -31,3 +31,7 @@ input:focus{
 .comments{
     border-top: 1px solid #747474;
 }
+
+.moderator {
+    color: red;
+}

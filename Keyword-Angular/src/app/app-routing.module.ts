@@ -27,7 +27,7 @@ const routes: Routes = [
   
 
   { path: "groups", component: GroupFeedComponent},
-  { path: "create-group", component: CreateGroupComponent, canActivate: [AuthGuardService]},
+  { path: "create-group", component: CreateGroupComponent},
   { path: "create-group/:groupId", component: CreateGroupComponent, canActivate: [AuthGuardService]},
   { path: "manage-group/:groupId", component: ManageGroupComponent, canActivate: [AuthGuardService] },
   { path: ":groupId/:postId", component: PostComponent},

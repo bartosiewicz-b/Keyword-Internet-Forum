@@ -1,4 +1,10 @@
 <div class="post">
+
+    <button class="moderator" *ngIf="group?.moderators?.includes(username!=null?username:'')"
+        (click)="deletePost()">
+        Delete this post as a moderator
+    </button>
+
     <post-card [post]="post"></post-card>
 
     <form class="form" #createComment="ngForm" (ngSubmit)="comment(createComment)" *ngIf="username != null">
@@ -9,11 +15,11 @@
     <div class="comments">
         <div *ngFor="let c of comments">
             <div *ngIf="c.parentCommentId==null">
-                <comment-card [comment]="c" (deleteId)="delete($event)"></comment-card>
+                <comment-card [comment]="c" (deleteId)="deleteComment($event)"></comment-card>
             </div>
             <div *ngFor="let sc of comments" class="sideComment">
                 <div *ngIf="sc.parentCommentId!=null && sc.parentCommentId==c.id">
-                    <comment-card [comment]="sc" (deleteId)="delete($event)"></comment-card>
+                    <comment-card [comment]="sc" (deleteId)="deleteComment($event)"></comment-card>
                 </div>
             </div>
         </div>

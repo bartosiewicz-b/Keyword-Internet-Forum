@@ -1,23 +1,21 @@
 package com.keyword.keywordspring.mapper;
 
 import com.keyword.keywordspring.dto.model.GroupDto;
-import com.keyword.keywordspring.exception.GroupDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.GroupMapper;
+import com.keyword.keywordspring.mapper.interf.UserMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ForumGroup;
-import com.keyword.keywordspring.repository.GroupRepository;
 import com.keyword.keywordspring.repository.GroupSubscriptionRepository;
-import com.keyword.keywordspring.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
 public class GroupMapperImpl implements GroupMapper {
 
-    private final GroupRepository groupRepository;
+    private final UserMapper userMapper;
     private final GroupSubscriptionRepository subscriptionRepository;
 
     @Override
@@ -30,6 +28,7 @@ public class GroupMapperImpl implements GroupMapper {
                 .subscriptions(group.getSubscriptions())
                 .isSubscribed(null != user && (subscriptionRepository.findByUserAndGroup(user, group).isPresent()))
                 .owner(group.getOwner().getUsername())
+                .moderators(group.getModerators().stream().map(AppUser::getUsername).collect(Collectors.toList()))
                 .build();
     }
 }

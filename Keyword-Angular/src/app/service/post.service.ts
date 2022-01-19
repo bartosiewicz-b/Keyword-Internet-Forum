@@ -76,7 +76,7 @@ export class PostService {
   }
 
   delete(postId: number) {
-    return this.httpClient.post(this.url + '/delete',
+    this.httpClient.post(this.url + '/delete',
       {'id': postId})
       .pipe(take(1)).subscribe();
   }

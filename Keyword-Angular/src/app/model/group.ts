@@ -5,4 +5,5 @@ export class Group {
     subscriptions: number = 0;
     isSubscribed: boolean = false;
     owner: string = '';
+    moderators: string[] = [];
 }

@@ -1,6 +1,10 @@
 <div *ngIf="group!=null">
     <h1>{{group.groupName}}</h1>
 
+    <p class="moderator" *ngIf="group?.moderators?.includes(username!=null?username:'')">
+        You are a moderator of this group.
+    </p>
+
     <small class="text-muted">Owner: {{group.owner}}</small>
     
     <div class="subscription row">

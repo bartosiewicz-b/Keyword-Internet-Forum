@@ -45,7 +45,7 @@ public class GroupServiceImpl implements GroupService {
                 .dateCreated(new Date(System.currentTimeMillis()))
                 .subscriptions(0)
                 .subscribers(new ArrayList<>())
-                .moderators(new ArrayList<>())
+                .moderators(new ArrayList<>(){{add(user);}})
                 .build();
 
         groupRepository.save(forumGroup);
@@ -153,20 +153,14 @@ public class GroupServiceImpl implements GroupService {
     public List<UserDto> getSubscribers(String groupId, String username) {
         ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
 
-        List<UserDto> result = new ArrayList<>();
+        group.getSubscribers().removeIf(obj ->
+                !obj.getUsername().contains(username) ||
+                obj.getModeratedGroups().contains(group)
+        );
 
-        for(AppUser user: group.getSubscribers()) {
-            if(user.getUsername().contains(username) &&
-                    !user.equals(group.getOwner()) &&
-                    !user.getModeratedGroups().contains(group)) {
-                result.add(userMapper.mapToDto(user));
-
-                if (result.size() > 9)
-                    break;
-            }
-        }
-
-        return result;
+        return group.getSubscribers().stream().limit(10)
+                .map(userMapper::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Override

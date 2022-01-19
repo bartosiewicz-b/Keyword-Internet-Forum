@@ -3,6 +3,8 @@ package com.keyword.keywordspring.dto.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class GroupDto {
@@ -13,4 +15,5 @@ public class GroupDto {
     private Integer subscriptions;
     private Boolean isSubscribed;
     private String owner;
+    private List<String> moderators;
 }
