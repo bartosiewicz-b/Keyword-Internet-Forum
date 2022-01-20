@@ -1,7 +1,7 @@
 <h1>Manage Roles for Group:</h1>
 <div class="row">
     <div class="col-6">
-        <button class="btn btn-primary" *ngIf="!addingModerator" (click)="addingModerator = !addingModerator">Add Moderator</button>
+        <button class="btn btn-primary" *ngIf="!addingModerator" (click)="initAddModeratorSelection()">Add Moderator</button>
 
         <div *ngIf="addingModerator">
             
@@ -15,6 +15,7 @@
             </div>
 
             <button class="btn btn-primary" (click)="addModerator()">Add as Moderator</button>
+            <button class="btn btn-primary" (click)="addingModerator = false">Cancel</button>
         </div>
 
 
@@ -31,6 +32,24 @@
     </div>
     <div class="col-6">
         <h2>Owner:</h2>
-        {{group.owner}}
+        Current owner: {{group.owner}}
+
+        <button class="btn btn-danger" *ngIf="!transferingOwnership" 
+        (click)="initTransferOwnershipSelection()">TransferOwnership</button>
+
+        <div *ngIf="transferingOwnership">
+            <div class="row row-select" *ngFor="let u of moderators; let i = index"
+            [class.active]="selectId!=null && u.username==moderators[selectId].username"
+            (click)="selectId = i">
+                <div class="row" *ngIf="u.username!=group.owner">
+                    <div class="col-2">select</div>
+                    <div class="col-10">{{u.username}}</div>
+                </div>
+                
+            </div>
+
+            <button class="btn btn-danger" (click)="transferOwnership()">TransferOwnership</button>
+            <button class="btn btn-primary" (click)="transferingOwnership = false">Cancel</button>
+        </div>
     </div>
 </div>

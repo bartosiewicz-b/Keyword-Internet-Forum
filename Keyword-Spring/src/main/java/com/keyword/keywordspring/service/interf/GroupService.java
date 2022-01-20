@@ -20,6 +20,7 @@ public interface GroupService {
 
     void editGroup(AppUser user, EditGroupRequest request);
     void deleteGroup(AppUser user, String groupId);
+    void transferOwnership(AppUser user, String groupId, String newOwnerUsername);
 
     List<UserDto> getSubscribers(String groupId, String username);
 

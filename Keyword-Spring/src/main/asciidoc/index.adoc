@@ -97,6 +97,12 @@ include::{snippets}/editGroup/http-request.adoc[]
 .response
 include::{snippets}/editGroup/http-response.adoc[]
 
+== Transfer Group Ownership
+.request
+include::{snippets}/transferOwnership/http-request.adoc[]
+.response
+include::{snippets}/transferOwnership/http-response.adoc[]
+
 == Add Moderator
 .request
 include::{snippets}/addModerator/http-request.adoc[]

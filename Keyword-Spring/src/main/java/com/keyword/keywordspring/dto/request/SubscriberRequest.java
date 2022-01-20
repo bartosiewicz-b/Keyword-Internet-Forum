@@ -11,6 +11,6 @@ public class SubscriberRequest {
 
     @NotNull
     private String groupId;
-
+    @NotNull
     private String username;
 }

@@ -85,6 +85,13 @@ export class GroupService {
     }));
   }
 
+  transferOwnership(groupId: string, username: string) {
+    this.httpClient.post(this.url + '/transfer-ownership',
+      {'groupId': groupId, 'username': username})
+      .pipe(take(1))
+      .subscribe();
+  }
+
   addModerator(groupId: string, username: string) {
     this.httpClient.post(this.url + '/add-moderator',
       {'groupId': groupId, 'username': username})

@@ -13,13 +13,15 @@ import { take } from 'rxjs/operators';
 export class ManageGroupComponent implements OnInit {
 
   group: Group = new Group();
-  moderators: Array<AppUser> = [];
+  moderators: AppUser[] = [];
 
   findUsers: AppUser[] = [];
 
   addingModerator: boolean = false;
   selectId: number | null = null;
   searchPhrase: string = '';
+
+  transferingOwnership: boolean = false;
 
   constructor(private groupService: GroupService,
     private route: ActivatedRoute,
@@ -42,6 +44,22 @@ export class ManageGroupComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  initAddModeratorSelection() {
+    this.addingModerator = true;
+    this.transferingOwnership = false;
+
+    this.selectId = null;
+    this.searchPhrase = '';
+  }
+
+  initTransferOwnershipSelection() {
+    this.transferingOwnership = true;
+    this.addingModerator = false;
+
+    this.selectId = null;
+    this.searchPhrase = '';
+  }
+
   addModerator() {
     if(this.selectId!=null) {
       this.groupService.addModerator(this.group.id, this.findUsers[this.selectId].username);
@@ -49,7 +67,7 @@ export class ManageGroupComponent implements OnInit {
     }
       
 
-    this.addingModerator = !this.addingModerator;
+    this.addingModerator = false;
     this.selectId = null;
   }
 
@@ -57,6 +75,16 @@ export class ManageGroupComponent implements OnInit {
     this.groupService.deleteModerator(this.group.id, user.username);
 
     this.moderators.splice(this.moderators.indexOf(user), 1);
+  }
+
+  transferOwnership() {
+    if(this.selectId != null) {
+      this.groupService.transferOwnership(this.group.id, this.moderators[this.selectId].username);
+      this.router.navigateByUrl('/' + this.group.id);
+    }
+    
+    this.transferingOwnership = false;
+    this.selectId = null;
   }
 
   searchUser() {

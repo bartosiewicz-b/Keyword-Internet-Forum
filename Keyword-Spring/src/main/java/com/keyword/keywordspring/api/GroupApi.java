@@ -3,13 +3,11 @@ package com.keyword.keywordspring.api;
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.dto.request.*;
-import com.keyword.keywordspring.exception.UnexpectedProblemException;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.GroupService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -70,6 +68,16 @@ public class GroupApi {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/transfer-ownership")
+    public ResponseEntity<Void> transferOwnership(@RequestHeader("Authorization") String token,
+                                                  @RequestBody SubscriberRequest request) {
+
+        AppUser user = jwtUtil.getUserFromToken(token);
+
+        groupService.transferOwnership(user, request.getGroupId(), request.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/get-subscribers")
     public ResponseEntity<List<UserDto>> getSubscribers(@RequestParam String groupId, @RequestParam String username) {
 
@@ -78,7 +86,7 @@ public class GroupApi {
 
     @PostMapping("/add-moderator")
     public ResponseEntity<Void> addModerator(@RequestHeader("Authorization") String token,
-                                             @RequestBody GroupModeratorRequest request) {
+                                             @RequestBody SubscriberRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
 
@@ -88,7 +96,7 @@ public class GroupApi {
 
     @PostMapping("/delete-moderator")
     public ResponseEntity<Void> deleteModerator(@RequestHeader("Authorization") String token,
-                                                @RequestBody GroupModeratorRequest request) {
+                                                @RequestBody SubscriberRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token);
 
@@ -103,7 +111,7 @@ public class GroupApi {
     }
 
     @GetMapping("/is-moderator")
-    public ResponseEntity<Boolean> isModerator(@RequestBody GroupModeratorRequest request) {
+    public ResponseEntity<Boolean> isModerator(@RequestBody SubscriberRequest request) {
 
         return ResponseEntity.ok().body(groupService.isModerator(request.getUsername(), request.getGroupId()));
     }

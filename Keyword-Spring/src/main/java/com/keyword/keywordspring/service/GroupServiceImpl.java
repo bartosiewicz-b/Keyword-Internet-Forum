@@ -150,6 +150,25 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public void transferOwnership(AppUser user, String groupId, String newOwnerUsername) {
+        ForumGroup group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupDoesNotExistException(groupId));
+
+        AppUser newOwner = userRepository.findByUsername(newOwnerUsername)
+                .orElseThrow(() -> new UserDoesNotExistException(newOwnerUsername));
+
+        if(newOwner.equals(user)) return;
+
+        user.getOwnedGroups().remove(group);
+        group.setOwner(newOwner);
+        newOwner.getOwnedGroups().add(group);
+
+        userRepository.save(user);
+        userRepository.save(newOwner);
+        groupRepository.save(group);
+    }
+
+    @Override
     public List<UserDto> getSubscribers(String groupId, String username) {
         ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
 

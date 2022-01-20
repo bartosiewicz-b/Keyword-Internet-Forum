@@ -209,10 +209,30 @@ class GroupApiTest {
     }
 
     @Test
+    void transferOwnership() throws Exception {
+
+        String request = mapper.writeValueAsString(
+                SubscriberRequest.builder()
+                        .username("username")
+                        .groupId("groupId")
+                        .build());
+
+        mockMvc.perform(post("/group/transfer-ownership")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
     void addModerator() throws Exception {
 
         String request = mapper.writeValueAsString(
-                GroupModeratorRequest.builder()
+                SubscriberRequest.builder()
                         .username("username")
                         .groupId("groupId")
                         .build());
@@ -231,7 +251,7 @@ class GroupApiTest {
     @Test
     void deleteModerator() throws Exception {
         String request = mapper.writeValueAsString(
-                GroupModeratorRequest.builder()
+                SubscriberRequest.builder()
                         .username("username")
                         .groupId("groupId")
                         .build());
@@ -292,7 +312,7 @@ class GroupApiTest {
     @Test
     void isModerator() throws Exception {
         String request = mapper.writeValueAsString(
-                GroupModeratorRequest.builder()
+                SubscriberRequest.builder()
                         .username("username")
                         .groupId("groupId")
                         .build());
