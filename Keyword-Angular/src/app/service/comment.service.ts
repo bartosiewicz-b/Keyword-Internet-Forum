@@ -14,7 +14,7 @@ export class CommentService {
   constructor(private httpClient: HttpClient) { }
 
   getAll(postId: number): Observable<Comment[]> {
-    return this.httpClient.get<Comment[]>(this.url + '/get',
+    return this.httpClient.get<Comment[]>(this.url + '/get-all',
       {params: {"postId": postId}})
       .pipe(map(res => {
         return res as Comment[];
@@ -34,7 +34,7 @@ export class CommentService {
   }
 
   comment(content: string, postId: number, parentCommentId: number | null){
-    return this.httpClient.post(this.url + '/create',
+    return this.httpClient.post(this.url + '/add',
     {'content': content, 'postId': postId, 'parentCommentId': parentCommentId});
   }
 

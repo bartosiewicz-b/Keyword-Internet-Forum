@@ -63,21 +63,27 @@ include::{snippets}/getUser/http-request.adoc[]
 .response
 include::{snippets}/getUser/http-response.adoc[]
 
+== Get Subscribed
+.request
+include::{snippets}/getSubscribed/http-request.adoc[]
+.response
+include::{snippets}/getSubscribed/http-response.adoc[]
+
 
 = Group
 
 
 == Create Group
 .request
-include::{snippets}/createGroup/http-request.adoc[]
+include::{snippets}/addGroup/http-request.adoc[]
 .response
-include::{snippets}/createGroup/http-response.adoc[]
+include::{snippets}/addGroup/http-response.adoc[]
 
 == Get Groups
 .request
-include::{snippets}/getGroups/http-request.adoc[]
+include::{snippets}/getAllGroups/http-request.adoc[]
 .response
-include::{snippets}/getGroups/http-response.adoc[]
+include::{snippets}/getAllGroups/http-response.adoc[]
 
 == Get Groups Count
 .request
@@ -97,41 +103,47 @@ include::{snippets}/editGroup/http-request.adoc[]
 .response
 include::{snippets}/editGroup/http-response.adoc[]
 
+== Delete Group
+.request
+include::{snippets}/deleteGroup/http-request.adoc[]
+.response
+include::{snippets}/deleteGroup/http-response.adoc[]
+
 == Transfer Group Ownership
 .request
-include::{snippets}/transferOwnership/http-request.adoc[]
+include::{snippets}/transferGroupOwnership/http-request.adoc[]
 .response
-include::{snippets}/transferOwnership/http-response.adoc[]
+include::{snippets}/transferGroupOwnership/http-response.adoc[]
 
 == Add Moderator
 .request
-include::{snippets}/addModerator/http-request.adoc[]
+include::{snippets}/addGroupModerator/http-request.adoc[]
 .response
-include::{snippets}/addModerator/http-response.adoc[]
+include::{snippets}/addGroupModerator/http-response.adoc[]
 
 == Delete Moderator
 .request
-include::{snippets}/deleteModerator/http-request.adoc[]
+include::{snippets}/deleteGroupModerator/http-request.adoc[]
 .response
-include::{snippets}/deleteModerator/http-response.adoc[]
+include::{snippets}/deleteGroupModerator/http-response.adoc[]
 
 == Get Subscribers
 .request
-include::{snippets}/getSubscribers/http-request.adoc[]
+include::{snippets}/getSubscribersFromGroup/http-request.adoc[]
 .response
-include::{snippets}/getSubscribers/http-response.adoc[]
+include::{snippets}/getSubscribersFromGroup/http-response.adoc[]
 
 == Get Moderators
 .request
-include::{snippets}/getModerators/http-request.adoc[]
+include::{snippets}/getModeratorsFromGroup/http-request.adoc[]
 .response
-include::{snippets}/getModerators/http-response.adoc[]
+include::{snippets}/getModeratorsFromGroup/http-response.adoc[]
 
 == Is Moderator
 .request
-include::{snippets}/isModerator/http-request.adoc[]
+include::{snippets}/isGroupModerator/http-request.adoc[]
 .response
-include::{snippets}/isModerator/http-response.adoc[]
+include::{snippets}/isGroupModerator/http-response.adoc[]
 
 == Subscribe Group
 .request
@@ -157,15 +169,15 @@ include::{snippets}/validateNewGroupName/http-response.adoc[]
 
 == Create Post
 .request
-include::{snippets}/createPost/http-request.adoc[]
+include::{snippets}/addPost/http-request.adoc[]
 .response
-include::{snippets}/createPost/http-response.adoc[]
+include::{snippets}/addPost/http-response.adoc[]
 
 == Get Posts
 .request
-include::{snippets}/getPosts/http-request.adoc[]
+include::{snippets}/getAllPosts/http-request.adoc[]
 .response
-include::{snippets}/getPosts/http-response.adoc[]
+include::{snippets}/getAllPosts/http-response.adoc[]
 
 == Get Posts Count
 .request
@@ -187,15 +199,15 @@ include::{snippets}/editPost/http-response.adoc[]
 
 == Upvote Post
 .request
-include::{snippets}/upvotePostApi/http-request.adoc[]
+include::{snippets}/upvotePost/http-request.adoc[]
 .response
-include::{snippets}/upvotePostApi/http-response.adoc[]
+include::{snippets}/upvotePost/http-response.adoc[]
 
 == Downvote Post
 .request
-include::{snippets}/downvotePostApi/http-request.adoc[]
+include::{snippets}/downvotePost/http-request.adoc[]
 .response
-include::{snippets}/downvotePostApi/http-response.adoc[]
+include::{snippets}/downvotePost/http-response.adoc[]
 
 == Delete Post
 .request
@@ -208,15 +220,15 @@ include::{snippets}/deletePost/http-response.adoc[]
 
 == Create Comment
 .request
-include::{snippets}/createComment/http-request.adoc[]
+include::{snippets}/addComment/http-request.adoc[]
 .response
-include::{snippets}/createComment/http-response.adoc[]
+include::{snippets}/addComment/http-response.adoc[]
 
 == Get Comments
 .request
-include::{snippets}/getComments/http-request.adoc[]
+include::{snippets}/getAllComments/http-request.adoc[]
 .response
-include::{snippets}/getComments/http-response.adoc[]
+include::{snippets}/getAllComments/http-response.adoc[]
 
 == Edit Comment
 .request
@@ -226,15 +238,15 @@ include::{snippets}/editComment/http-response.adoc[]
 
 == Upvote Comment
 .request
-include::{snippets}/upvoteCommentApi/http-request.adoc[]
+include::{snippets}/upvoteComment/http-request.adoc[]
 .response
-include::{snippets}/upvoteCommentApi/http-response.adoc[]
+include::{snippets}/upvoteComment/http-response.adoc[]
 
 == Downvote Comment
 .request
-include::{snippets}/downvoteCommentApi/http-request.adoc[]
+include::{snippets}/downvoteComment/http-request.adoc[]
 .response
-include::{snippets}/downvoteCommentApi/http-response.adoc[]
+include::{snippets}/downvoteComment/http-response.adoc[]
 
 == Delete Comment
 .request

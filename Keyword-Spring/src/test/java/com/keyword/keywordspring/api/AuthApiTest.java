@@ -142,6 +142,8 @@ class AuthApiTest {
 
         String request = mapper.writeValueAsString(temp);
 
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
+
         mockMvc.perform(post("/auth/change/username")
                         .header("Authorization", "token")
                         .content(request)
@@ -161,6 +163,9 @@ class AuthApiTest {
                 .newEmail("newEmail@email.com")
                 .build());
 
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
+
         mockMvc.perform(post("/auth/change/email")
                         .header("Authorization", "token")
                         .content(request)
@@ -175,6 +180,8 @@ class AuthApiTest {
 
     @Test
     void changePassword() throws Exception {
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
 
         String request = mapper.writeValueAsString(ChangePasswordRequest.builder()
                 .oldPassword(user.getPassword())

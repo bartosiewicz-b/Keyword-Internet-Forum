@@ -1,8 +1,8 @@
 package com.keyword.keywordspring.exception;
 
-public class EmailAlreadyTakenException extends RuntimeException{
+public class EmailAlreadyTakenException extends IllegalArgumentException {
 
     public EmailAlreadyTakenException(String email) {
-        super("User with email: " + email + " is already registered.");
+        super("Email " + email + " is already taken.");
     }
 }

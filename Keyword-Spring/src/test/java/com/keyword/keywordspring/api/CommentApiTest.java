@@ -2,12 +2,9 @@ package com.keyword.keywordspring.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keyword.keywordspring.dto.model.CommentDto;
-import com.keyword.keywordspring.dto.request.CreateCommentRequest;
+import com.keyword.keywordspring.dto.request.AddCommentRequest;
 import com.keyword.keywordspring.dto.request.EditCommentRequest;
-import com.keyword.keywordspring.dto.request.IdRequest;
-import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.CommentService;
-import com.keyword.keywordspring.service.interf.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -48,11 +43,10 @@ class CommentApiTest {
     @MockBean
     CommentService commentService;
 
-    @MockBean
-    JwtUtil jwtUtil;
-
     MockMvc mockMvc;
     ObjectMapper mapper;
+
+    CommentDto commentDto;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocs,
@@ -64,18 +58,90 @@ class CommentApiTest {
                 .webAppContextSetup(context)
                 .apply(documentationConfiguration(restDocs))
                 .build();
+
+        commentDto = CommentDto.builder()
+                .id(1L)
+                .postId(1L)
+                .user("username")
+                .content("content")
+                .parentCommentId(2L)
+                .build();
     }
 
     @Test
-    void createComment() throws Exception {
+    void addComment() throws Exception {
 
-        String request = mapper.writeValueAsString(CreateCommentRequest.builder()
-                .content("comment")
-                .postId(1L)
-                .parentCommentId(1L)
+        String request = mapper.writeValueAsString(AddCommentRequest.builder()
+                .content(commentDto.getContent())
+                .postId(commentDto.getPostId())
+                .parentCommentId(commentDto.getParentCommentId())
                 .build());
 
-        mockMvc.perform(post("/comment/create")
+        when(commentService.add(anyString(), any())).thenReturn(commentDto);
+
+        MvcResult res = mockMvc.perform(post("/comment/add")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(mapper.writeValueAsString(commentDto), res.getResponse().getContentAsString());
+    }
+
+    @Test
+    void getAllComments() throws Exception {
+
+        String request = mapper.writeValueAsString(commentDto.getId());
+
+        List<CommentDto> comments = new ArrayList<>();
+        comments.add(commentDto);
+
+        when(commentService.getAll(anyString(), anyLong())).thenReturn(comments);
+
+        mockMvc.perform(get("/comment/get-all")
+                .param("postId", request))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+    }
+
+    @Test
+    void editComment() throws Exception {
+        String request = mapper.writeValueAsString(EditCommentRequest.builder()
+                        .id(commentDto.getId())
+                        .newContent("edited content")
+                .build());
+
+        when(commentService.edit(anyString(), any())).thenReturn(commentDto);
+
+        MvcResult res = mockMvc.perform(post("/comment/edit")
+                .header("Authorization", "token")
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(mapper.writeValueAsString(commentDto), res.getResponse().getContentAsString());
+    }
+
+    @Test
+    void deleteComment() throws Exception {
+
+        String request = mapper.writeValueAsString(commentDto.getId());
+
+        mockMvc.perform(post("/comment/delete")
                         .header("Authorization", "token")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -87,57 +153,9 @@ class CommentApiTest {
     }
 
     @Test
-    void getComments() throws Exception {
-        List<CommentDto> comments = new ArrayList<>();
-        comments.add(CommentDto.builder()
-                .id(1L)
-                .content("comment")
-                .user("username")
-                .postId(1L)
-                .votes(0)
-                .build());
+    void upvoteComment() throws Exception {
 
-        when(commentService.getComments(anyLong(), any())).thenReturn(comments);
-
-        MvcResult result = mockMvc.perform(get("/comment/get")
-                .param("postId", "1"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(comments));
-    }
-
-    @Test
-    void editComment() throws Exception {
-        String request = mapper.writeValueAsString(EditCommentRequest.builder()
-                        .id(1L)
-                        .newContent("Edited comment.")
-                .build());
-
-        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
-
-        mockMvc.perform(post("/comment/edit")
-                .header("Authorization", "token")
-                .content(request)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
-    }
-
-    @Test
-    void upvoteCommentApi() throws Exception {
-        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
-
-        Map<String, Long> commentId = new HashMap<>();
-        commentId.put("commentId", 1L);
-        String request = mapper.writeValueAsString(commentId);
+        String request = mapper.writeValueAsString(commentDto.getId());
 
         mockMvc.perform(post("/comment/upvote")
                 .header("Authorization", "token")
@@ -151,32 +169,11 @@ class CommentApiTest {
     }
 
     @Test
-    void downvoteCommentApi() throws Exception {
-        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
+    void downvoteComment() throws Exception {
 
-        Map<String, Long> commentId = new HashMap<>();
-        commentId.put("commentId", 1L);
-        String request = mapper.writeValueAsString(commentId);
+        String request = mapper.writeValueAsString(commentDto.getId());
 
         mockMvc.perform(post("/comment/downvote")
-                        .header("Authorization", "token")
-                        .content(request)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
-    }
-
-    @Test
-    void deleteComment() throws Exception {
-
-        String request = mapper.writeValueAsString(IdRequest.builder().id(1L).build());
-
-        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().id(1L).build());
-
-        mockMvc.perform(post("/comment/delete")
                         .header("Authorization", "token")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON))

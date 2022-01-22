@@ -11,14 +11,11 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatePostRequest {
+public class AddGroupRequest {
 
     @NotNull
-    private String title;
+    private String groupName;
 
     @NotNull
     private String description;
-
-    @NotNull
-    private String groupId;
 }

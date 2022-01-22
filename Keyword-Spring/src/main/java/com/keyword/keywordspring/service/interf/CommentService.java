@@ -1,22 +1,23 @@
 package com.keyword.keywordspring.service.interf;
 
 import com.keyword.keywordspring.dto.model.CommentDto;
-import com.keyword.keywordspring.dto.request.CreateCommentRequest;
+import com.keyword.keywordspring.dto.request.AddCommentRequest;
 import com.keyword.keywordspring.dto.request.EditCommentRequest;
-import com.keyword.keywordspring.model.AppUser;
 
 import java.util.List;
 
 public interface CommentService {
 
-    CommentDto addComment(AppUser user, CreateCommentRequest request);
+    CommentDto add(String token, AddCommentRequest request);
 
-    List<CommentDto> getComments(Long postId, AppUser user);
+    List<CommentDto> getAll(String token, Long postId);
 
-    void editComment(AppUser user, EditCommentRequest request);
+    CommentDto edit(String token, EditCommentRequest request);
 
-    void upvote(AppUser user, Long commentId);
-    void downvote(AppUser user, Long commentId);
+    void delete(String token, Long id);
 
-    void deleteComment(AppUser user, Long id);
+    void upvote(String token, Long id);
+    void downvote(String token, Long id);
+
+
 }

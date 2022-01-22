@@ -11,13 +11,14 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateCommentRequest {
+public class AddPostRequest {
 
     @NotNull
-    private String content;
+    private String title;
 
     @NotNull
-    private Long postId;
+    private String description;
 
-    private Long parentCommentId;
+    @NotNull
+    private String groupId;
 }

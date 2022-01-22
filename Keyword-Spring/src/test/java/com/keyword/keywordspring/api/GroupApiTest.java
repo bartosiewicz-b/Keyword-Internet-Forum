@@ -6,7 +6,6 @@ import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.dto.request.*;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.GroupService;
-import com.keyword.keywordspring.service.interf.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,9 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -44,13 +41,13 @@ class GroupApiTest {
 
     @MockBean
     GroupService groupService;
-    @MockBean
-    JwtUtil jwtUtil;
 
     MockMvc mockMvc;
     ObjectMapper mapper;
 
     GroupDto group;
+
+    AppUser user;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocs,
@@ -64,20 +61,27 @@ class GroupApiTest {
                 .build();
 
         group = GroupDto.builder()
-                .id("1")
+                .id("group")
                 .groupName("group")
                 .description("description")
+                .build();
+
+        user = AppUser.builder()
+                .id(1L)
+                .username("username")
                 .build();
     }
 
     @Test
-    void createGroup() throws Exception {
-        String request = mapper.writeValueAsString(CreateGroupRequest.builder()
-                .groupName("group")
-                .description("description")
+    void addGroup() throws Exception {
+        String request = mapper.writeValueAsString(AddGroupRequest.builder()
+                .groupName(group.getGroupName())
+                .description(group.getDescription())
                 .build());
 
-        mockMvc.perform(post("/group/create")
+        when(groupService.add(anyString(), any())).thenReturn(group);
+
+        MvcResult res = mockMvc.perform(post("/group/add")
                 .header("Authorization", "token")
                 .content(request)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -85,33 +89,36 @@ class GroupApiTest {
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(mapper.writeValueAsString(group), res.getResponse().getContentAsString());
+    }
+
+    @Test
+    void getAllGroups() throws Exception {
+
+        List<GroupDto> groups = new ArrayList<>();
+        groups.add(group);
+
+        when(groupService.getAll(anyString(), any(), anyString())).thenReturn(groups);
+
+        mockMvc.perform(get("/group/get-all")
+                .param("page", "0")
+                .param("keyword", "group"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
     }
 
     @Test
-    void getGroups() throws Exception {
-        List<GroupDto> groups = new ArrayList<>();
-        groups.add(group);
-
-        when(groupService.getGroups(any(), any(), any())).thenReturn(groups);
-
-        MvcResult result = mockMvc.perform(get("/group/get-all")
-                .param("page", "0"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(groups));
-    }
-
-    @Test
     void getGroupsCount() throws Exception {
-        when(groupService.getGroupsCount(anyString())).thenReturn(0);
+        when(groupService.getCount(group.getGroupName())).thenReturn(1);
 
-        MvcResult result = mockMvc.perform(get("/group/get-all-count"))
+        MvcResult result = mockMvc.perform(get("/group/get-count")
+                .param("keyword", group.getGroupName()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
@@ -119,16 +126,43 @@ class GroupApiTest {
                         preprocessResponse(prettyPrint())))
                 .andReturn();
 
-        assertEquals(result.getResponse().getContentAsString(), "0");
+        assertEquals("1", result.getResponse().getContentAsString());
     }
 
     @Test
     void getGroup() throws Exception {
 
-        when(groupService.getGroup(anyString(), any())).thenReturn(group);
+        when(groupService.get(anyString(), anyString())).thenReturn(group);
 
-        MvcResult result = mockMvc.perform(get("/group/get")
-                        .param("id", "0"))
+        mockMvc.perform(get("/group/get")
+                .param("groupId", group.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void editGroup() throws Exception {
+        EditGroupRequest request = EditGroupRequest.builder()
+                .id(group.getId())
+                .groupName("new group name")
+                .description("new description")
+                .build();
+
+        GroupDto edited = GroupDto.builder()
+                .id(request.getId())
+                .description(request.getDescription())
+                .groupName(request.getGroupName())
+                .build();
+
+        when(groupService.edit(anyString(), any())).thenReturn(edited);
+
+        MvcResult res = mockMvc.perform(post("/group/edit")
+                        .header("Authorization", "token")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
@@ -136,22 +170,14 @@ class GroupApiTest {
                         preprocessResponse(prettyPrint())))
                 .andReturn();
 
-        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(group));
+        assertEquals(mapper.writeValueAsString(edited), res.getResponse().getContentAsString());
     }
 
     @Test
-    void editGroup() throws Exception {
-        String request = mapper.writeValueAsString(EditGroupRequest.builder()
-                .id("1")
-                .groupName("new group name")
-                .description("new description")
-                .build());
-
-        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
-
-        mockMvc.perform(post("/group/edit")
+    void deleteGroup() throws Exception {
+        mockMvc.perform(post("/group/delete")
                         .header("Authorization", "token")
-                        .content(request)
+                        .content(mapper.writeValueAsString(group.getId()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -161,60 +187,12 @@ class GroupApiTest {
     }
 
     @Test
-    void validateNewGroupName() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("groupName", "new group name");
-        String request = mapper.writeValueAsString(map);
-
-        when(groupService.isGroupNameTaken(anyString())).thenReturn(false);
-
-        mockMvc.perform(post("/group/validate-new/group-name")
-                .content(request)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
-    }
-
-    @Test
-    void subscribeGroup() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("groupId", "group");
-        String request = mapper.writeValueAsString(map);
-
-        mockMvc.perform(post("/group/subscribe")
-                        .header("Authorization", "token")
-                        .content(request)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
-    }
-
-    @Test
-    void getSubscribedGroups() throws Exception {
-
-        mockMvc.perform(get("/group/get-subscribed")
-                        .header("Authorization", "token")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
-    }
-
-    @Test
-    void transferOwnership() throws Exception {
+    void transferGroupOwnership() throws Exception {
 
         String request = mapper.writeValueAsString(
-                SubscriberRequest.builder()
-                        .username("username")
-                        .groupId("groupId")
+                GroupUserRequest.builder()
+                        .username(user.getUsername())
+                        .groupId(group.getId())
                         .build());
 
         mockMvc.perform(post("/group/transfer-ownership")
@@ -229,12 +207,91 @@ class GroupApiTest {
     }
 
     @Test
-    void addModerator() throws Exception {
+    void getSubscribersFromGroup() throws Exception {
+
+        List<UserDto> users = new ArrayList<>();
+        users.add(UserDto.builder().username(user.getUsername()).build());
+
+        when(groupService.getSubscribers(group.getId(), user.getUsername())).thenReturn(users);
+
+        MvcResult result = mockMvc.perform(get("/group/get-subscribers")
+                        .param("groupId", group.getId())
+                        .param("keyword", user.getUsername())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(users));
+    }
+
+    @Test
+    void subscribeGroup() throws Exception {
+        mockMvc.perform(post("/group/subscribe")
+                        .header("Authorization", "token")
+                        .content(group.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void getModeratorsFromGroup() throws Exception {
+        List<UserDto> users = new ArrayList<>();
+        users.add(UserDto.builder().username(user.getUsername()).build());
+
+        when(groupService.getModerators(group.getId())).thenReturn(users);
+
+        MvcResult result = mockMvc.perform(get("/group/get-moderators")
+                        .header("Authorization", "token")
+                        .param("groupId", group.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals(mapper.writeValueAsString(users), result.getResponse().getContentAsString());
+    }
+
+    @Test
+    void isGroupModerator() throws Exception {
+        String request = mapper.writeValueAsString(
+                GroupUserRequest.builder()
+                        .username(user.getUsername())
+                        .groupId(group.getId())
+                        .build());
+
+        when(groupService.isModerator("username", group.getId())).thenReturn(true);
+
+        MvcResult res = mockMvc.perform(get("/group/is-moderator")
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        assertEquals("true", res.getResponse().getContentAsString());
+    }
+
+    @Test
+    void addGroupModerator() throws Exception {
 
         String request = mapper.writeValueAsString(
-                SubscriberRequest.builder()
-                        .username("username")
-                        .groupId("groupId")
+                GroupUserRequest.builder()
+                        .username(user.getUsername())
+                        .groupId(group.getId())
                         .build());
 
         mockMvc.perform(post("/group/add-moderator")
@@ -249,11 +306,11 @@ class GroupApiTest {
     }
 
     @Test
-    void deleteModerator() throws Exception {
+    void deleteGroupModerator() throws Exception {
         String request = mapper.writeValueAsString(
-                SubscriberRequest.builder()
-                        .username("username")
-                        .groupId("groupId")
+                GroupUserRequest.builder()
+                        .username(user.getUsername())
+                        .groupId(group.getId())
                         .build());
 
         mockMvc.perform(post("/group/delete-moderator")
@@ -268,68 +325,17 @@ class GroupApiTest {
     }
 
     @Test
-    void getSubscribers() throws Exception {
-        List<UserDto> users = new ArrayList<>();
-        users.add(UserDto.builder().username("username").build());
+    void validateNewGroupName() throws Exception {
 
-        when(groupService.getSubscribers(anyString(), anyString())).thenReturn(users);
+        when(groupService.isGroupNameTaken(group.getGroupName())).thenReturn(false);
 
-        MvcResult result = mockMvc.perform(get("/group/get-subscribers")
-                        .param("username", "username")
-                        .param("groupId", "groupId")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/group/validate-new-group-name")
+                .content(group.getGroupName())
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(users));
-    }
-
-    @Test
-    void getModerators() throws Exception {
-        List<UserDto> users = new ArrayList<>();
-        users.add(UserDto.builder().username("username").build());
-
-        when(groupService.getModerators(anyString())).thenReturn(users);
-
-        MvcResult result = mockMvc.perform(get("/group/get-moderators")
-                        .header("Authorization", "token")
-                        .param("groupId", "groupId")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(users));
-    }
-
-    @Test
-    void isModerator() throws Exception {
-        String request = mapper.writeValueAsString(
-                SubscriberRequest.builder()
-                        .username("username")
-                        .groupId("groupId")
-                        .build());
-
-        when(groupService.isModerator(anyString(), anyString())).thenReturn(true);
-
-        MvcResult result = mockMvc.perform(get("/group/is-moderator")
-                        .header("Authorization", "token")
-                        .content(request)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), "true");
+                        preprocessResponse(prettyPrint())));
     }
 }

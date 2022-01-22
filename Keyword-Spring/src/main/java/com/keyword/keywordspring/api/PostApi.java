@@ -1,19 +1,14 @@
 package com.keyword.keywordspring.api;
 
 import com.keyword.keywordspring.dto.model.PostDto;
-import com.keyword.keywordspring.dto.request.CreatePostRequest;
+import com.keyword.keywordspring.dto.request.AddPostRequest;
 import com.keyword.keywordspring.dto.request.EditPostRequest;
-import com.keyword.keywordspring.dto.request.IdRequest;
-import com.keyword.keywordspring.exception.UnexpectedProblemException;
-import com.keyword.keywordspring.model.AppUser;
-import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/post")
@@ -22,75 +17,65 @@ import java.util.Map;
 public class PostApi {
 
     private final PostService postService;
-    private final JwtUtil jwtUtil;
 
-    @PostMapping("/create")
-    public ResponseEntity<Long> createPost(@RequestHeader("Authorization") String token,
-            @RequestBody CreatePostRequest request) {
+    @PostMapping("/add")
+    public ResponseEntity<PostDto> addPost(@RequestHeader("Authorization") String token,
+                                           @RequestBody AddPostRequest request) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
-        return ResponseEntity.ok().body(postService.createPost(user, request));
+        return ResponseEntity.ok().body(postService.add(token, request));
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<PostDto>> getPosts(@RequestHeader(value = "Authorization", required = false) String token,
-                            @RequestParam Integer page,
-                            @RequestParam(required = false) String groupId,
-                            @RequestParam(required = false) String name) {
+    public ResponseEntity<List<PostDto>> getAllPosts(@RequestHeader(value = "Authorization", required = false) String token,
+                                                     @RequestParam(required = false) String groupId,
+                                                     @RequestParam Integer page,
+                                                     @RequestParam(required = false) String keyword) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
-        return ResponseEntity.ok().body(postService.getPosts(page, name, groupId, user));
+        return ResponseEntity.ok().body(postService.getAll(token, groupId, page, keyword));
     }
 
-    @GetMapping("/get-all-count")
+    @GetMapping("/get-count")
     public ResponseEntity<Integer> getPostsCount(@RequestParam(required = false) String groupId,
-                                                  @RequestParam(required = false) String name) {
+                                                 @RequestParam(required = false) String keyword) {
 
-        return ResponseEntity.ok().body(postService.getPostsCount(groupId, name));
+        return ResponseEntity.ok().body(postService.getCount(keyword, groupId));
     }
 
     @GetMapping("/get")
     public ResponseEntity<PostDto> getPost(@RequestHeader(value = "Authorization", required = false) String token,
-            @RequestParam Long id) {
+                                           @RequestParam Long postId) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
-        return ResponseEntity.ok().body(postService.getPost(id, user));
+        return ResponseEntity.ok().body(postService.get(token, postId));
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<Long> editPost(@RequestHeader("Authorization") String token,
-                                           @RequestBody EditPostRequest request) {
+    public ResponseEntity<PostDto> editPost(@RequestHeader("Authorization") String token,
+                                            @RequestBody EditPostRequest request) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
-        return ResponseEntity.ok().body(postService.editPost(user, request));
-    }
-
-    @PostMapping("/upvote")
-    public ResponseEntity<String> upvote(@RequestHeader("Authorization") String token,
-                                         @RequestBody Map<String, Long> request) {
-
-        AppUser user = jwtUtil.getUserFromToken(token);
-
-        postService.upvote(user, request.get("postId"));
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/downvote")
-    public ResponseEntity<Void> downvote(@RequestHeader("Authorization") String token,
-                                         @RequestBody Map<String, Long> request) {
-
-        AppUser user = jwtUtil.getUserFromToken(token);
-
-        postService.downvote(user, request.get("postId"));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(postService.edit(token, request));
     }
 
     @PostMapping("/delete")
     public ResponseEntity<Void> deletePost(@RequestHeader("Authorization") String token,
-                                             @RequestBody IdRequest request) {
-        AppUser user = jwtUtil.getUserFromToken(token);
+                                           @RequestBody Long postId) {
 
-        postService.deletePost(user, request.getId());
+        postService.delete(token, postId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/upvote")
+    public ResponseEntity<Void> upvotePost(@RequestHeader("Authorization") String token,
+                                             @RequestBody Long postId) {
+
+        postService.upvote(token, postId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/downvote")
+    public ResponseEntity<Void> downvotePost(@RequestHeader("Authorization") String token,
+                                             @RequestBody Long postId) {
+
+        postService.downvote(token, postId);
         return ResponseEntity.ok().build();
     }
 }

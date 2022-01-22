@@ -2,6 +2,7 @@ package com.keyword.keywordspring.api;
 
 import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.model.AppUser;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -30,6 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureRestDocs(outputDir = "target/generated-snippets")
 class UserApiTest {
+
+    @MockBean
+    JwtUtil jwtUtil;
 
     @MockBean
     UserService userService;
@@ -59,6 +67,21 @@ class UserApiTest {
 
         mockMvc.perform(get("/user/get")
                         .param("username", "user"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void getSubscribed() throws Exception {
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
+        when(userService.getSubscribedGroups(any())).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(get("/user/get-subscribed")
+                        .header("Authorization", "token"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",

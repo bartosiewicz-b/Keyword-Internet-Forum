@@ -16,7 +16,7 @@ export class GroupService {
 
   getAll(page: number, keyword: string): Observable<Group[]> {
     return this.httpClient.get<Group[]>(this.url + '/get-all',
-    {params: {"page": page, "name": keyword}})
+    {params: {"page": page, "keyword": keyword}})
       .pipe(map(res => {
         return res as Group[];
       }));
@@ -26,9 +26,9 @@ export class GroupService {
     let pars: any = {};
 
     if(keyword != null)
-      pars.name = keyword;
+      pars.keyword = keyword;
 
-    return this.httpClient.get<number>(this.url + '/get-all-count',
+    return this.httpClient.get<number>(this.url + '/get-count',
     {params: pars})
       .pipe(map(res => {
         return res;
@@ -36,7 +36,7 @@ export class GroupService {
   }
 
   getSubscribed(): Observable<Group[]> {
-    return this.httpClient.get<Group[]>(this.url + '/get-subscribed')
+    return this.httpClient.get<Group[]>('http://localhost:8080/user/get-subscribed')
       .pipe(map(res => {
         return res as Group[];
       }));
@@ -44,7 +44,7 @@ export class GroupService {
 
   get(groupId: string): Observable<Group> {
     return this.httpClient.get<Group>(this.url + '/get',
-    {params: {"id": groupId}})
+    {params: {"groupId": groupId}})
     .pipe(map(res => {
       return res as Group;
     }));
@@ -57,7 +57,7 @@ export class GroupService {
   }
 
   createGroup(groupName: string, description: string) {
-    this.httpClient.post(this.url + '/create',
+    this.httpClient.post(this.url + '/add',
       {'groupName': groupName, 'description': description})
       .pipe(take(1))
       .subscribe();
@@ -108,7 +108,7 @@ export class GroupService {
 
   getSubscribers(groupId: string, username: string): Observable<AppUser[]> {
     return this.httpClient.get<AppUser[]>(this.url + '/get-subscribers',
-    {params: {"groupId": groupId, "username": username}})
+    {params: {"groupId": groupId, "keyword": username}})
     .pipe(map(res => {
       return res;
     }));

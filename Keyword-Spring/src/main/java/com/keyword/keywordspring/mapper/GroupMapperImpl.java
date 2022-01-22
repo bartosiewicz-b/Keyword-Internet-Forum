@@ -2,7 +2,6 @@ package com.keyword.keywordspring.mapper;
 
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.mapper.interf.GroupMapper;
-import com.keyword.keywordspring.mapper.interf.UserMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ForumGroup;
 import com.keyword.keywordspring.repository.GroupSubscriptionRepository;
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class GroupMapperImpl implements GroupMapper {
 
-    private final UserMapper userMapper;
     private final GroupSubscriptionRepository subscriptionRepository;
 
     @Override

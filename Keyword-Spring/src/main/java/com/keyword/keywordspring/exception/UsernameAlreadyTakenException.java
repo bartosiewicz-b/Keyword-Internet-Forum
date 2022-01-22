@@ -1,8 +1,8 @@
 package com.keyword.keywordspring.exception;
 
-public class UsernameAlreadyTakenException extends RuntimeException{
+public class UsernameAlreadyTakenException extends IllegalArgumentException {
 
     public UsernameAlreadyTakenException(String username) {
-        super("User with username: " + username + " is already registered.");
+        super("Username " + username + " is already taken.");
     }
 }

@@ -1,43 +1,40 @@
 package com.keyword.keywordspring.mapper;
 
 import com.keyword.keywordspring.dto.model.CommentDto;
-import com.keyword.keywordspring.exception.CommentDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.CommentMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.Comment;
 import com.keyword.keywordspring.model.CommentVote;
-import com.keyword.keywordspring.repository.CommentRepository;
 import com.keyword.keywordspring.repository.CommentVoteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.util.Objects;
 
 @Component
 @AllArgsConstructor
 public class CommentMapperImpl implements CommentMapper {
 
-    private final CommentRepository commentRepository;
     private final CommentVoteRepository commentVoteRepository;
 
     @Override
-    public CommentDto mapToDto(Comment model, AppUser user) {
+    public CommentDto mapToDto(Comment comment, AppUser user) {
 
-        Optional<CommentVote> vote = null;
-        if(user != null)
-            vote = commentVoteRepository.findByUserAndComment(user, model);
+        CommentVote vote = commentVoteRepository.findByUserAndComment(user, comment).orElse(null);
 
         return CommentDto.builder()
-                .id(model.getId())
-                .content(model.getContent())
-                .parentCommentId(null == model.getParentComment() ?
+                .id(comment.getId())
+                .content(comment.getContent())
+                .parentCommentId(Objects.isNull(comment.getParentComment()) ?
                         null :
-                        model.getParentComment().getId())
-                .user(model.getUser().getUsername())
-                .postId(model.getPost().getId())
-                .dateCreated(model.getDateCreated())
-                .votes(model.getVotes())
-                .userVote(null == vote || vote.isEmpty() ? null : vote.get().getType())
+                        comment.getParentComment().getId())
+                .user(comment.getUser().getUsername())
+                .postId(comment.getPost().getId())
+                .dateCreated(comment.getDateCreated())
+                .votes(comment.getVotes())
+                .userVote(Objects.isNull(vote) ?
+                        null :
+                        vote.getType())
                 .build();
     }
 }

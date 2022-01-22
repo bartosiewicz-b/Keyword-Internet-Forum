@@ -2,10 +2,8 @@ package com.keyword.keywordspring.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keyword.keywordspring.dto.model.PostDto;
-import com.keyword.keywordspring.dto.request.CreatePostRequest;
+import com.keyword.keywordspring.dto.request.AddPostRequest;
 import com.keyword.keywordspring.dto.request.EditPostRequest;
-import com.keyword.keywordspring.dto.request.IdRequest;
-import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.PostService;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,16 +17,12 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -38,6 +32,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({RestDocumentationExtension.class, MockitoExtension.class})
@@ -69,6 +64,7 @@ class PostApiTest {
         post = PostDto.builder()
                 .id(1L)
                 .groupName("group")
+                .groupId("group")
                 .title("title")
                 .description("description")
                 .username("username")
@@ -77,17 +73,37 @@ class PostApiTest {
     }
 
     @Test
-    void createPost() throws Exception {
-        String request = mapper.writeValueAsString(CreatePostRequest.builder()
-                        .title("post title")
-                        .description("description")
-                        .groupId("1")
+    void addPost() throws Exception {
+        String request = mapper.writeValueAsString(AddPostRequest.builder()
+                .title(post.getTitle())
+                .description(post.getDescription())
+                .groupId(post.getGroupId())
                 .build());
 
-        mockMvc.perform(post("/post/create")
-                .header("Authorization", "token")
-                .content(request)
-                .contentType(MediaType.APPLICATION_JSON))
+        when(postService.add(anyString(), any())).thenReturn(post);
+
+        mockMvc.perform(post("/post/add")
+                        .header("Authorization", "token")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(mapper.writeValueAsString(post)))
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void getAllPosts() throws Exception {
+
+        List<PostDto> posts = new ArrayList<>();
+        posts.add(post);
+
+        when(postService.getAll(anyString(), anyString(), anyInt(), anyString())).thenReturn(posts);
+
+        mockMvc.perform(get("/post/get-all")
+                        .param("page", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
@@ -96,64 +112,40 @@ class PostApiTest {
     }
 
     @Test
-    void getPosts() throws Exception {
-        List<PostDto> posts = new ArrayList<>();
-        posts.add(post);
-
-        when(postService.getPosts(any(), any(), any(), any())).thenReturn(posts);
-
-        MvcResult result = mockMvc.perform(get("/post/get-all")
-                .param("page", "0"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(posts));
-    }
-
-    @Test
     void getPostsCount() throws Exception {
-        when(postService.getPostsCount(anyString(), anyString())).thenReturn(0);
 
-        MvcResult result = mockMvc.perform(get("/post/get-all-count"))
+        when(postService.getCount(anyString(), anyString())).thenReturn(1);
+
+        mockMvc.perform(get("/post/get-count"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), "0");
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
     void getPost() throws Exception {
 
-        when(postService.getPost(anyLong(), any())).thenReturn(post);
+        when(postService.get(anyString(), anyLong())).thenReturn(post);
 
-        MvcResult result = mockMvc.perform(get("/post/get")
-                        .param("id", "0"))
+        mockMvc.perform(get("/post/get")
+                        .param("postId", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .andReturn();
-
-        assertEquals(result.getResponse().getContentAsString(), mapper.writeValueAsString(post));
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
     void editPost() throws Exception {
         String request = mapper.writeValueAsString(EditPostRequest.builder()
-                        .title("new title")
-                        .description("new description")
+                .title("new title")
+                .description("new description")
                 .build());
 
-        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
+        when(postService.edit(anyString(), any())).thenReturn(post);
 
         mockMvc.perform(post("/post/edit")
                         .header("Authorization", "token")
@@ -167,53 +159,39 @@ class PostApiTest {
     }
 
     @Test
-    void upvotePostApi() throws Exception {
-        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
-
-        Map<String, Long> postId = new HashMap<>();
-        postId.put("postId", 1L);
-        String request = mapper.writeValueAsString(postId);
-
-        mockMvc.perform(post("/post/upvote")
-                        .header("Authorization", "token")
-                        .content(request)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
-    }
-
-    @Test
-    void downvotePostApi() throws Exception {
-        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().build());
-
-        Map<String, Long> postId = new HashMap<>();
-        postId.put("postId", 1L);
-        String request = mapper.writeValueAsString(postId);
-
-        mockMvc.perform(post("/post/downvote")
-                        .header("Authorization", "token")
-                        .content(request)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
-    }
-
-    @Test
     void deletePost() throws Exception {
-
-        String request = mapper.writeValueAsString(IdRequest.builder().id(1L).build());
-
-        when(jwtUtil.getUserFromToken(anyString())).thenReturn(AppUser.builder().id(1L).build());
 
         mockMvc.perform(post("/post/delete")
                         .header("Authorization", "token")
-                        .content(request)
+                        .content("1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void upvotePost() throws Exception {
+
+        mockMvc.perform(post("/post/upvote")
+                        .header("Authorization", "token")
+                        .content("1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    void downvotePost() throws Exception {
+
+        mockMvc.perform(post("/post/downvote")
+                        .header("Authorization", "token")
+                        .content("1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

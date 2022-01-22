@@ -1,10 +1,9 @@
 package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.model.PostDto;
-import com.keyword.keywordspring.dto.request.CreatePostRequest;
+import com.keyword.keywordspring.dto.request.AddPostRequest;
 import com.keyword.keywordspring.dto.request.EditPostRequest;
 import com.keyword.keywordspring.exception.UnauthorizedException;
-import com.keyword.keywordspring.exception.CommentDoesNotExistException;
 import com.keyword.keywordspring.exception.GroupDoesNotExistException;
 import com.keyword.keywordspring.exception.PostDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.PostMapper;
@@ -13,6 +12,7 @@ import com.keyword.keywordspring.repository.GroupRepository;
 import com.keyword.keywordspring.repository.PostRepository;
 import com.keyword.keywordspring.repository.PostVoteRepository;
 import com.keyword.keywordspring.repository.UserRepository;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,45 +33,54 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
     private final PostVoteRepository postVoteRepository;
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+
+    private static final int PAGE_SIZE = 10;
 
     @Override
-    public Long createPost(AppUser user, CreatePostRequest request) {
+    public PostDto add(String token, AddPostRequest request) {
 
-        Optional<ForumGroup> group = groupRepository.findById(request.getGroupId());
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
-        if(group.isEmpty())
-            throw new GroupDoesNotExistException(request.getGroupId());
+        ForumGroup group = groupRepository.findById(request.getGroupId())
+                .orElseThrow(() -> new GroupDoesNotExistException(request.getGroupId()));
 
-        Post saved = postRepository.save(Post.builder()
-                        .user(user)
-                        .forumGroup(group.get())
-                        .title(request.getTitle())
-                        .description(request.getDescription())
-                        .dateCreated(new Date(System.currentTimeMillis()))
-                        .edited(false)
-                        .votes(0)
+
+        Post post = postRepository.save(Post.builder()
+                .user(user)
+                .forumGroup(group)
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .dateCreated(new Date(System.currentTimeMillis()))
+                .edited(false)
+                .votes(0)
                 .build());
 
         user.setNrOfPosts(user.getNrOfPosts() + 1);
         userRepository.save(user);
 
-        return saved.getId();
+        return postMapper.mapToDto(post, user);
     }
 
     @Override
-    public List<PostDto> getPosts(Integer page, String name, String groupId, AppUser user) {
+    public List<PostDto> getAll(String token, String groupId, int page, String keyword) {
 
-        ForumGroup group = groupId==null ? null : groupRepository.findById(groupId).orElse(null);
+        AppUser user = jwtUtil.getUserFromToken(token).orElse(null);
+
+        ForumGroup group = groupId == null ?
+                null :
+                groupRepository.findById(groupId).orElse(null);
+
         List<Post> posts;
 
-        if(name!=null && group!=null)
-            posts = postRepository.findByTitleLikeAndForumGroupLike("%"+name+"%", group, PageRequest.of(page, 10, Sort.by("votes").descending()));
-        else if(name==null && group!=null)
-            posts = postRepository.findByForumGroupLike(group, PageRequest.of(page, 10, Sort.by("votes").descending()));
-        else if(name!=null)
-            posts = postRepository.findByTitleLike("%"+name+"%", PageRequest.of(page, 10, Sort.by("votes").descending()));
+        if(keyword!=null && group!=null)
+            posts = postRepository.findByTitleLikeAndForumGroupLike("%"+keyword+"%", group, PageRequest.of(page, PAGE_SIZE, Sort.by("votes").descending()));
+        else if(keyword==null && group!=null)
+            posts = postRepository.findByForumGroupLike(group, PageRequest.of(page, PAGE_SIZE, Sort.by("votes").descending()));
+        else if(keyword!=null)
+            posts = postRepository.findByTitleLike("%"+keyword+"%", PageRequest.of(page, PAGE_SIZE, Sort.by("votes").descending()));
         else
-            posts = postRepository.findAll(PageRequest.of(page, 10, Sort.by("votes").descending()));
+            posts = postRepository.findAll(PageRequest.of(page, PAGE_SIZE, Sort.by("votes").descending()));
 
         return posts.stream()
                 .map(p -> postMapper.mapToDto(p, user))
@@ -80,36 +88,42 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Integer getPostsCount(String groupId, String name) {
+    public int getCount(String keyword, String groupId) {
 
-        ForumGroup group = groupId==null ? null : groupRepository.findById(groupId).orElse(null);
+        ForumGroup group = groupId == null ?
+                null :
+                groupRepository.findById(groupId).orElse(null);
 
-        if(name!=null && group!=null)
-            return postRepository.findByTitleLikeAndForumGroupLike("%"+name+"%", group).size();
-        else if(name==null && group!=null)
+        if(keyword!=null && group!=null)
+            return postRepository.findByTitleLikeAndForumGroupLike("%"+keyword+"%", group).size();
+        else if(keyword==null && group!=null)
             return postRepository.findByForumGroupLike(group).size();
-        else if(name!=null)
-            return postRepository.findByTitleLike("%"+name+"%").size();
+        else if(keyword!=null)
+            return postRepository.findByTitleLike("%"+keyword+"%").size();
         else
             return postRepository.findAll().size();
     }
 
     @Override
-    public PostDto getPost(Long id, AppUser user) {
+    public PostDto get(String token, Long id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElse(null);
+
         Post post = postRepository.findById(id).orElseThrow(() -> new PostDoesNotExistException(id));
 
         return postMapper.mapToDto(post, user);
     }
 
     @Override
-    public Long editPost(AppUser user, EditPostRequest request) {
+    public PostDto edit(String token, EditPostRequest request) {
 
-        if(postRepository.findById(request.getPostId()).isEmpty() ||
-                !Objects.equals(user.getId(), postRepository.findById(request.getPostId()).get().getUser().getId()))
-            throw new UnauthorizedException();
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
         Post post = postRepository.findById(request.getPostId())
-                .orElseThrow(() -> new CommentDoesNotExistException(request.getPostId()));
+                .orElseThrow(() -> new PostDoesNotExistException(request.getPostId()));
+
+        if(!user.equals(post.getUser()))
+            throw new UnauthorizedException(user, post);
 
         post.setTitle(request.getTitle());
         post.setDescription(request.getDescription());
@@ -117,13 +131,33 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(post);
 
-        return post.getId();
+        return postMapper.mapToDto(post, user);
     }
 
     @Override
-    public void upvote(AppUser user, Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostDoesNotExistException(postId));
+    public void delete(String token, Long id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostDoesNotExistException(id));
+
+        if(!post.getUser().equals(user) && !post.getForumGroup().getModerators().contains(user))
+            throw new UnauthorizedException(user, post);
+
+        AppUser postOwner = post.getUser();
+        postOwner.setNrOfPosts(postOwner.getNrOfPosts() - 1);
+
+        userRepository.save(postOwner);
+        postRepository.deleteById(id);
+    }
+
+    @Override
+    public void upvote(String token, Long id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostDoesNotExistException(id));
 
         Optional<PostVote> vote = postVoteRepository.findByUserAndPost(user, post);
 
@@ -148,9 +182,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void downvote(AppUser user, Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostDoesNotExistException(postId));
+    public void downvote(String token, Long id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostDoesNotExistException(id));
 
         Optional<PostVote> vote = postVoteRepository.findByUserAndPost(user, post);
 
@@ -172,21 +209,5 @@ public class PostServiceImpl implements PostService {
         }
 
         postRepository.save(post);
-    }
-
-    @Override
-    public void deletePost(AppUser user, Long id) {
-
-        Post post = postRepository.findById(id).orElseThrow(() -> new PostDoesNotExistException(id));
-
-        if(!post.getUser().equals(user) && !post.getForumGroup().getModerators().contains(user))
-            throw new UnauthorizedException();
-
-        AppUser postOwner = post.getUser();
-        postOwner.setNrOfPosts(postOwner.getNrOfPosts() - 1);
-
-
-        userRepository.save(postOwner);
-        postRepository.deleteById(id);
     }
 }

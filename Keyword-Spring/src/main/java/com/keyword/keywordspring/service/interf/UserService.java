@@ -1,5 +1,6 @@
 package com.keyword.keywordspring.service.interf;
 
+import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
 import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
@@ -8,6 +9,7 @@ import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.model.AppUser;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -24,4 +26,6 @@ public interface UserService {
     boolean isEmailTaken(String email);
 
     UserDto getUser(String username);
+
+    List<GroupDto> getSubscribedGroups(AppUser user);
 }

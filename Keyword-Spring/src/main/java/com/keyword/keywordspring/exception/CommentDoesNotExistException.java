@@ -1,6 +1,8 @@
 package com.keyword.keywordspring.exception;
 
-public class CommentDoesNotExistException extends RuntimeException{
+import java.util.NoSuchElementException;
+
+public class CommentDoesNotExistException extends NoSuchElementException {
 
     public CommentDoesNotExistException (Long id) {
         super("Comment does not exist for id: " + id);

@@ -2,35 +2,32 @@ package com.keyword.keywordspring.service.interf;
 
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.model.UserDto;
-import com.keyword.keywordspring.dto.request.CreateGroupRequest;
+import com.keyword.keywordspring.dto.request.AddGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
-import com.keyword.keywordspring.model.AppUser;
-import com.keyword.keywordspring.model.ForumGroup;
 
 import java.util.List;
 
 public interface GroupService {
 
-    void createGroup(AppUser user, CreateGroupRequest request);
+    GroupDto add(String token, AddGroupRequest request);
 
+    List<GroupDto> getAll(String token, Integer page, String keyword);
+    int getCount(String keyword);
+    GroupDto get(String token, String id);
 
-    List<GroupDto> getGroups(Integer page, String name, AppUser user);
-    Integer getGroupsCount(String name);
-    GroupDto getGroup(String id, AppUser user);
+    GroupDto edit(String token, EditGroupRequest request);
 
-    void editGroup(AppUser user, EditGroupRequest request);
-    void deleteGroup(AppUser user, String groupId);
-    void transferOwnership(AppUser user, String groupId, String newOwnerUsername);
+    void delete(String token, String id);
 
-    List<UserDto> getSubscribers(String groupId, String username);
+    void transferOwnership(String token, String id, String newOwnerUsername);
 
-    void addModerator(AppUser owner, String moderatorUsername, String groupId);
-    void removeModerator(AppUser owner, String moderatorUsername, String groupId);
-    List<UserDto> getModerators(String groupId);
-    boolean isModerator(String username, String groupId);
+    List<UserDto> getSubscribers(String id, String keyword);
+    void subscribe(String token, String id);
+
+    List<UserDto> getModerators(String id);
+    boolean isModerator(String username, String id);
+    void addModerator(String token, String moderatorUsername, String id);
+    void deleteModerator(String token, String moderatorUsername, String id);
 
     boolean isGroupNameTaken(String name);
-
-    void subscribeGroup(AppUser user, String groupId);
-    List<GroupDto> getSubscribedGroups(AppUser user);
 }

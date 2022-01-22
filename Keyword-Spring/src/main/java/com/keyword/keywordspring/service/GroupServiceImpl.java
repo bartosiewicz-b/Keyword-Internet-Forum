@@ -2,7 +2,7 @@ package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.model.UserDto;
-import com.keyword.keywordspring.dto.request.CreateGroupRequest;
+import com.keyword.keywordspring.dto.request.AddGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
 import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.GroupDoesNotExistException;
@@ -16,6 +16,7 @@ import com.keyword.keywordspring.repository.GroupRepository;
 import com.keyword.keywordspring.repository.GroupSubscriptionRepository;
 import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.GroupService;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,16 +30,19 @@ import java.util.stream.Collectors;
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
-    private final UserRepository userRepository;
     private final GroupSubscriptionRepository groupSubscriptionRepository;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
     private final GroupMapper groupMapper;
     private final UserMapper userMapper;
 
     @Override
-    public void createGroup(AppUser user, CreateGroupRequest request) {
+    public GroupDto add(String token, AddGroupRequest request) {
 
-        ForumGroup forumGroup = ForumGroup.builder()
-                .id(request.getGroupName().toLowerCase(Locale.ROOT).replace(' ', '-'))
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        ForumGroup group = groupRepository.save(ForumGroup.builder()
+                .id(request.getGroupName().toLowerCase(Locale.ROOT).trim().replace(' ', '-'))
                 .owner(user)
                 .groupName(request.getGroupName())
                 .description(request.getDescription())
@@ -46,63 +50,119 @@ public class GroupServiceImpl implements GroupService {
                 .subscriptions(0)
                 .subscribers(new ArrayList<>())
                 .moderators(new ArrayList<>(){{add(user);}})
-                .build();
+                .build());
 
-        groupRepository.save(forumGroup);
+        subscribe(token, group.getId());
 
-        subscribeGroup(user, forumGroup.getId());
+        return groupMapper.mapToDto(group, user);
     }
 
     @Override
-    public List<GroupDto> getGroups(Integer page, String name, AppUser user) {
+    public List<GroupDto> getAll(String token, Integer page, String keyword) {
 
-        return (name == null ?
+        AppUser user = jwtUtil.getUserFromToken(token).orElse(null);
+
+        List<ForumGroup> groups = keyword == null ?
                 groupRepository.findAll(PageRequest.of(page, 10, Sort.by("subscriptions").descending())) :
-                groupRepository.findByGroupNameLike("%"+name+"%", PageRequest.of(page, 10, Sort.by("subscriptions").descending())))
-                        .stream()
-                        .map(res -> groupMapper.mapToDto(res, user))
-                        .collect(Collectors.toList());
+                groupRepository.findByGroupNameLike("%"+keyword+"%", PageRequest.of(page, 10, Sort.by("subscriptions").descending()));
+
+        return (groups.stream()
+                .map(res -> groupMapper.mapToDto(res, user))
+                .collect(Collectors.toList()));
     }
 
     @Override
-    public Integer getGroupsCount(String name) {
-        if(null==name)
-            return groupRepository.findAll().size();
-        else
-            return groupRepository.findByGroupNameLike("%"+name+"%").size();
+    public int getCount(String keyword) {
+
+        return keyword == null ?
+                groupRepository.findAll().size() :
+                groupRepository.findByGroupNameLike("%"+keyword+"%").size();
     }
 
     @Override
-    public GroupDto getGroup(String id, AppUser user) {
+    public GroupDto get(String token, String id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElse(null);
+
         ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
 
         return groupMapper.mapToDto(group, user);
     }
 
     @Override
-    public void editGroup(AppUser user, EditGroupRequest request) {
-        if(groupRepository.findById(request.getId()).isEmpty() ||
-                !Objects.equals(user.getId(), groupRepository.findById(request.getId()).get().getOwner().getId()))
-            throw new UnauthorizedException();
+    public GroupDto edit(String token, EditGroupRequest request) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
         ForumGroup group = groupRepository.findById(request.getId())
                 .orElseThrow(() -> new GroupDoesNotExistException(request.getId()));
+
+
+        if(!Objects.equals(user, group.getOwner()))
+            throw new UnauthorizedException(user, group);
 
         group.setGroupName(request.getGroupName());
         group.setDescription(request.getDescription());
 
         groupRepository.save(group);
+
+        return groupMapper.mapToDto(group, user);
     }
 
     @Override
-    public boolean isGroupNameTaken(String name) {
-        return groupRepository.findByGroupName(name).isPresent();
+    public void delete(String token, String id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
+
+        if(!Objects.equals(user, group.getOwner()))
+            throw new UnauthorizedException(user, group);
+
+        groupRepository.deleteById(id);
     }
 
     @Override
-    public void subscribeGroup(AppUser user, String groupId) {
-        ForumGroup group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new GroupDoesNotExistException(groupId));
+    public void transferOwnership(String token, String id, String newOwnerUsername) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
+
+        AppUser newOwner = userRepository.findByUsername(newOwnerUsername)
+                .orElseThrow(() -> new UserDoesNotExistException(newOwnerUsername));
+
+        if(newOwner.equals(user)) return;
+
+        user.getOwnedGroups().remove(group);
+        group.setOwner(newOwner);
+        newOwner.getOwnedGroups().add(group);
+
+        userRepository.save(user);
+        userRepository.save(newOwner);
+        groupRepository.save(group);
+    }
+
+    @Override
+    public List<UserDto> getSubscribers(String id, String keyword) {
+        ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
+
+        group.getSubscribers().removeIf(obj ->
+                (keyword != null && !obj.getUsername().contains(keyword)) ||
+                        obj.getModeratedGroups().contains(group)
+        );
+
+        return group.getSubscribers().stream().limit(10)
+                .map(userMapper::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void subscribe(String token, String id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
 
         Optional<GroupSubscription> subscription = groupSubscriptionRepository.findByUserAndGroup(user, group);
 
@@ -115,7 +175,6 @@ public class GroupServiceImpl implements GroupService {
             group.setSubscriptions(group.getSubscriptions() + 1);
             group.getSubscribers().add(user);
             user.getSubscribed().add(group);
-
         }
         else {
             groupSubscriptionRepository.delete(subscription.get());
@@ -134,79 +193,55 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<GroupDto> getSubscribedGroups(AppUser user) {
-        return user.getSubscribed().stream()
-                .map(g -> groupMapper.mapToDto(g, user))
-                .collect(Collectors.toList());
-    }
+    public List<UserDto> getModerators(String id) {
 
-    @Override
-    public void deleteGroup(AppUser user, String groupId) {
-        if(groupRepository.findById(groupId).isEmpty() ||
-                !Objects.equals(user.getId(), groupRepository.findById(groupId).get().getOwner().getId()))
-            throw new UnauthorizedException();
+        ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
 
-        groupRepository.deleteById(groupId);
-    }
-
-    @Override
-    public void transferOwnership(AppUser user, String groupId, String newOwnerUsername) {
-        ForumGroup group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new GroupDoesNotExistException(groupId));
-
-        AppUser newOwner = userRepository.findByUsername(newOwnerUsername)
-                .orElseThrow(() -> new UserDoesNotExistException(newOwnerUsername));
-
-        if(newOwner.equals(user)) return;
-
-        user.getOwnedGroups().remove(group);
-        group.setOwner(newOwner);
-        newOwner.getOwnedGroups().add(group);
-
-        userRepository.save(user);
-        userRepository.save(newOwner);
-        groupRepository.save(group);
-    }
-
-    @Override
-    public List<UserDto> getSubscribers(String groupId, String username) {
-        ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
-
-        group.getSubscribers().removeIf(obj ->
-                !obj.getUsername().contains(username) ||
-                obj.getModeratedGroups().contains(group)
-        );
-
-        return group.getSubscribers().stream().limit(10)
+        return group.getModerators().stream()
                 .map(userMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void addModerator(AppUser owner, String moderatorUsername, String groupId) {
-        ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
+    public boolean isModerator(String username, String id) {
+
+        ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
+
+        AppUser user = userRepository.findByUsername(username).orElseThrow(() -> new UserDoesNotExistException(username));
+
+        return group.getModerators().contains(user);
+    }
+
+    @Override
+    public void addModerator(String token, String moderatorUsername, String id) {
+
+        AppUser owner = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
 
         AppUser moderator = userRepository.findByUsername(moderatorUsername)
                 .orElseThrow(() -> new UserDoesNotExistException(moderatorUsername));
 
-        if(!group.getOwner().equals(owner)) throw new UnauthorizedException();
+        if(!group.getOwner().equals(owner)) throw new UnauthorizedException(owner, group);
 
         group.getModerators().add(moderator);
         moderator.getModeratedGroups().add(group);
 
         groupRepository.save(group);
         userRepository.save(moderator);
-
     }
 
     @Override
-    public void removeModerator(AppUser owner, String moderatorUsername, String groupId) {
-        ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
+    public void deleteModerator(String token, String moderatorUsername, String id) {
+
+        AppUser owner = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
 
         AppUser moderator = userRepository.findByUsername(moderatorUsername)
                 .orElseThrow(() -> new UserDoesNotExistException(moderatorUsername));
 
-        if(!group.getOwner().equals(owner)) throw new UnauthorizedException();
+        if(!group.getOwner().equals(owner)) throw new UnauthorizedException(owner, group);
 
         group.getModerators().remove(moderator);
         moderator.getModeratedGroups().remove(group);
@@ -216,20 +251,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<UserDto> getModerators(String groupId) {
-        ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
+    public boolean isGroupNameTaken(String name) {
 
-        return group.getModerators().stream()
-                .map(userMapper::mapToDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isModerator(String username, String groupId) {
-        ForumGroup group = groupRepository.findById(groupId).orElseThrow(() -> new GroupDoesNotExistException(groupId));
-
-        AppUser user = userRepository.findByUsername(username).orElseThrow(() -> new UserDoesNotExistException(username));
-
-        return group.getModerators().contains(user);
+        return groupRepository.findByGroupName(name).isPresent();
     }
 }

@@ -1,84 +1,67 @@
 package com.keyword.keywordspring.api;
 
 import com.keyword.keywordspring.dto.model.CommentDto;
-import com.keyword.keywordspring.dto.request.CreateCommentRequest;
+import com.keyword.keywordspring.dto.request.AddCommentRequest;
 import com.keyword.keywordspring.dto.request.EditCommentRequest;
-import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.CommentService;
-import com.keyword.keywordspring.service.interf.JwtUtil;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/comment")
 @CrossOrigin(origins = "http://localhost:4200")
 @AllArgsConstructor
-@Slf4j
 public class CommentApi {
 
     private final CommentService commentService;
-    private final JwtUtil jwtUtil;
 
-    @PostMapping("/create")
-    public ResponseEntity<CommentDto> createComment(@RequestHeader("Authorization") String token,
-                                           @RequestBody CreateCommentRequest request) {
+    @PostMapping("/add")
+    public ResponseEntity<CommentDto> addComment(@RequestHeader("Authorization") String token,
+                                                 @RequestBody AddCommentRequest request) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
-
-        return ResponseEntity.ok().body(commentService.addComment(user, request));
+        return ResponseEntity.ok().body(commentService.add(token, request));
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<List<CommentDto>> getComments(@RequestHeader(value = "Authorization", required = false) String token,
-            @RequestParam Long postId) {
+    @GetMapping("/get-all")
+    public ResponseEntity<List<CommentDto>> getAllComments(@RequestHeader(value = "Authorization", required = false) String token,
+                                                           @RequestParam Long postId) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
-
-        return ResponseEntity.ok().body(commentService.getComments(postId, user));
+        return ResponseEntity.ok().body(commentService.getAll(token, postId));
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<Void> editComment(@RequestHeader("Authorization") String token,
-                                         @RequestBody EditCommentRequest request) {
+    public ResponseEntity<CommentDto> editComment(@RequestHeader("Authorization") String token,
+                                            @RequestBody EditCommentRequest request) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
-
-        commentService.editComment(user, request);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/upvote")
-    public ResponseEntity<String> upvote(@RequestHeader("Authorization") String token,
-            @RequestBody Map<String, Long> request) {
-
-        AppUser user = jwtUtil.getUserFromToken(token);
-
-        commentService.upvote(user, request.get("commentId"));
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/downvote")
-    public ResponseEntity<Void> downvote(@RequestHeader("Authorization") String token,
-                                       @RequestBody Map<String, Long> request) {
-
-        AppUser user = jwtUtil.getUserFromToken(token);
-
-        commentService.downvote(user, request.get("commentId"));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(commentService.edit(token, request));
     }
 
     @PostMapping("/delete")
     public ResponseEntity<Void> deleteComment(@RequestHeader("Authorization") String token,
-                                              @RequestBody Map<String, Long> request) {
+                                              @RequestBody Long commentId) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
-
-        commentService.deleteComment(user, request.get("id"));
+        commentService.delete(token, commentId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/upvote")
+    public ResponseEntity<Void> upvoteComment(@RequestHeader("Authorization") String token,
+                                              @RequestBody Long commentId) {
+
+        commentService.upvote(token, commentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/downvote")
+    public ResponseEntity<Void> downvoteComment(@RequestHeader("Authorization") String token,
+                                                @RequestBody Long commentId) {
+
+        commentService.downvote(token, commentId);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

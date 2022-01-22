@@ -1,5 +1,6 @@
 package com.keyword.keywordspring.service;
 
+import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
 import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
@@ -7,6 +8,7 @@ import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
 import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.exception.*;
+import com.keyword.keywordspring.mapper.interf.GroupMapper;
 import com.keyword.keywordspring.mapper.interf.UserMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.repository.UserRepository;
@@ -18,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final UserMapper userMapper;
+    private final GroupMapper groupMapper;
 
     @Override
     public void register(RegisterRequest request) {
@@ -86,7 +91,7 @@ public class UserServiceImpl implements UserService {
             throw new EmailAlreadyTakenException(request.getNewEmail());
 
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
-            throw new UnauthorizedException();
+            throw new UnauthorizedException(user.getUsername());
 
         user.setEmail(request.getNewEmail());
 
@@ -99,7 +104,7 @@ public class UserServiceImpl implements UserService {
     public TokenResponse changePassword(ChangePasswordRequest request, AppUser user) {
 
         if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
-            throw new UnauthorizedException();
+            throw new UnauthorizedException(user.getUsername());
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
@@ -126,5 +131,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserDoesNotExistException(username));
 
         return userMapper.mapToDto(user);
+    }
+
+    @Override
+    public List<GroupDto> getSubscribedGroups(AppUser user) {
+        return user.getSubscribed().stream()
+                .map(g -> groupMapper.mapToDto(g, user))
+                .collect(Collectors.toList());
     }
 }

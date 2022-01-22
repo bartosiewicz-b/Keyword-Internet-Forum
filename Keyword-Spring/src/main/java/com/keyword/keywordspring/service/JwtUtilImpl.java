@@ -70,17 +70,14 @@ public class JwtUtilImpl implements JwtUtil {
     }
 
     @Override
-    public AppUser getUserFromToken(String token) {
+    public Optional<AppUser> getUserFromToken(String token) {
 
-        if(null == token)
-            return null;
+        if(token == null) return Optional.empty();
 
         if(token.startsWith("Bearer "))
             token = token.substring(7);
 
-        Optional<AppUser> user = userRepository.findByUsername(getUsernameFromJwt(token));
-
-        return user.orElse(null);
+        return userRepository.findByUsername(getUsernameFromJwt(token));
 
     }
 

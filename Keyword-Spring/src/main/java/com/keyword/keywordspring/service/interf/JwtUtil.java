@@ -13,7 +13,7 @@ public interface JwtUtil {
 
     boolean validateJwt(String token);
 
-    AppUser getUserFromToken(String token);
+    Optional<AppUser> getUserFromToken(String token);
 
     String getUsernameFromJwt(String token);
     String getTypeFromJwt(String token);

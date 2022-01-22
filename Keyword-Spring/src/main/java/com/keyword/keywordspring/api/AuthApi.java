@@ -37,7 +37,7 @@ public class AuthApi {
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
 
         AppUser user = userService.login(request)
-                .orElseThrow(UnauthorizedException::new);
+                .orElseThrow(() -> new UnauthorizedException(request.getLogin()));
 
         TokenResponse response = jwtUtil.generateTokenResponse(user);
         response.setUsername(user.getUsername());
@@ -59,7 +59,7 @@ public class AuthApi {
     public ResponseEntity<TokenResponse> changeUsername(@RequestHeader("Authorization") String token,
             @RequestBody Map<String, String> request) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
         return ResponseEntity.ok().body(
                 userService.changeUsername(request.get("username"), user)
@@ -70,7 +70,7 @@ public class AuthApi {
     public ResponseEntity<TokenResponse> changeEmail(@RequestHeader("Authorization") String token,
             @RequestBody ChangeEmailRequest request) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
         return ResponseEntity.ok().body(
                 userService.changeEmail(request, user)
@@ -81,7 +81,7 @@ public class AuthApi {
     public ResponseEntity<TokenResponse> changePassword(@RequestHeader("Authorization") String token,
                                                      @RequestBody ChangePasswordRequest request) {
 
-        AppUser user = jwtUtil.getUserFromToken(token);
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
         return ResponseEntity.ok().body(
                 userService.changePassword(request, user)

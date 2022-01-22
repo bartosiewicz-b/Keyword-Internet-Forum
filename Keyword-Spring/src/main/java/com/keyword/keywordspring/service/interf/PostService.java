@@ -1,25 +1,23 @@
 package com.keyword.keywordspring.service.interf;
 
 import com.keyword.keywordspring.dto.model.PostDto;
-import com.keyword.keywordspring.dto.request.CreatePostRequest;
+import com.keyword.keywordspring.dto.request.AddPostRequest;
 import com.keyword.keywordspring.dto.request.EditPostRequest;
-import com.keyword.keywordspring.model.AppUser;
 
 import java.util.List;
 
 public interface PostService {
 
-    Long createPost(AppUser user, CreatePostRequest request);
+    PostDto add(String token, AddPostRequest request);
 
-    List<PostDto> getPosts(Integer page, String name, String groupId, AppUser user);
-    Integer getPostsCount(String groupId, String name);
+    List<PostDto> getAll(String token, String groupId, int page, String keyword);
+    int getCount(String keyword, String groupId);
+    PostDto get(String token, Long id);
 
-    PostDto getPost(Long id, AppUser user);
+    PostDto edit(String token, EditPostRequest request);
 
-    Long editPost(AppUser user, EditPostRequest request);
+    void delete(String token, Long id);
 
-    void upvote(AppUser user, Long postId);
-    void downvote(AppUser user, Long postId);
-
-    void deletePost(AppUser user, Long id);
+    void upvote(String token, Long id);
+    void downvote(String token, Long id);
 }

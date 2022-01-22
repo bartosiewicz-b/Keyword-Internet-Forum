@@ -17,9 +17,9 @@ export class PostService {
     let pars: any;
 
     if(groupId==null)
-      pars = {"page": page, "name": keyword};
+      pars = {"page": page, "keyword": keyword};
     else
-      pars = {"page": page, "groupId": groupId, "name": keyword};
+      pars = {"page": page, "groupId": groupId, "keyword": keyword};
 
     return this.httpClient.get<Post[]>(this.url + '/get-all',
     {params: pars})
@@ -34,9 +34,9 @@ export class PostService {
     if(groupId != null)
       pars.groupId = groupId;
     if(keyword != null)
-      pars.name = keyword;
+      pars.keyword = keyword;
 
-    return this.httpClient.get<number>(this.url + '/get-all-count',
+    return this.httpClient.get<number>(this.url + '/get-count',
     {params: pars})
       .pipe(map(res => {
         return res;
@@ -45,7 +45,7 @@ export class PostService {
 
   get(postId: number): Observable<Post> {
     return this.httpClient.get<Post>(this.url + '/get',
-    {params: {"id": postId}})
+    {params: {"postId": postId}})
     .pipe(map(res => {
       return res as Post;
     }));
@@ -64,7 +64,7 @@ export class PostService {
   }
 
   create(title: string, description: string, groupId: string) {
-    return this.httpClient.post(this.url + '/create',
+    return this.httpClient.post(this.url + '/add',
       {'title': title, 'description': description, 'groupId': groupId})
       .pipe(take(1));
   }
@@ -77,7 +77,7 @@ export class PostService {
 
   delete(postId: number) {
     this.httpClient.post(this.url + '/delete',
-      {'id': postId})
+      {'postId': postId})
       .pipe(take(1)).subscribe();
   }
 }

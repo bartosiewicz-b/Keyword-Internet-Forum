@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
-public class SubscriberRequest {
+public class GroupUserRequest {
 
     @NotNull
     private String groupId;

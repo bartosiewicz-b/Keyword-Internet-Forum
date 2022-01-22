@@ -6,5 +6,5 @@ import com.keyword.keywordspring.model.Comment;
 
 public interface CommentMapper {
 
-    CommentDto mapToDto(Comment model, AppUser user);
+    CommentDto mapToDto(Comment comment, AppUser user);
 }

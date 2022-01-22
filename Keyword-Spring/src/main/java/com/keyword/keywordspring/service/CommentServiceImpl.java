@@ -1,7 +1,7 @@
 package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.model.CommentDto;
-import com.keyword.keywordspring.dto.request.CreateCommentRequest;
+import com.keyword.keywordspring.dto.request.AddCommentRequest;
 import com.keyword.keywordspring.dto.request.EditCommentRequest;
 import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.CommentDoesNotExistException;
@@ -13,12 +13,12 @@ import com.keyword.keywordspring.repository.CommentVoteRepository;
 import com.keyword.keywordspring.repository.PostRepository;
 import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.CommentService;
+import com.keyword.keywordspring.service.interf.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,32 +28,32 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-    private final CommentMapper commentMapper;
     private final CommentVoteRepository commentVoteRepository;
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+    private final CommentMapper commentMapper;
 
     @Override
-    public CommentDto addComment(AppUser user, CreateCommentRequest request) {
+    public CommentDto add(String token, AddCommentRequest request) {
 
-        Optional<Post> post = postRepository.findById(request.getPostId());
-        Optional<Comment> parentComment = request.getParentCommentId() != null ?
-                commentRepository.findById(request.getParentCommentId()) :
-                Optional.empty();
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
-        if(post.isEmpty())
-            throw new PostDoesNotExistException(request.getPostId());
+        Post post = postRepository.findById(request.getPostId())
+                .orElseThrow(() -> new PostDoesNotExistException(request.getPostId()));
 
-        Comment comment = Comment.builder()
+        Comment parentComment = null;
+        if(request.getParentCommentId() != null)
+            parentComment = commentRepository.findById(request.getParentCommentId()).orElse(null);
+
+        Comment comment = commentRepository.save(Comment.builder()
                 .content(request.getContent())
                 .user(user)
-                .post(post.get())
-                .parentComment(parentComment.orElse(null))
+                .post(post)
+                .parentComment(parentComment)
                 .dateCreated(new Date(System.currentTimeMillis()))
                 .votes(0)
                 .edited(false)
-                .build();
-
-        commentRepository.save(comment);
+                .build());
 
         user.setNrOfComments(user.getNrOfComments() + 1);
         userRepository.save(user);
@@ -62,7 +62,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDto> getComments(Long postId, AppUser user) {
+    public List<CommentDto> getAll(String token, Long postId) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElse(null);
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostDoesNotExistException(postId));
 
@@ -73,25 +75,48 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void editComment(AppUser user, EditCommentRequest request) {
+    public CommentDto edit(String token, EditCommentRequest request) {
 
-        if(commentRepository.findById(request.getId()).isEmpty() ||
-                !Objects.equals(user.getId(), commentRepository.findById(request.getId()).get().getUser().getId()))
-            throw new UnauthorizedException();
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
         Comment comment = commentRepository.findById(request.getId())
                 .orElseThrow(() -> new CommentDoesNotExistException(request.getId()));
+
+        if(!user.equals(comment.getUser()))
+            throw new UnauthorizedException(user, comment);
 
         comment.setContent(request.getNewContent());
         comment.setEdited(true);
 
         commentRepository.save(comment);
+
+        return commentMapper.mapToDto(comment, user);
     }
 
     @Override
-    public void upvote(AppUser user, Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentDoesNotExistException(commentId));
+    public void delete(String token, Long id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new CommentDoesNotExistException(id));
+
+        if(!user.equals(comment.getUser()))
+            throw new UnauthorizedException(user, comment);
+
+        user.setNrOfComments(user.getNrOfComments() - 1);
+        userRepository.save(user);
+
+        commentRepository.deleteById(id);
+    }
+
+    @Override
+    public void upvote(String token, Long id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new CommentDoesNotExistException(id));
 
         Optional<CommentVote> vote = commentVoteRepository.findByUserAndComment(user, comment);
 
@@ -116,9 +141,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void downvote(AppUser user, Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentDoesNotExistException(commentId));
+    public void downvote(String token, Long id) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new CommentDoesNotExistException(id));
 
         Optional<CommentVote> vote = commentVoteRepository.findByUserAndComment(user, comment);
 
@@ -140,18 +168,5 @@ public class CommentServiceImpl implements CommentService {
         }
 
         commentRepository.save(comment);
-    }
-
-    @Override
-    public void deleteComment(AppUser user, Long id) {
-
-        if(commentRepository.findById(id).isEmpty() ||
-                !Objects.equals(user.getId(), commentRepository.findById(id).get().getUser().getId()))
-            throw new UnauthorizedException();
-
-        user.setNrOfComments(user.getNrOfComments() - 1);
-        userRepository.save(user);
-
-        commentRepository.deleteById(id);
     }
 }

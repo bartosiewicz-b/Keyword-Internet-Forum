@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -44,4 +45,12 @@ public class AppUser implements Serializable {
 
     @ManyToMany
     private List<ForumGroup> subscribed;
+
+    @Override
+    public boolean equals(Object o) {
+        if(Objects.isNull(o)) return false;
+        if(!(o instanceof AppUser)) return false;
+
+        return id.equals(((AppUser) o).id);
+    }
 }
