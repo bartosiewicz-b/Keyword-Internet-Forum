@@ -65,9 +65,9 @@ include::{snippets}/getUser/http-response.adoc[]
 
 == Get Subscribed
 .request
-include::{snippets}/getSubscribed/http-request.adoc[]
+include::{snippets}/getSubscribedGroups/http-request.adoc[]
 .response
-include::{snippets}/getSubscribed/http-response.adoc[]
+include::{snippets}/getSubscribedGroups/http-response.adoc[]
 
 
 = Group

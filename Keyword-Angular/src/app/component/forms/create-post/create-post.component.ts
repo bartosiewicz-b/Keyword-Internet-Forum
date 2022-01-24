@@ -1,3 +1,4 @@
+import { Post } from './../../../model/post';
 import { GroupService } from './../../../service/group.service';
 import { Group } from './../../../model/group';
 import { take } from 'rxjs/operators';
@@ -45,7 +46,7 @@ export class CreatePostComponent {
   create(){
     if(this.routePostId==null) {
       this.postService.create(this.title, this.description, this.group).subscribe(res => {
-        this.routePostId = res as string;
+        this.routePostId = res.id.toString();
         this.router.navigate(['/' + this.group + '/' + this.routePostId]);
       });
     } else {

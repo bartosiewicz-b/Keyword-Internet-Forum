@@ -52,19 +52,19 @@ export class PostService {
   }
 
   upvote(postId: number) {
-    this.httpClient.post(this.url + '/upvote', {'postId': postId})
+    this.httpClient.post(this.url + '/upvote', postId)
     .pipe(take(1))
     .subscribe()
   }
 
   downvote(postId: number) {
-    this.httpClient.post(this.url + '/downvote', {'postId': postId})
+    this.httpClient.post(this.url + '/downvote', postId)
     .pipe(take(1))
     .subscribe()
   }
 
   create(title: string, description: string, groupId: string) {
-    return this.httpClient.post(this.url + '/add',
+    return this.httpClient.post<Post>(this.url + '/add',
       {'title': title, 'description': description, 'groupId': groupId})
       .pipe(take(1));
   }
@@ -77,7 +77,7 @@ export class PostService {
 
   delete(postId: number) {
     this.httpClient.post(this.url + '/delete',
-      {'postId': postId})
+      postId)
       .pipe(take(1)).subscribe();
   }
 }

@@ -1,6 +1,7 @@
 package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.response.TokenResponse;
+import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.InvalidToken;
 import com.keyword.keywordspring.repository.InvalidTokenRepository;
@@ -34,29 +35,20 @@ public class JwtUtilImpl implements JwtUtil {
         return TokenResponse.builder()
                 .token(generateJwt(user))
                 .refreshToken(generateRefreshToken(user))
+                .username(user.getUsername())
+                .email(user.getEmail())
                 .build();
     }
 
     @Override
-    public Optional<TokenResponse> refreshJwt(String refreshToken) {
-        Optional<TokenResponse> response = Optional.empty();
+    public TokenResponse refreshJwt(String refreshToken) {
 
-        if(validateRefreshToken(refreshToken)) {
-            Optional<AppUser> user = userRepository.findByUsername(getUsernameFromJwt(refreshToken));
+        if(!validateRefreshToken(refreshToken)) throw new UnauthorizedException();
 
-            if(user.isPresent()) {
-                response = Optional.of(TokenResponse.builder()
-                        .token(generateJwt(user.get()))
-                        .build());
+        AppUser user = userRepository.findByUsername(getUsernameFromJwt(refreshToken))
+                .orElseThrow(UnauthorizedException::new);
 
-                if (Objects.requireNonNull(getIssuedAtFromJwt(refreshToken)).getTime() + refreshActionTime < System.currentTimeMillis()) {
-                    response.get().setRefreshToken(generateRefreshToken(user.get()));
-                    invalidTokenRepository.save(InvalidToken.builder().token(refreshToken).build());
-                }
-            }
-        }
-
-        return response;
+        return generateTokenResponse(user);
     }
 
     @Override
@@ -130,16 +122,17 @@ public class JwtUtilImpl implements JwtUtil {
     }
 
     private boolean validateRefreshToken(String refreshToken) {
-        String type = "";
 
-        try {
-            type = Jwts.parser().setSigningKey(secret).parseClaimsJws(refreshToken)
-                    .getBody().get("type").toString();
-        } catch (Exception ignore){}
+        if(!Objects.equals(Jwts.parser().setSigningKey(secret).parseClaimsJws(refreshToken).getBody().get("type").toString(),
+                "refresh"))
+            throw new UnauthorizedException();
+
+        if (Objects.requireNonNull(getIssuedAtFromJwt(refreshToken)).getTime() + refreshActionTime < System.currentTimeMillis())
+            throw new UnauthorizedException();
 
         Optional<InvalidToken> invalid = invalidTokenRepository.findByToken(refreshToken);
 
-        return Objects.equals(type, "refresh") && invalid.isEmpty();
+        return invalid.isEmpty();
     }
 
     private Date getIssuedAtFromJwt(String token) {

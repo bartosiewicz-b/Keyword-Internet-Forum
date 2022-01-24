@@ -22,13 +22,13 @@ export class CommentService {
   }
 
   upvote(commentId: number) {
-    this.httpClient.post(this.url + '/upvote', {'commentId': commentId})
+    this.httpClient.post(this.url + '/upvote', commentId)
     .pipe(take(1))
     .subscribe()
   }
 
   downvote(commentId: number) {
-    this.httpClient.post(this.url + '/downvote', {'commentId': commentId})
+    this.httpClient.post(this.url + '/downvote', commentId)
     .pipe(take(1))
     .subscribe()
   }
@@ -39,8 +39,7 @@ export class CommentService {
   }
 
   delete(id: number){
-    this.httpClient.post(this.url + '/delete',
-    {'id': id})
+    this.httpClient.post(this.url + '/delete', id)
     .pipe(take(1))
     .subscribe();
   }

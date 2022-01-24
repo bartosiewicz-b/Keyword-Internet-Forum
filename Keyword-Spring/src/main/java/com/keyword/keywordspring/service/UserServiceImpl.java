@@ -2,11 +2,8 @@ package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.model.UserDto;
-import com.keyword.keywordspring.dto.request.ChangeEmailRequest;
-import com.keyword.keywordspring.dto.request.ChangePasswordRequest;
 import com.keyword.keywordspring.dto.request.LoginRequest;
 import com.keyword.keywordspring.dto.request.RegisterRequest;
-import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.exception.*;
 import com.keyword.keywordspring.mapper.interf.GroupMapper;
 import com.keyword.keywordspring.mapper.interf.UserMapper;
@@ -15,17 +12,16 @@ import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -36,7 +32,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(RegisterRequest request) {
-
         if(isEmailTaken(request.getEmail()))
             throw new EmailAlreadyTakenException(request.getEmail());
 
@@ -57,60 +52,61 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<AppUser> login(LoginRequest request) {
-        Optional<AppUser> user = Optional.empty();
+    public AppUser login(LoginRequest request) {
 
-        if(userRepository.findByUsername(request.getLogin()).isPresent())
-            user = userRepository.findByUsername(request.getLogin());
-        else if (userRepository.findByEmail(request.getLogin()).isPresent())
+        Optional<AppUser> user = userRepository.findByUsername(request.getLogin());
+
+        if(user.isEmpty())
             user = userRepository.findByEmail(request.getLogin());
 
-        if(user.isPresent() && !passwordEncoder.matches(request.getPassword(), user.get().getPassword()))
-            user = Optional.empty();
+        if(user.isEmpty()) throw new UnauthorizedException(request.getLogin());
 
-        return user;
+        if(!passwordEncoder.matches(request.getPassword(), user.get().getPassword()))
+            throw new UnauthorizedException(user.get().getUsername());
+
+        return user.get();
     }
 
     @Override
-    public TokenResponse changeUsername(String username, AppUser user) {
+    public void changeUsername(String token, String newUsername) {
 
-        if(isUsernameTaken(username))
-            throw new UsernameAlreadyTakenException(username);
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
-        user.setUsername(username);
+        if(isUsernameTaken(newUsername))
+            throw new UsernameAlreadyTakenException(newUsername);
+
+        user.setUsername(newUsername);
 
         userRepository.save(user);
-
-        return jwtUtil.generateTokenResponse(user);
     }
 
     @Override
-    public TokenResponse changeEmail(ChangeEmailRequest request, AppUser user) {
+    public void changeEmail(String token, String password, String newEmail) {
 
-        if(isEmailTaken(request.getNewEmail()))
-            throw new EmailAlreadyTakenException(request.getNewEmail());
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+        if(isEmailTaken(newEmail))
+            throw new EmailAlreadyTakenException(newEmail);
+
+        if(!passwordEncoder.matches(password, user.getPassword()))
             throw new UnauthorizedException(user.getUsername());
 
-        user.setEmail(request.getNewEmail());
+        user.setEmail(newEmail);
 
         userRepository.save(user);
-
-        return jwtUtil.generateTokenResponse(user);
     }
 
     @Override
-    public TokenResponse changePassword(ChangePasswordRequest request, AppUser user) {
+    public void changePassword(String token, String password, String newPassword) {
 
-        if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        if(!passwordEncoder.matches(password, user.getPassword()))
             throw new UnauthorizedException(user.getUsername());
 
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(newPassword));
 
         userRepository.save(user);
-
-        return jwtUtil.generateTokenResponse(user);
     }
 
     @Override
@@ -126,7 +122,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUser(String username) {
+    public UserDto get(String username) {
         AppUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserDoesNotExistException(username));
 
@@ -134,7 +130,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<GroupDto> getSubscribedGroups(AppUser user) {
+    public List<GroupDto> getSubscribedGroups(String token) {
+
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
         return user.getSubscribed().stream()
                 .map(g -> groupMapper.mapToDto(g, user))
                 .collect(Collectors.toList());

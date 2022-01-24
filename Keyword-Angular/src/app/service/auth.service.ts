@@ -18,8 +18,8 @@ export class AuthService {
     if(refresh == null)
       return;
 
-    this.httpClient.get<any>(this.url + '/refresh/token', 
-    {headers: {'refresh': refresh}})
+    this.httpClient.post<any>(this.url + '/refresh-token', 
+    refresh)
     .subscribe(res => {
       this.memoryService.setToken(res.token);
       });
@@ -52,20 +52,20 @@ export class AuthService {
   }
 
   validateNewEmail(email: string) {
-    return this.httpClient.post(this.url + '/validate-new/email', 
+    return this.httpClient.post(this.url + '/validate-new-email', 
     {'email': email})
     .pipe(take(1));
   }
 
   validateNewUsername(username: string) {
-    return this.httpClient.post(this.url + '/validate-new/username', 
+    return this.httpClient.post(this.url + '/validate-new-username', 
     {'username': username})
     .pipe(take(1));
   }
 
   changeUsername(username: string){
-    this.httpClient.post<any>(this.url + '/change/username', 
-    {'username': username})
+    this.httpClient.post<any>(this.url + '/change-username', 
+    {'newUsername': username})
     .pipe(take(1)).subscribe(
       res => {
         this.memoryService.setToken(res.token);
@@ -77,7 +77,7 @@ export class AuthService {
   }
 
   changeEmail(email: string, password: string){
-    this.httpClient.post<any>(this.url + '/change/email', 
+    this.httpClient.post<any>(this.url + '/change-email', 
     {'newEmail': email, 'password': password})
     .pipe(take(1)).subscribe(
       res => {
@@ -90,7 +90,7 @@ export class AuthService {
   }
 
   changePassword(oldPassword: string, newPassword: string){
-    this.httpClient.post<any>(this.url + '/change/password', 
+    this.httpClient.post<any>(this.url + '/change-password', 
     {'oldPassword': oldPassword, 'newPassword': newPassword})
     .pipe(take(1)).subscribe(
       res => {

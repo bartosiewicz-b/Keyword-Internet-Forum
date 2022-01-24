@@ -1,5 +1,6 @@
 package com.keyword.keywordspring.api;
 
+import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.service.interf.JwtUtil;
@@ -46,6 +47,8 @@ class UserApiTest {
 
     AppUser user;
 
+    GroupDto group;
+
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocs,
                WebApplicationContext context) {
@@ -58,15 +61,19 @@ class UserApiTest {
                 .webAppContextSetup(context)
                 .apply(documentationConfiguration(restDocs))
                 .build();
+
+        group = GroupDto.builder()
+                .id("group")
+                .build();
     }
 
     @Test
     void getUser() throws Exception {
 
-        when(userService.getUser(anyString())).thenReturn(UserDto.builder().username("user").build());
+        when(userService.get(user.getUsername())).thenReturn(UserDto.builder().username("user").build());
 
         mockMvc.perform(get("/user/get")
-                        .param("username", "user"))
+                        .param("username", user.getUsername()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
@@ -75,10 +82,10 @@ class UserApiTest {
     }
 
     @Test
-    void getSubscribed() throws Exception {
+    void getSubscribedGroups() throws Exception {
 
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
-        when(userService.getSubscribedGroups(any())).thenReturn(new ArrayList<>());
+        when(userService.getSubscribedGroups(any())).thenReturn(new ArrayList<>(){{add(group);}});
 
         mockMvc.perform(get("/user/get-subscribed")
                         .header("Authorization", "token"))

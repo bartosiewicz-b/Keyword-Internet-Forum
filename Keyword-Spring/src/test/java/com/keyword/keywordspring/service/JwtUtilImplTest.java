@@ -2,7 +2,6 @@ package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.response.TokenResponse;
 import com.keyword.keywordspring.model.AppUser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,18 +15,6 @@ class JwtUtilImplTest {
     @InjectMocks
     JwtUtilImpl jwtUtil;
 
-    @BeforeEach
-    void setUp() {
-    }
-
-    @Test
-    void generateLoginResponse() {
-
-        TokenResponse response = jwtUtil.generateTokenResponse(AppUser.builder().username("username").build());
-
-        jwtUtil.validateJwt(response.getToken());
-    }
-
     @Test
     void invalidToken() {
         String token = "invalidToken";
@@ -37,9 +24,9 @@ class JwtUtilImplTest {
 
     @Test
     void getUsernameFromJwt() {
-        String token = jwtUtil.generateTokenResponse(AppUser.builder().username("username").build()).getToken();
+        TokenResponse response = jwtUtil.generateTokenResponse(AppUser.builder().username("username").build());
 
-        assertEquals(jwtUtil.getUsernameFromJwt(token), "username");
+        assertEquals("username", jwtUtil.getUsernameFromJwt(response.getToken()));
     }
 
     @Test

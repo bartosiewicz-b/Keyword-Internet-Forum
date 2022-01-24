@@ -36,6 +36,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({RestDocumentationExtension.class, MockitoExtension.class})
@@ -94,13 +95,13 @@ class AuthApiTest {
     @Test
     void login() throws Exception {
 
-        when(userService.login(any())).thenReturn(Optional.of(user));
-        when(jwtUtil.generateTokenResponse(any())).thenReturn(TokenResponse.builder().build());
-
         String request = mapper.writeValueAsString(LoginRequest.builder()
                 .login(user.getUsername())
                 .password(user.getPassword())
                 .build());
+
+        when(userService.login(any())).thenReturn(user);
+        when(jwtUtil.generateTokenResponse(user)).thenReturn(TokenResponse.builder().build());
 
         mockMvc.perform(post("/auth/login")
                 .content(request)
@@ -120,10 +121,11 @@ class AuthApiTest {
                 .refreshToken("refreshToken")
                 .build();
 
-        when(jwtUtil.refreshJwt(anyString())).thenReturn(Optional.of(response));
+        when(jwtUtil.refreshJwt(anyString())).thenReturn(response);
 
-        MvcResult result = mockMvc.perform(get("/auth/refresh/token")
-                .header("refresh", "refreshToken"))
+        MvcResult result = mockMvc.perform(post("/auth/refresh-token")
+                .content("refreshToken")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("{methodName}",
@@ -137,16 +139,11 @@ class AuthApiTest {
     @Test
     void changeUsername() throws Exception {
 
-        Map<String, String> temp = new HashMap<>();
-        temp.put("username", "newUsername");
-
-        String request = mapper.writeValueAsString(temp);
-
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
 
-        mockMvc.perform(post("/auth/change/username")
+        mockMvc.perform(post("/auth/change-username")
                         .header("Authorization", "token")
-                        .content(request)
+                        .content("newUsername")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -163,10 +160,9 @@ class AuthApiTest {
                 .newEmail("newEmail@email.com")
                 .build());
 
-
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
 
-        mockMvc.perform(post("/auth/change/email")
+        mockMvc.perform(post("/auth/change-email")
                         .header("Authorization", "token")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -181,14 +177,14 @@ class AuthApiTest {
     @Test
     void changePassword() throws Exception {
 
-        when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
-
         String request = mapper.writeValueAsString(ChangePasswordRequest.builder()
                 .oldPassword(user.getPassword())
                 .newPassword("newPassword")
                 .build());
 
-        mockMvc.perform(post("/auth/change/password")
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
+
+        mockMvc.perform(post("/auth/change-password")
                         .header("Authorization", "token")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -203,17 +199,14 @@ class AuthApiTest {
     @Test
     void validateNewUsername() throws Exception {
 
-        Map<String, String> map = new HashMap<>();
-        map.put("username", "newUsername");
-        String request = mapper.writeValueAsString(map);
-
         when(userService.isUsernameTaken(anyString())).thenReturn(false);
 
-        mockMvc.perform(post("/auth/validate-new/username")
-                .content(request)
+        mockMvc.perform(post("/auth/validate-new-username")
+                .content("newUsername")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(content().string("true"))
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
@@ -222,17 +215,14 @@ class AuthApiTest {
     @Test
     void validateNewEmail() throws Exception {
 
-        Map<String, String> map = new HashMap<>();
-        map.put("email", "newEmail@email.com");
-        String request = mapper.writeValueAsString(map);
-
         when(userService.isEmailTaken(anyString())).thenReturn(false);
 
-        mockMvc.perform(post("/auth/validate-new/email")
-                .content(request)
+        mockMvc.perform(post("/auth/validate-new-email")
+                .content("newEmail@email.com")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(content().string("true"))
                 .andDo(document("{methodName}",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));

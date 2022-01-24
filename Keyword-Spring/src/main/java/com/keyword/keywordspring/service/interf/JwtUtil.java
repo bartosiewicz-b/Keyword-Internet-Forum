@@ -9,7 +9,7 @@ public interface JwtUtil {
 
     TokenResponse generateTokenResponse(AppUser user);
 
-    Optional<TokenResponse> refreshJwt(String refreshToken);
+    TokenResponse refreshJwt(String refreshToken);
 
     boolean validateJwt(String token);
 

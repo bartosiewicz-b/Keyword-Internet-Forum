@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Map;
-
 
 @RestController
 @RequestMapping("/auth")
@@ -36,73 +34,59 @@ public class AuthApi {
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
 
-        AppUser user = userService.login(request)
-                .orElseThrow(() -> new UnauthorizedException(request.getLogin()));
+        AppUser user = userService.login(request);
 
-        TokenResponse response = jwtUtil.generateTokenResponse(user);
-        response.setUsername(user.getUsername());
-        response.setEmail(user.getEmail());
-
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(jwtUtil.generateTokenResponse(user));
     }
 
-    @GetMapping("/refresh/token")
-    public ResponseEntity<TokenResponse> refreshToken(@RequestHeader("refresh") String refresh) {
+    @PostMapping("/refresh-token")
+    public ResponseEntity<TokenResponse> refreshToken(@RequestBody String refresh) {
 
-        TokenResponse response = jwtUtil.refreshJwt(refresh)
-                .orElseThrow(UnauthorizedException::new);
-
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(jwtUtil.refreshJwt(refresh));
     }
 
-    @PostMapping("/change/username")
+    @PostMapping("/change-username")
     public ResponseEntity<TokenResponse> changeUsername(@RequestHeader("Authorization") String token,
-            @RequestBody Map<String, String> request) {
+                                                        @RequestBody String newUsername) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
-        return ResponseEntity.ok().body(
-                userService.changeUsername(request.get("username"), user)
-        );
+        userService.changeUsername(token, newUsername);
+
+        return ResponseEntity.ok().body(jwtUtil.generateTokenResponse(user));
     }
 
-    @PostMapping("/change/email")
+    @PostMapping("/change-email")
     public ResponseEntity<TokenResponse> changeEmail(@RequestHeader("Authorization") String token,
-            @RequestBody ChangeEmailRequest request) {
+                                                     @RequestBody ChangeEmailRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
-        return ResponseEntity.ok().body(
-                userService.changeEmail(request, user)
-        );
+        userService.changeEmail(token, request.getPassword(), request.getNewEmail());
+
+        return ResponseEntity.ok().body(jwtUtil.generateTokenResponse(user));
     }
 
-    @PostMapping("/change/password")
+    @PostMapping("/change-password")
     public ResponseEntity<TokenResponse> changePassword(@RequestHeader("Authorization") String token,
-                                                     @RequestBody ChangePasswordRequest request) {
+                                                        @RequestBody ChangePasswordRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
-        return ResponseEntity.ok().body(
-                userService.changePassword(request, user)
-        );
+        userService.changePassword(token, request.getOldPassword(), request.getNewPassword());
+
+        return ResponseEntity.ok().body(jwtUtil.generateTokenResponse(user));
     }
 
-    @PostMapping("/validate-new/username")
-    public ResponseEntity<Boolean> validateNewUsername(@RequestBody Map<String, String> request) {
+    @PostMapping("/validate-new-username")
+    public ResponseEntity<Boolean> validateNewUsername(@RequestBody String username) {
 
-        if(null == request.get("username") || userService.isUsernameTaken(request.get("username")))
-            return ResponseEntity.ok().body(false);
-        else
-            return ResponseEntity.ok().body(true);
+        return ResponseEntity.ok().body(!userService.isUsernameTaken(username));
     }
 
-    @PostMapping("/validate-new/email")
-    public ResponseEntity<Boolean> validateNewEmail(@RequestBody Map<String, String> request) {
+    @PostMapping("/validate-new-email")
+    public ResponseEntity<Boolean> validateNewEmail(@RequestBody String email) {
 
-        if(null == request.get("email") || userService.isEmailTaken(request.get("email")))
-            return ResponseEntity.ok().body(false);
-        else
-            return ResponseEntity.ok().body(true);
+        return ResponseEntity.ok().body(!userService.isEmailTaken(email));
     }
 }

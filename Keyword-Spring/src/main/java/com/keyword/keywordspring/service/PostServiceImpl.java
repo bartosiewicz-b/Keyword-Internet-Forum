@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -45,12 +46,12 @@ public class PostServiceImpl implements PostService {
         ForumGroup group = groupRepository.findById(request.getGroupId())
                 .orElseThrow(() -> new GroupDoesNotExistException(request.getGroupId()));
 
-
         Post post = postRepository.save(Post.builder()
                 .user(user)
                 .forumGroup(group)
                 .title(request.getTitle())
                 .description(request.getDescription())
+                .comments(new ArrayList<>())
                 .dateCreated(new Date(System.currentTimeMillis()))
                 .edited(false)
                 .votes(0)
