@@ -69,6 +69,8 @@ class PostApiTest {
                 .description("description")
                 .username("username")
                 .numberOfComments(1)
+                .votes(0)
+                .userVote(null)
                 .build();
     }
 
@@ -141,6 +143,7 @@ class PostApiTest {
     @Test
     void editPost() throws Exception {
         String request = mapper.writeValueAsString(EditPostRequest.builder()
+                .postId(1L)
                 .title("new title")
                 .description("new description")
                 .build());

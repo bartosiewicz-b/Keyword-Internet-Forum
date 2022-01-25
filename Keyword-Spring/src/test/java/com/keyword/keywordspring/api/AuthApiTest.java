@@ -24,8 +24,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,6 +54,8 @@ class AuthApiTest {
 
     AppUser user;
 
+    TokenResponse tokenResponse;
+
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocs,
                WebApplicationContext context) {
@@ -71,6 +71,13 @@ class AuthApiTest {
                 .email("testUser1@email.com")
                 .username("testUser1")
                 .password("password")
+                .build();
+
+        tokenResponse = TokenResponse.builder()
+                .token("token")
+                .refreshToken("refreshToken")
+                .username(user.getUsername())
+                .email(user.getEmail())
                 .build();
     }
 
@@ -101,7 +108,7 @@ class AuthApiTest {
                 .build());
 
         when(userService.login(any())).thenReturn(user);
-        when(jwtUtil.generateTokenResponse(user)).thenReturn(TokenResponse.builder().build());
+        when(jwtUtil.generateTokenResponse(user)).thenReturn(tokenResponse);
 
         mockMvc.perform(post("/auth/login")
                 .content(request)
@@ -116,12 +123,7 @@ class AuthApiTest {
     @Test
     void refreshToken() throws Exception {
 
-        TokenResponse response = TokenResponse.builder()
-                .token("token")
-                .refreshToken("refreshToken")
-                .build();
-
-        when(jwtUtil.refreshJwt(anyString())).thenReturn(response);
+        when(jwtUtil.refreshJwt(anyString())).thenReturn(tokenResponse);
 
         MvcResult result = mockMvc.perform(post("/auth/refresh-token")
                 .content("refreshToken")
@@ -133,7 +135,7 @@ class AuthApiTest {
                         preprocessResponse(prettyPrint())))
                 .andReturn();
 
-        assertEquals(mapper.writeValueAsString(response), result.getResponse().getContentAsString());
+        assertEquals(mapper.writeValueAsString(tokenResponse), result.getResponse().getContentAsString());
     }
 
     @Test

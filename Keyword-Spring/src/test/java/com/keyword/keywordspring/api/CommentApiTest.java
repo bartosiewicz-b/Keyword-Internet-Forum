@@ -65,6 +65,8 @@ class CommentApiTest {
                 .user("username")
                 .content("content")
                 .parentCommentId(2L)
+                .votes(0)
+                .userVote(null)
                 .build();
     }
 

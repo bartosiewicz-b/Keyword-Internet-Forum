@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -64,13 +65,19 @@ class UserApiTest {
 
         group = GroupDto.builder()
                 .id("group")
+                .groupName("Group")
+                .description("description")
+                .subscriptions(0)
+                .isSubscribed(false)
+                .owner(user.getUsername())
+                .moderators(new ArrayList<>())
                 .build();
     }
 
     @Test
     void getUser() throws Exception {
 
-        when(userService.get(user.getUsername())).thenReturn(UserDto.builder().username("user").build());
+        when(userService.get(user.getUsername())).thenReturn(UserDto.builder().username("user").dateCreated(new Date()).build());
 
         mockMvc.perform(get("/user/get")
                         .param("username", user.getUsername()))

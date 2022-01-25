@@ -1,45 +1,69 @@
-= Spring Forum API
+= Keyword Internet Forum - Spring API
 
-A service running at http://localhost:8080:
+A service running natively at http://localhost:8080
 
-= Auth
+
+
+
+= Authentication
+All endpoints in api/AuthApi.java
+
+
 
 
 == Register
+Returns BAD_REQUEST when username or email is already taken
+
 .request
 include::{snippets}/register/http-request.adoc[]
 .response
 include::{snippets}/register/http-response.adoc[]
 
+
 == Login
+Returns UNAUTHORIZED when login or password is incorrect
+
 .request
 include::{snippets}/login/http-request.adoc[]
 .response
 include::{snippets}/login/http-response.adoc[]
 
+
 == Refresh Token
+Returns UNAUTHORIZED when token is invalid
+
 .request
 include::{snippets}/refreshToken/http-request.adoc[]
 .response
 include::{snippets}/refreshToken/http-response.adoc[]
 
+
 == Change Username
+Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when username is already taken
+
 .request
 include::{snippets}/changeUsername/http-request.adoc[]
 .response
 include::{snippets}/changeUsername/http-response.adoc[]
 
+
 == Change Email
+Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when email is already taken
+
 .request
 include::{snippets}/changeEmail/http-request.adoc[]
 .response
 include::{snippets}/changeEmail/http-response.adoc[]
 
+
 == Change Password
+Returns UNAUTHORIZED when token is invalid, or password is wrong
+
 .request
 include::{snippets}/changePassword/http-request.adoc[]
 .response
 include::{snippets}/changePassword/http-response.adoc[]
+
 
 == Validate New Username
 .request
@@ -54,202 +78,299 @@ include::{snippets}/validateNewEmail/http-request.adoc[]
 include::{snippets}/validateNewEmail/http-response.adoc[]
 
 
+
+
 = User
+All endpoints in api/UserApi.java
+
+
 
 
 == Get User
+Returns BAD_REQUEST when username is not registered
+
 .request
 include::{snippets}/getUser/http-request.adoc[]
 .response
 include::{snippets}/getUser/http-response.adoc[]
 
+
 == Get Subscribed
+Returns UNAUTHORIZED when token is invalid
+
 .request
 include::{snippets}/getSubscribedGroups/http-request.adoc[]
 .response
 include::{snippets}/getSubscribedGroups/http-response.adoc[]
 
 
+
+
 = Group
+All endpoints in api/GroupApi.java
 
 
-== Create Group
+
+
+== Add Group
+Returns UNAUTHORIZED when token is invalid
+
 .request
 include::{snippets}/addGroup/http-request.adoc[]
 .response
 include::{snippets}/addGroup/http-response.adoc[]
 
-== Get Groups
+
+== Get All Groups
+
 .request
 include::{snippets}/getAllGroups/http-request.adoc[]
 .response
 include::{snippets}/getAllGroups/http-response.adoc[]
 
+
 == Get Groups Count
+Returns number of groups meeting criteria
+
 .request
 include::{snippets}/getGroupsCount/http-request.adoc[]
 .response
 include::{snippets}/getGroupsCount/http-response.adoc[]
 
+
 == Get Group
+Returns BAD_REQUEST when groupId is invalid
+
 .request
 include::{snippets}/getGroup/http-request.adoc[]
 .response
 include::{snippets}/getGroup/http-response.adoc[]
 
+
 == Edit Group
+Returns BAD_REQUEST when groupId is invalid, UNAUTHORIZED when token is not from group owner
+
 .request
 include::{snippets}/editGroup/http-request.adoc[]
 .response
 include::{snippets}/editGroup/http-response.adoc[]
 
+
 == Delete Group
+Returns BAD_REQUEST when groupId is invalid, UNAUTHORIZED when token is not from group owner
+
 .request
 include::{snippets}/deleteGroup/http-request.adoc[]
 .response
 include::{snippets}/deleteGroup/http-response.adoc[]
 
+
 == Transfer Group Ownership
+Returns BAD_REQUEST when groupId, or newOwner is invalid, UNAUTHORIZED when token is not from group owner
+
 .request
 include::{snippets}/transferGroupOwnership/http-request.adoc[]
 .response
 include::{snippets}/transferGroupOwnership/http-response.adoc[]
 
-== Add Moderator
-.request
-include::{snippets}/addGroupModerator/http-request.adoc[]
-.response
-include::{snippets}/addGroupModerator/http-response.adoc[]
 
-== Delete Moderator
-.request
-include::{snippets}/deleteGroupModerator/http-request.adoc[]
-.response
-include::{snippets}/deleteGroupModerator/http-response.adoc[]
+== Get Subscribers From Group
+Returns BAD_REQUEST when groupId is invalid
 
-== Get Subscribers
 .request
 include::{snippets}/getSubscribersFromGroup/http-request.adoc[]
 .response
 include::{snippets}/getSubscribersFromGroup/http-response.adoc[]
 
-== Get Moderators
-.request
-include::{snippets}/getModeratorsFromGroup/http-request.adoc[]
-.response
-include::{snippets}/getModeratorsFromGroup/http-response.adoc[]
-
-== Is Moderator
-.request
-include::{snippets}/isGroupModerator/http-request.adoc[]
-.response
-include::{snippets}/isGroupModerator/http-response.adoc[]
 
 == Subscribe Group
+Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when groupId is invalid
+
 .request
 include::{snippets}/subscribeGroup/http-request.adoc[]
 .response
 include::{snippets}/subscribeGroup/http-response.adoc[]
 
-== Get Subscribed Groups
+
+== Get Moderators From Group
+Returns BAD_REQUEST when groupId is invalid
+
 .request
-include::{snippets}/getSubscribedGroups/http-request.adoc[]
+include::{snippets}/getModeratorsFromGroup/http-request.adoc[]
 .response
-include::{snippets}/getSubscribedGroups/http-response.adoc[]
+include::{snippets}/getModeratorsFromGroup/http-response.adoc[]
+
+
+== Is a Group Moderator
+Returns BAD_REQUEST when groupId, or username is invalid
+
+.request
+include::{snippets}/isGroupModerator/http-request.adoc[]
+.response
+include::{snippets}/isGroupModerator/http-response.adoc[]
+
+
+== Add Moderator
+Returns BAD_REQUEST when groupId, or username is invalid, UNAUTHORIZED when token is not from group owner
+
+.request
+include::{snippets}/addGroupModerator/http-request.adoc[]
+.response
+include::{snippets}/addGroupModerator/http-response.adoc[]
+
+
+== Delete Moderator
+Returns BAD_REQUEST when groupId, or username is invalid, UNAUTHORIZED when token is not from group owner
+
+.request
+include::{snippets}/deleteGroupModerator/http-request.adoc[]
+.response
+include::{snippets}/deleteGroupModerator/http-response.adoc[]
+
 
 == Validate New Group Name
+Returns BAD_REQUEST when groupId is invalid
+
 .request
 include::{snippets}/validateNewGroupName/http-request.adoc[]
 .response
 include::{snippets}/validateNewGroupName/http-response.adoc[]
 
 
+
+
 = Post
 
 
-== Create Post
+
+
+== Add Post
+Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when groupId is invalid
+
 .request
 include::{snippets}/addPost/http-request.adoc[]
 .response
 include::{snippets}/addPost/http-response.adoc[]
 
-== Get Posts
+
+== Get All Posts
+
 .request
 include::{snippets}/getAllPosts/http-request.adoc[]
 .response
 include::{snippets}/getAllPosts/http-response.adoc[]
 
+
 == Get Posts Count
+Returns number of posts meeting criteria
+
 .request
 include::{snippets}/getPostsCount/http-request.adoc[]
 .response
 include::{snippets}/getPostsCount/http-response.adoc[]
 
+
 == Get Post
+Returns BAD_REQUEST when postId is invalid
+
 .request
 include::{snippets}/getPost/http-request.adoc[]
 .response
 include::{snippets}/getPost/http-response.adoc[]
 
+
 == Edit Post
+Returns UNAUTHORIZED when token is not from post user, or group moderator, BAD_REQUEST when postId is invalid
+
 .request
 include::{snippets}/editPost/http-request.adoc[]
 .response
 include::{snippets}/editPost/http-response.adoc[]
 
-== Upvote Post
-.request
-include::{snippets}/upvotePost/http-request.adoc[]
-.response
-include::{snippets}/upvotePost/http-response.adoc[]
-
-== Downvote Post
-.request
-include::{snippets}/downvotePost/http-request.adoc[]
-.response
-include::{snippets}/downvotePost/http-response.adoc[]
 
 == Delete Post
+Returns UNAUTHORIZED when token is not from post user, or group moderator, BAD_REQUEST when postId is invalid
+
 .request
 include::{snippets}/deletePost/http-request.adoc[]
 .response
 include::{snippets}/deletePost/http-response.adoc[]
 
 
+== Upvote Post
+Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when postId is invalid
+
+.request
+include::{snippets}/upvotePost/http-request.adoc[]
+.response
+include::{snippets}/upvotePost/http-response.adoc[]
+
+
+== Downvote Post
+Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when postId is invalid
+
+.request
+include::{snippets}/downvotePost/http-request.adoc[]
+.response
+include::{snippets}/downvotePost/http-response.adoc[]
+
+
+
+
 = Comment
 
-== Create Comment
+
+
+
+== Add Comment
+Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when postId is invalid
+
 .request
 include::{snippets}/addComment/http-request.adoc[]
 .response
 include::{snippets}/addComment/http-response.adoc[]
 
-== Get Comments
+
+== Get All Comments
+Returns BAD_REQUEST when postId is invalid
+
 .request
 include::{snippets}/getAllComments/http-request.adoc[]
 .response
 include::{snippets}/getAllComments/http-response.adoc[]
 
+
 == Edit Comment
+Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when commentId is invalid
+
 .request
 include::{snippets}/editComment/http-request.adoc[]
 .response
 include::{snippets}/editComment/http-response.adoc[]
 
+
+== Delete Comment
+Returns UNAUTHORIZED when token is not from comment user, BAD_REQUEST when commentId is invalid
+
+.request
+include::{snippets}/deleteComment/http-request.adoc[]
+.response
+include::{snippets}/deleteComment/http-response.adoc[]
+
+
 == Upvote Comment
+Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when commentId is invalid
+
 .request
 include::{snippets}/upvoteComment/http-request.adoc[]
 .response
 include::{snippets}/upvoteComment/http-response.adoc[]
 
 == Downvote Comment
+Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when commentId is invalid
+
 .request
 include::{snippets}/downvoteComment/http-request.adoc[]
 .response
 include::{snippets}/downvoteComment/http-response.adoc[]
 
-== Delete Comment
-.request
-include::{snippets}/deleteComment/http-request.adoc[]
-.response
-include::{snippets}/deleteComment/http-response.adoc[]

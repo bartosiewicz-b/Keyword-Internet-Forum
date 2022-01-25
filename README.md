@@ -40,6 +40,15 @@ spring.datasource.url=<paste your url here>
 spring.datasource.username=<paste your username here>
 spring.datasource.password=<paste your password here>
 ```
+In the same file configure jwt variables:
+
+```
+jwt.secret=<paste your random secret here>
+jwt.expiryTime=30000000
+jwt.refreshActionTime=1728000000
+jwt.refreshExpiryTime=2592000000
+```
+
 
 In terminal run
 

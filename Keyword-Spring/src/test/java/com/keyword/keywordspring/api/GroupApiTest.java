@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,9 +46,9 @@ class GroupApiTest {
     MockMvc mockMvc;
     ObjectMapper mapper;
 
-    GroupDto group;
-
     AppUser user;
+
+    GroupDto group;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocs,
@@ -60,15 +61,20 @@ class GroupApiTest {
                 .apply(documentationConfiguration(restDocs))
                 .build();
 
+        user = AppUser.builder()
+                .id(1L)
+                .username("username")
+                .dateCreated(new Date())
+                .build();
+
         group = GroupDto.builder()
                 .id("group")
                 .groupName("group")
                 .description("description")
-                .build();
-
-        user = AppUser.builder()
-                .id(1L)
-                .username("username")
+                .subscriptions(0)
+                .isSubscribed(false)
+                .owner(user.getUsername())
+                .moderators(new ArrayList<>())
                 .build();
     }
 
@@ -155,6 +161,10 @@ class GroupApiTest {
                 .id(request.getId())
                 .description(request.getDescription())
                 .groupName(request.getGroupName())
+                .subscriptions(group.getSubscriptions())
+                .isSubscribed(group.getIsSubscribed())
+                .owner(group.getOwner())
+                .moderators(group.getModerators())
                 .build();
 
         when(groupService.edit(anyString(), any())).thenReturn(edited);
