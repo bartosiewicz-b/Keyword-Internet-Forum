@@ -1,28 +1,23 @@
-.container-fluid{
-    margin: 0 15% 0 15%;
+nav{
+    padding: 10px 250px 10px 250px;
+    display: flex;
+    justify-content: space-between;
 }
 
-.nav-link {
-    color: #dfdfdf;
+div{
+    display: flex;
+}
+
+.nav-link{
+    color: black;
 }
 
 .nav-link:hover{
     cursor: pointer;
 }
 
-.left{
-    display: flex;
-}
-
-.dropdown-menu{
-    background-color: black;
-}
-
-.dropdown-menu>li:hover{
-    background-color: #1d1d1d;
-}
-
 .logo{
     width: 30px;
     margin-right: 20px;
+    color: black
 }
