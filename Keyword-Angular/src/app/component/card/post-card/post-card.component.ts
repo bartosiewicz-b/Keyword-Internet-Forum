@@ -1,3 +1,4 @@
+import { AuthService } from './../../../service/auth.service';
 import { MemoryService } from './../../../service/memory.service';
 import { Router } from '@angular/router';
 import { VoteType } from './../../../model/voteType';
@@ -16,19 +17,19 @@ export class PostCardComponent {
   @Input('excerpt') excerpt: boolean = false;
   @Input('enableVoting') enableVoting: boolean = true;
 
-  username: string | null = this.memoryService.getUsername();
+  username: string | null = this.authService.getUsername();
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
 
-  constructor(private memoryService: MemoryService,
+  constructor(private authService: AuthService,
     private router: Router,
     private postService: PostService) { 
   }
 
   upvote() {
-    if(!this.memoryService.isLoggedIn()) {
+    if(!this.authService.isLoggedIn()) {
       this.router.navigateByUrl('login');
       return;
     }
@@ -49,7 +50,7 @@ export class PostCardComponent {
   }
 
   downvote() {
-    if(!this.memoryService.isLoggedIn()) {
+    if(!this.authService.isLoggedIn()) {
       this.router.navigateByUrl('login');
       return;
     }

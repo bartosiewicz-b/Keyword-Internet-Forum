@@ -1,3 +1,4 @@
+import { AuthService } from './../../../service/auth.service';
 import { Router } from '@angular/router';
 import { MemoryService } from './../../../service/memory.service';
 import { take } from 'rxjs/operators';
@@ -21,20 +22,20 @@ export class CommentCardComponent{
 
   isUserWriting: boolean = false;
   isUserEditing: boolean = false;
-  username: string | null = this.memoryService.getUsername();
+  username: string | null = this.authService.getUsername();
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
   faTimes = faTimes;
 
-  constructor(private memoryService: MemoryService,
+  constructor(private authService: AuthService,
     private router: Router,
     private commentService: CommentService) {}
 
 
   upvote() {
-    if(!this.memoryService.isLoggedIn()) {
+    if(!this.authService.isLoggedIn()) {
       this.router.navigateByUrl('login');
       return;
     }
@@ -55,7 +56,7 @@ export class CommentCardComponent{
   }
 
   downvote() {
-    if(!this.memoryService.isLoggedIn()) {
+    if(!this.authService.isLoggedIn()) {
       this.router.navigateByUrl('login');
       return;
     }
@@ -76,8 +77,7 @@ export class CommentCardComponent{
   }
 
   respondComment(data: NgForm) {
-    this.commentService.comment(data.value.content, this.comment.postId, this.comment.id)
-    .pipe(take(1))
+    this.commentService.add(data.value.content, this.comment.postId, this.comment.id)
     .subscribe();
 
     this.isUserWriting = false;

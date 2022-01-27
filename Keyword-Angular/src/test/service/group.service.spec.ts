@@ -1,7 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { GroupService } from './group.service';
+import { GroupService } from '../../app/service/group.service';
 
 describe('GroupService', () => {
   let service: GroupService;

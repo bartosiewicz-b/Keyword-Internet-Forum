@@ -1,3 +1,4 @@
+import { UserService } from './../../../service/user.service';
 import { Post } from './../../../model/post';
 import { GroupService } from './../../../service/group.service';
 import { Group } from './../../../model/group';
@@ -25,7 +26,7 @@ export class CreatePostComponent {
   constructor(private route: ActivatedRoute,
     private router: Router,
     private postService: PostService,
-    groupService: GroupService) {
+    groupService: GroupService, private userService: UserService) {
 
       if(this.routePostId != null){
         this.postService.get(Number(this.routePostId)).pipe(take(1))
@@ -35,7 +36,7 @@ export class CreatePostComponent {
         });
       }
 
-      groupService.getSubscribed().pipe(take(1)).subscribe(res => {
+      userService.getSubscribed().pipe(take(1)).subscribe(res => {
         this.groups = res;
         if(this.routeGroupId!=null) {
           this.group = this.routeGroupId;
@@ -45,7 +46,7 @@ export class CreatePostComponent {
 
   create(){
     if(this.routePostId==null) {
-      this.postService.create(this.title, this.description, this.group).subscribe(res => {
+      this.postService.add(this.title, this.description, this.group).subscribe(res => {
         this.routePostId = res.id.toString();
         this.router.navigate(['/' + this.group + '/' + this.routePostId]);
       });

@@ -1,3 +1,7 @@
+import { CommentService } from './service/comment.service';
+import { AuthService } from './service/auth.service';
+import { MemoryService } from './service/memory.service';
+import { UserService } from './service/user.service';
 import { ErrorInterceptorService } from './service/error-interceptor.service';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';

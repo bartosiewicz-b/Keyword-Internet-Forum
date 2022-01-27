@@ -1,3 +1,4 @@
+import { BACKEND_URL } from './../url';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -9,33 +10,29 @@ import { Comment } from '../model/comment';
 })
 export class CommentService {
 
-  url = 'http://localhost:8080/comment';
+  private url = BACKEND_URL + '/comment';
 
   constructor(private httpClient: HttpClient) { }
+
+  add(content: string, postId: number, parentCommentId: number | null): Observable<Comment>{
+    return this.httpClient.post<Comment>(this.url + '/add',
+    {'content': content, 'postId': postId, 'parentCommentId': parentCommentId})
+    .pipe(take(1));
+  }
 
   getAll(postId: number): Observable<Comment[]> {
     return this.httpClient.get<Comment[]>(this.url + '/get-all',
       {params: {"postId": postId}})
-      .pipe(map(res => {
+      .pipe(take(1), map(res => {
         return res as Comment[];
       }));
   }
 
-  upvote(commentId: number) {
-    this.httpClient.post(this.url + '/upvote', commentId)
+  edit(id: number, newContent: string) {
+    this.httpClient.post(this.url + '/edit',
+    {'id': id, 'newContent': newContent})
     .pipe(take(1))
-    .subscribe()
-  }
-
-  downvote(commentId: number) {
-    this.httpClient.post(this.url + '/downvote', commentId)
-    .pipe(take(1))
-    .subscribe()
-  }
-
-  comment(content: string, postId: number, parentCommentId: number | null){
-    return this.httpClient.post(this.url + '/add',
-    {'content': content, 'postId': postId, 'parentCommentId': parentCommentId});
+    .subscribe();
   }
 
   delete(id: number){
@@ -44,10 +41,15 @@ export class CommentService {
     .subscribe();
   }
 
-  edit(id: number, newContent: string) {
-    this.httpClient.post(this.url + '/edit',
-    {'id': id, 'newContent': newContent})
+  upvote(id: number) {
+    this.httpClient.post(this.url + '/upvote', id)
     .pipe(take(1))
-    .subscribe();
+    .subscribe()
+  }
+
+  downvote(id: number) {
+    this.httpClient.post(this.url + '/downvote', id)
+    .pipe(take(1))
+    .subscribe()
   }
 }

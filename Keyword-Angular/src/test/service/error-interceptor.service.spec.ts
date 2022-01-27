@@ -1,8 +1,8 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../app/service/auth.service';
 import { TestBed } from '@angular/core/testing';
 
-import { ErrorInterceptorService } from './error-interceptor.service';
+import { ErrorInterceptorService } from '../../app/service/error-interceptor.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 describe('ErrorInterceptorService', () => {

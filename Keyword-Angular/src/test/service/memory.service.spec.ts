@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MemoryService } from './memory.service';
+import { MemoryService } from '../../app/service/memory.service';
 
 describe('MemoryService', () => {
   let service: MemoryService;

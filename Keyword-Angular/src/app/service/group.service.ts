@@ -1,3 +1,4 @@
+import { BACKEND_URL } from './../url';
 import { AppUser } from './../model/AppUser';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -10,79 +11,52 @@ import { Group } from '../model/group';
 })
 export class GroupService {
 
-  url = 'http://localhost:8080/group';
+  url = BACKEND_URL + '/group';
 
   constructor(private httpClient: HttpClient) { }
+
+  add(groupName: string, description: string): Observable<Group> {
+    return this.httpClient.post<Group>(this.url + '/add',
+      {'groupName': groupName, 'description': description})
+      .pipe(take(1));
+  }
 
   getAll(page: number, keyword: string): Observable<Group[]> {
     return this.httpClient.get<Group[]>(this.url + '/get-all',
     {params: {"page": page, "keyword": keyword}})
-      .pipe(map(res => {
+      .pipe(take(1), map(res => {
         return res as Group[];
       }));
   }
 
-  getCount(keyword: string | null) {
-    let pars: any = {};
-
-    if(keyword != null)
-      pars.keyword = keyword;
+  getCount(keyword: string | null): Observable<number> {
+    let pars: any = {'keyword': keyword};
 
     return this.httpClient.get<number>(this.url + '/get-count',
     {params: pars})
-      .pipe(map(res => {
+      .pipe(take(1), map(res => {
         return res;
-      }));
-  }
-
-  getSubscribed(): Observable<Group[]> {
-    return this.httpClient.get<Group[]>('http://localhost:8080/user/get-subscribed')
-      .pipe(map(res => {
-        return res as Group[];
       }));
   }
 
   get(groupId: string): Observable<Group> {
     return this.httpClient.get<Group>(this.url + '/get',
     {params: {"groupId": groupId}})
-    .pipe(map(res => {
+    .pipe(take(1), map(res => {
       return res as Group;
     }));
   }
 
-  subscribe(groupId: string) {
-    this.httpClient.post(this.url + '/subscribe', {'groupId': groupId})
-      .pipe(take(1))
-      .subscribe();
-  }
-
-  createGroup(groupName: string, description: string) {
-    this.httpClient.post(this.url + '/add',
-      {'groupName': groupName, 'description': description})
-      .pipe(take(1))
-      .subscribe();
-  }
-
-  editGroup(id: string, groupName: string, description: string) {
-    this.httpClient.post(this.url + '/edit',
+  edit(id: string, groupName: string, description: string): Observable<Group> {
+    return this.httpClient.post<Group>(this.url + '/edit',
       {'id': id, 'groupName': groupName, 'description': description})
-      .pipe(take(1))
-      .subscribe();
+      .pipe(take(1));
   }
 
-  deleteGroup(groupId: string) {
-    this.httpClient.post(this.url + '/delete',
-      {'groupId': groupId})
+  delete(groupId: string) {
+    this.httpClient.post(this.url + '/delete', groupId)
       .pipe(take(1))
       .subscribe();
-  }
-
-  getModerators(groupId: string): Observable<AppUser[]> {
-    return this.httpClient.get<AppUser[]>(this.url + '/get-moderators',
-    {params: {"groupId": groupId}})
-    .pipe(map(res => {
-      return res;
-    }));
   }
 
   transferOwnership(groupId: string, username: string) {
@@ -90,6 +64,28 @@ export class GroupService {
       {'groupId': groupId, 'username': username})
       .pipe(take(1))
       .subscribe();
+  }
+
+  getSubscribers(groupId: string, username: string): Observable<AppUser[]> {
+    return this.httpClient.get<AppUser[]>(this.url + '/get-subscribers',
+    {params: {"groupId": groupId, "keyword": username}})
+    .pipe(take(1), map(res => {
+      return res;
+    }));
+  }
+
+  subscribe(groupId: string) {
+    this.httpClient.post(this.url + '/subscribe', groupId)
+      .pipe(take(1))
+      .subscribe();
+  }
+
+  getModerators(groupId: string): Observable<AppUser[]> {
+    return this.httpClient.get<AppUser[]>(this.url + '/get-moderators',
+    {params: {"groupId": groupId}})
+    .pipe(take(1), map(res => {
+      return res;
+    }));
   }
 
   addModerator(groupId: string, username: string) {
@@ -104,13 +100,5 @@ export class GroupService {
       {'groupId': groupId, 'username': username})
       .pipe(take(1))
       .subscribe();
-  }
-
-  getSubscribers(groupId: string, username: string): Observable<AppUser[]> {
-    return this.httpClient.get<AppUser[]>(this.url + '/get-subscribers',
-    {params: {"groupId": groupId, "keyword": username}})
-    .pipe(map(res => {
-      return res;
-    }));
   }
 }

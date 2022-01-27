@@ -42,7 +42,7 @@ export class GroupComponent {
     if(this.group==null)
       return;
       
-    this.groupService.deleteGroup(this.group.id);
+    this.groupService.delete(this.group.id);
     this.router.navigateByUrl('/');
   }
 

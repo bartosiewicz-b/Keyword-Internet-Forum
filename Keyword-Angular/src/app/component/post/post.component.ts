@@ -43,8 +43,7 @@ export class PostComponent implements OnInit {
 
   comment(data: NgForm){
 
-    this.commentService.comment(data.value.content, this.post.id, null)
-    .pipe(take(1))
+    this.commentService.add(data.value.content, this.post.id, null)
     .subscribe(res => this.comments.push(res as Comment));
   }
 
