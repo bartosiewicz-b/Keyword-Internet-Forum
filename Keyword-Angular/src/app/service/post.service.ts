@@ -62,15 +62,13 @@ export class PostService {
       .subscribe();
   }
 
-  upvote(id: number) {
-    this.httpClient.post(this.url + '/upvote', id)
-    .pipe(take(1))
-    .subscribe()
+  upvote(id: number): Observable<number> {
+    return this.httpClient.post<number>(this.url + '/upvote', id)
+    .pipe(take(1));
   }
 
-  downvote(id: number) {
-    this.httpClient.post(this.url + '/downvote', id)
-    .pipe(take(1))
-    .subscribe()
+  downvote(id: number): Observable<number> {
+    return this.httpClient.post<number>(this.url + '/downvote', id)
+    .pipe(take(1));
   }
 }

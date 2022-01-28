@@ -16,8 +16,8 @@ public interface CommentService {
 
     void delete(String token, Long id);
 
-    void upvote(String token, Long id);
-    void downvote(String token, Long id);
+    int upvote(String token, Long id);
+    int downvote(String token, Long id);
 
 
 }

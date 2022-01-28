@@ -1,56 +1,51 @@
-<div class="card text-white mb-3 container" style="width: 50rem;">
-  <div class="row">
-    <div class="col-1">
-      <div class="row arrow" [class.active]="comment.userVote!=null && (comment.userVote==0 || comment.userVote.toString()=='UP')"
-        (click)="upvote()">
-        <fa-icon [icon]="faArrowUp" ></fa-icon>
-      </div>
-      <div class="row">
-        <small class="text-muted">{{comment.votes}}</small>
-      </div>
-      <div class="row arrow" [class.active]="comment.userVote!=null && (comment.userVote==1 || comment.userVote.toString()=='DOWN')" 
-        (click)="downvote()">
-        <fa-icon [icon]="faArrowDown"></fa-icon>
-      </div>
-    </div>
-      <div class="card-body col-11">
-          <div class="flex-container">
-            <p class="card-text header" *ngIf="!isUserWriting && !isUserEditing && username!=null">
-              <small class="text-muted">
-                <a routerLink="/user/{{comment.user}}" class="name">
-                  {{comment.user}}
-                </a>
-              </small>
-              <button *ngIf="comment.user==username" (click)="isUserEditing=true; editedContent=this.comment.content">Edit</button>
-              <button *ngIf="comment.user==username" (click)="deleteComment()">Delete</button>
-            </p>
-          </div>
-        <div *ngIf="!isUserEditing; else editing">
-          <p class="card-text">
-            {{comment.content}}
-          </p>
-        </div>
-        <ng-template #editing>
-          <fa-icon [icon]="faTimes" (click)="isUserEditing=false; editedContent=comment.content"></fa-icon>
-            <form #editForm="ngForm" (ngSubmit)="editComment()">
-              <textarea [(ngModel)]="editedContent" class="form-control" id="content" name="content" rows="3"></textarea>
-              <button type="submit" class="btn btn-big">Edit</button>
-          </form>
-        </ng-template>
+<div class="card">
+  <div class="col-2">
+    <fa-icon [icon]="faArrowUp" class="arrow" 
+    [class.active]="comment.userVote!=null && (comment.userVote==0 || comment.userVote.toString()=='UP')"
+    (click)="upvote()"></fa-icon>
+            
+    <small class="text-muted">{{comment.votes}}</small>
 
-        <small class="text-muted">{{comment.dateCreated | date}}</small>
-        <div *ngIf="!isUserEditing && username!=null">
-          <div *ngIf="!isUserWriting; else commentField" (click)="isUserWriting=true">
-            <button>Comment this</button>
-          </div>
-          <ng-template #commentField>
-            <fa-icon [icon]="faTimes" (click)="isUserWriting=false"></fa-icon>
-            <form #createComment="ngForm" (ngSubmit)="respondComment(createComment)">
-              <input ngModel type="text" name="content">
-              <button type="submit" class="btn">Comment</button>
-          </form>
-          </ng-template>
+    <fa-icon [icon]="faArrowDown" class="arrow"
+    [class.active]="comment.userVote!=null && (comment.userVote==1 || comment.userVote.toString()=='DOWN')"
+    (click)="downvote()"></fa-icon>
+  </div>
+
+  <div class="card-body col-10">
+    <div class="header" *ngIf="!isUserWriting && !isUserEditing">
+        <small class="text-muted">
+          <a routerLink="/user/{{comment.user}}" class="name">{{comment.user}}</a>
+        </small>
+        <div class = "options" *ngIf="comment.user==authService.getUsername()">
+          <fa-icon [icon]="faEdit" (click)="initlializeEdit()"></fa-icon>
+          <fa-icon [icon]="faTrash" (click)="deleteComment()"></fa-icon>
         </div>
+    </div>
+      
+
+    <div *ngIf="!isUserEditing; else editing">
+      {{comment.content}}
+    </div>
+    <ng-template #editing>
+      <fa-icon [icon]="faTimes" (click)="isUserEditing=false"></fa-icon>
+      <form #editForm="ngForm" (ngSubmit)="edit()">
+        <textarea [(ngModel)]="editedContent" class="form-control" id="content" name="content" rows="3"></textarea>
+        <button type="submit" class="btn btn-big">Submit</button>
+      </form>
+    </ng-template>
+
+    <small class="text-muted">{{comment.dateCreated | date}}</small>
+    <div *ngIf="!isUserEditing && authService.getUsername()!=null">
+      <div *ngIf="!isUserWriting; else commentField" (click)="isUserWriting=true">
+        <fa-icon [icon]="faCommentDots"></fa-icon>
       </div>
+      <ng-template #commentField>
+        <fa-icon [icon]="faTimes" (click)="isUserWriting=false"></fa-icon>
+        <form #createComment="ngForm" (ngSubmit)="respondComment(createComment)">
+          <input ngModel type="text" name="content">
+          <button type="submit" class="btn">Respond</button>
+        </form>
+      </ng-template>
+    </div>
   </div>
-  </div>
+</div>

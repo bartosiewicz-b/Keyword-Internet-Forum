@@ -111,7 +111,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void upvote(String token, Long id) {
+    public int upvote(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
@@ -138,10 +138,12 @@ public class CommentServiceImpl implements CommentService {
         }
 
         commentRepository.save(comment);
+
+        return comment.getVotes();
     }
 
     @Override
-    public void downvote(String token, Long id) {
+    public int downvote(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
@@ -168,5 +170,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         commentRepository.save(comment);
+
+        return comment.getVotes();
     }
 }

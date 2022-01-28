@@ -6,7 +6,7 @@ import { VoteType } from './../../../model/voteType';
 import { CommentService } from './../../../service/comment.service';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Comment } from 'src/app/model/comment';
-import { faArrowUp, faArrowDown, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faArrowDown, faTimes, faCommentDots, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { NgForm } from '@angular/forms';
 
 @Component({
@@ -22,14 +22,16 @@ export class CommentCardComponent{
 
   isUserWriting: boolean = false;
   isUserEditing: boolean = false;
-  username: string | null = this.authService.getUsername();
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
+  faCommentDots = faCommentDots;
   faTimes = faTimes;
+  faEdit = faEdit;
+  faTrash = faTrash;
 
-  constructor(private authService: AuthService,
+  constructor(public authService: AuthService,
     private router: Router,
     private commentService: CommentService) {}
 
@@ -40,19 +42,14 @@ export class CommentCardComponent{
       return;
     }
 
-    this.commentService.upvote(this.comment.id);
+    this.commentService.upvote(this.comment.id).subscribe(res => {
+      this.comment.votes = res;
+    });
 
-    if(this.comment.userVote == null) {
-      this.comment.votes++;
-      this.comment.userVote = VoteType.UP;
-
-    } else if(this.comment.userVote == VoteType.UP) {
-      this.comment.votes--;
+    if(this.comment.userVote == VoteType.UP)
       this.comment.userVote = null;
-    } else {
-      this.comment.votes+=2;
+    else
       this.comment.userVote = VoteType.UP;
-    }
   }
 
   downvote() {
@@ -61,19 +58,14 @@ export class CommentCardComponent{
       return;
     }
     
-    this.commentService.downvote(this.comment.id);
+    this.commentService.downvote(this.comment.id).subscribe(res => {
+      this.comment.votes = res;
+    });
 
-    if(this.comment.userVote == null) {
-      this.comment.votes--;
-      this.comment.userVote = VoteType.DOWN;
-
-    } else if(this.comment.userVote == VoteType.DOWN) {
-      this.comment.votes++;
+    if(this.comment.userVote == VoteType.DOWN)
       this.comment.userVote = null;
-    } else {
-      this.comment.votes-=2;
+    else
       this.comment.userVote = VoteType.DOWN;
-    }
   }
 
   respondComment(data: NgForm) {
@@ -87,7 +79,12 @@ export class CommentCardComponent{
     this.deleteId.emit(this.comment.id);
   }
 
-  editComment(){
+  initlializeEdit(){
+    this.isUserEditing=true; 
+    this.editedContent=this.comment.content
+  }
+
+  edit(){
     this.isUserEditing = false;
     this.comment.content = this.editedContent;
     this.commentService.edit(this.comment.id, this.comment.content);

@@ -1,14 +1,18 @@
 .card{
-    margin: 0 auto 20px auto;
-    background-color: transparent;
-    border-bottom: 1px solid rgb(71, 71, 71);
+    display: flex;
+    flex-direction: row;
+    border: none;
+    border-bottom: 1px solid black;
 }
 
 .header{
+    width: 50%;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
 }
 
-.col-1{
+.col-2{
     font-size: xx-large;
     text-align: center;
     display: flex;
@@ -17,8 +21,12 @@
     color: gray;
 }
 
+.name{
+    margin-right: 20px;
+}
+
 .active{
-    color: lightgray;
+    color: black;
 }
 
 .arrow:hover{
@@ -26,19 +34,16 @@
 }
 
 button{
-    font-size:xx-small;
-    color: lightgray;
+    font-size: large;
     background-color: transparent;
     border: none;
-    margin-left: 20px;
 }
 
 input{
     width: 70%;
     border: none;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid black;
     background-color: transparent;
-    color: white;
     margin: 0 15px 0 15px;
 }
 
@@ -46,16 +51,12 @@ input:focus{
     outline: none;
 }
 
+.options{
+    width: 50px;
+    display: flex;
+    justify-content: space-between;
+}
+
 fa-icon:hover{
     cursor: pointer;
-}
-
-textarea, textarea:focus{
-    background-color: transparent;
-    color: white;
-}
-
-.btn-big{
-    font-size: large;
-    margin-left: 0;
 }

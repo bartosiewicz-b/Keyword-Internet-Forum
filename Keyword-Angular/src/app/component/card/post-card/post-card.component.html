@@ -1,40 +1,38 @@
-<div class="card text-white mb-3" style="width: 50rem;">
-  <div class="card-body">
-    <div class="row">
-        <div class="col-1">
-          <div class="row arrow" [class.active]="post.userVote!=null && (post.userVote==0 || post.userVote.toString()=='UP')"
-          (click)="upvote()">
-            <fa-icon [icon]="faArrowUp"></fa-icon>
-          </div>
-          <div class="row">
-            <small class="text-muted">{{post.votes}}</small>
-          </div>
-          <div class="row arrow" [class.active]="post.userVote!=null && (post.userVote==1 || post.userVote.toString()=='DOWN')" 
-          (click)="downvote()">
-            <fa-icon [icon]="faArrowDown"></fa-icon>
-          </div>
-        </div>
+<div class="card">
+  <div class="card-body row">
+    <div class="col-1">
+      <fa-icon [icon]="faArrowUp" class="arrow" 
+      [class.active]="post.userVote!=null && (post.userVote==0 || post.userVote.toString()=='UP')"
+      (click)="upvote()"></fa-icon>
+            
+      <small class="text-muted">{{post.votes}}</small>
 
-        <div class="col-11">
-            <div class="flex-container">
-              <p class="card-text header">
-                <small class="text-muted"><a routerLink="/user/{{post.username}}" class="name">{{post.username}}</a></small>
-                <small class="text-muted">{{post.dateCreated | date}}</small>
-              </p>
-              <h5 class="card-title">{{post.title}}</h5>
-            </div>
-            <div *ngIf="excerpt; else fullText">
-              <p class="card-text">{{post.description|excerpt:1150}}</p>
-            </div>
-            <ng-template #fullText>
-              <p class="card-text">{{post.description}}</p>
-            </ng-template>
+      <fa-icon [icon]="faArrowDown" class="arrow"
+      [class.active]="post.userVote!=null && (post.userVote==1 || post.userVote.toString()=='DOWN')"
+      (click)="downvote()"></fa-icon>
+    </div>
 
-            <div *ngIf="username!=null && username==post.username && enableVoting">
-              <button routerLink="/create-post/{{post.groupId}}/{{post.id}}">Edit</button>
-              <button (click)="delete()">Delete</button>
-            </div>
+    <div class="col-11">  
+      <p class="header">
+        <small class="text-muted name">
+          <a routerLink="/user/{{post.username}}">{{post.username}}</a>
+        </small>
+        <small class="text-muted">{{post.dateCreated | date}}</small>
+      </p>
+      <div class="content" routerLink="/{{post.groupId}}/{{post.id}}">
+        <h5 class="card-title">{{post.title}}</h5>
+            
+        <div *ngIf="short; else fullText">
+          <p class="card-text">{{post.description|excerpt:1150}}</p>
         </div>
+        <ng-template #fullText>
+          <p class="card-text">{{post.description}}</p>
+        </ng-template>
+      </div>
+      <div *ngIf="!short && this.authService.getUsername()==post.username">
+        <button routerLink="/create-post/{{post.groupId}}/{{post.id}}">Edit</button>
+        <button (click)="delete()">Delete</button>
+      </div>
     </div>
   </div>
 </div>

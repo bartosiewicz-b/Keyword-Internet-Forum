@@ -1,23 +1,12 @@
 .card{
-    margin: 0 auto 20px auto;
-    background-color: white;
-    border: 1px solid rgb(53, 53, 53);
+    border: 1px solid #353535;
 }
 
 .header{
     display: flex;
     justify-content: space-between;
     width: 50%;
-    margin-bottom: 20px;
-}
-
-.card-title{
-    margin-bottom: 20px;
-    color: black;
-}
-
-.card-text{
-    color: black;
+    margin-bottom: 10px;
 }
 
 .col-1{
@@ -26,8 +15,12 @@
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content:flex-start;
-    color: black;
+    justify-content: flex-start;
+    color: #646464;
+}
+
+.col-11{
+    border-left: 1px solid black;
 }
 
 .active{
@@ -38,10 +31,15 @@
     cursor: pointer;
 }
 
+.content {
+    cursor: pointer;
+    height: 70%;
+}
 
 button{
-    font-size:small;
+    font-size: small;
     color: black;
     background-color: transparent;
     border: none;
+    margin-right: 15px;
 }

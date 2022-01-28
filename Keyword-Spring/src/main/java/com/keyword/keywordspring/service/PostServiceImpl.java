@@ -153,7 +153,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void upvote(String token, Long id) {
+    public int upvote(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
@@ -180,10 +180,12 @@ public class PostServiceImpl implements PostService {
         }
 
         postRepository.save(post);
+
+        return post.getVotes();
     }
 
     @Override
-    public void downvote(String token, Long id) {
+    public int downvote(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
@@ -210,5 +212,7 @@ public class PostServiceImpl implements PostService {
         }
 
         postRepository.save(post);
+
+        return post.getVotes();
     }
 }

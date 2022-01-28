@@ -64,18 +64,16 @@ public class PostApi {
     }
 
     @PostMapping("/upvote")
-    public ResponseEntity<Void> upvotePost(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Integer> upvotePost(@RequestHeader("Authorization") String token,
                                              @RequestBody Long postId) {
 
-        postService.upvote(token, postId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(postService.upvote(token, postId));
     }
 
     @PostMapping("/downvote")
-    public ResponseEntity<Void> downvotePost(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Integer> downvotePost(@RequestHeader("Authorization") String token,
                                              @RequestBody Long postId) {
 
-        postService.downvote(token, postId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(postService.downvote(token, postId));
     }
 }

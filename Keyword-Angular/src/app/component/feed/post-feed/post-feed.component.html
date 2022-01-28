@@ -13,9 +13,7 @@
 </div>
 
 <div *ngFor="let p of posts" class="feed">
-    <a routerLink="/{{p.groupId}}/{{p.id}}">
-      <post-card [post]="p" [excerpt]="true" [enableVoting]="false"></post-card>
-    </a>
+    <post-card [post]="p" [short]="true"></post-card>
 </div>
 
 <div class="border-horiz">

@@ -1,5 +1,4 @@
 import { AuthService } from './../../../service/auth.service';
-import { MemoryService } from './../../../service/memory.service';
 import { Router } from '@angular/router';
 import { VoteType } from './../../../model/voteType';
 import { PostService } from './../../../service/post.service';
@@ -13,17 +12,14 @@ import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./post-card.component.css']
 })
 export class PostCardComponent {
-  @Input('post') post: Post = {} as Post;
-  @Input('excerpt') excerpt: boolean = false;
-  @Input('enableVoting') enableVoting: boolean = true;
-
-  username: string | null = this.authService.getUsername();
+  @Input('post') post: Post = new Post;
+  @Input('short') short: boolean = false;
 
   VoteType = VoteType;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
 
-  constructor(private authService: AuthService,
+  constructor(public authService: AuthService,
     private router: Router,
     private postService: PostService) { 
   }
@@ -34,19 +30,14 @@ export class PostCardComponent {
       return;
     }
 
-    this.postService.upvote(this.post.id);
-
-    if(this.post.userVote == null) {
-      this.post.votes++;
-      this.post.userVote = VoteType.UP;
-
-    } else if(this.post.userVote == VoteType.UP) {
-      this.post.votes--;
+    this.postService.upvote(this.post.id).subscribe(res => {
+      this.post.votes = res;
+    });
+    
+    if(this.post.userVote == VoteType.UP)
       this.post.userVote = null;
-    } else {
-      this.post.votes+=2;
+    else
       this.post.userVote = VoteType.UP;
-    }
   }
 
   downvote() {
@@ -55,19 +46,14 @@ export class PostCardComponent {
       return;
     }
 
-    this.postService.downvote(this.post.id);
+    this.postService.downvote(this.post.id).subscribe(res => {
+      this.post.votes = res;
+    })
 
-    if(this.post.userVote == null) {
-      this.post.votes--;
-      this.post.userVote = VoteType.DOWN;
-
-    } else if(this.post.userVote == VoteType.DOWN) {
-      this.post.votes++;
+    if(this.post.userVote == VoteType.DOWN)
       this.post.userVote = null;
-    } else {
-      this.post.votes-=2;
+    else
       this.post.userVote = VoteType.DOWN;
-    }
   }
 
   delete() {

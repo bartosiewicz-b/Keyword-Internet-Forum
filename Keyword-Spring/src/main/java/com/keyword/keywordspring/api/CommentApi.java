@@ -48,19 +48,17 @@ public class CommentApi {
     }
 
     @PostMapping("/upvote")
-    public ResponseEntity<Void> upvoteComment(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Integer> upvoteComment(@RequestHeader("Authorization") String token,
                                               @RequestBody Long commentId) {
 
-        commentService.upvote(token, commentId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(commentService.upvote(token, commentId));
     }
 
     @PostMapping("/downvote")
-    public ResponseEntity<Void> downvoteComment(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Integer> downvoteComment(@RequestHeader("Authorization") String token,
                                                 @RequestBody Long commentId) {
 
-        commentService.downvote(token, commentId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(commentService.downvote(token, commentId));
     }
 
 
