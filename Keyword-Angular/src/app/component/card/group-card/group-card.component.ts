@@ -12,7 +12,8 @@ import { Component, Input, OnInit } from '@angular/core';
                 <p class="card-text">{{group.description|excerpt:1150}}</p>
               </div>
             </div>`,
-  styles: [`.card{border: 1px solid black;}`]
+  styles: [`.card{border: 1px solid black;}
+          .card:hover{color: #555555;}`]
 })
 export class GroupCardComponent {
   @Input('group') group: Group = new Group;

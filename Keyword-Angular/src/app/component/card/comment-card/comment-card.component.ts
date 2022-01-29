@@ -17,6 +17,7 @@ import { NgForm } from '@angular/forms';
 export class CommentCardComponent{
   @Input('comment') comment: Comment = {} as Comment;
   @Output() deleteId = new EventEmitter<number>();
+  @Output() respond = new EventEmitter<Comment>();
 
   editedContent: string = this.comment.content;
 
@@ -70,7 +71,7 @@ export class CommentCardComponent{
 
   respondComment(data: NgForm) {
     this.commentService.add(data.value.content, this.comment.postId, this.comment.id)
-    .subscribe();
+    .subscribe(res => this.respond.emit(res));
 
     this.isUserWriting = false;
   }

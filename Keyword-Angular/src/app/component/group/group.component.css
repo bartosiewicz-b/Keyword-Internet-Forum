@@ -1,11 +1,33 @@
+header{
+    border-bottom: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100px;
+    margin-bottom: 50px;
+}
+
+.title{
+    display: flex;
+    align-items: center;
+}
+
+h1{
+    margin-right: 50px;
+}
+
+.manage{
+    border-bottom: 1px solid black;
+    margin-bottom: 50px;
+}
+
 .subscription{
-    margin: 20px 0 50px 0;
+    margin-bottom: 5px;
 }
 
 button{
     background-color: transparent;
-    color: white;
-    border: 1px solid white;
+    border: 1px solid black;
     border-radius: 5px;
     margin-right: 5px;
 }
@@ -18,8 +40,8 @@ button:active{
 .line{
     margin: 100px 0 20px 0;
     padding: 10px 0 10px 5px;
-    border-top: 1px solid white;
-    border-bottom: 1px solid white;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
 }
 
 .space{
@@ -27,5 +49,5 @@ button:active{
 }
 
 .moderator{
-    color: red;
+    color: #b40b0b;
 }

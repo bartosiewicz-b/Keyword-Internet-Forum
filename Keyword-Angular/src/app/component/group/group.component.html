@@ -1,4 +1,48 @@
-<div *ngIf="group!=null">
+<header>
+    <div class="title">
+        <h1>{{group.groupName}}</h1>
+        <small class="text-muted">Subscriptions: {{group.subscriptions}}</small>
+    </div>
+    <small class="text-muted">Owner: {{group.owner}}</small>
+</header>
+
+<div class="manage">
+    <p class="moderator" *ngIf="group?.moderators?.includes(username!=null?username:'')">
+        You are a moderator of this group.
+    </p>
+    <div class="subscription">
+            <button *ngIf="group.owner != username; else ownerPanel" (click)="subscribe()">
+                <div *ngIf="!group.isSubscribed; else unsubscribe">
+                    Subscribe
+                </div>
+                <ng-template #unsubscribe>
+                    Unsubscribe
+                </ng-template>
+            </button>
+    
+            <ng-template #ownerPanel>
+                <button routerLink="/create-group/{{group.id}}">Edit</button>
+                <button routerLink="/manage-group/{{group.id}}">Manage Roles</button>
+                <button (click)="delete()">Delete</button>
+            </ng-template>
+    </div>
+</div>
+
+<div class="description">
+    <p>{{group.description}}</p>
+</div>
+
+<div class="line">
+    Posts:
+</div>
+
+<div class="space" *ngIf="group.isSubscribed">
+    <button routerLink="/create-post/{{group.id}}">Create Post</button>
+</div>
+
+<post-feed [groupId]="group.id"></post-feed>
+
+<!--<div *ngIf="group!=null">
     <h1>{{group.groupName}}</h1>
 
     <p class="moderator" *ngIf="group?.moderators?.includes(username!=null?username:'')">
@@ -40,4 +84,4 @@
     </div>
     
     <post-feed [groupId]="group.id"></post-feed>
-</div>
+</div>-->

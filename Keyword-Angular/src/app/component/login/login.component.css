@@ -7,10 +7,8 @@ button{
 }
 
 a{
-    color: white;
 }
 
 input, input:focus{
-    color: white;
     background-color: transparent;
 }

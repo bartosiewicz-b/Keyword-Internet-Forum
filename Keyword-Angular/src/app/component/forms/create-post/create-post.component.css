@@ -3,10 +3,9 @@
 }
 
 .form-control{
-    color: white;
     background-color: transparent;
 }
 
 option{
-    background-color: black;
+    background-color: white;
 }

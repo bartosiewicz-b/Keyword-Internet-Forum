@@ -1,28 +1,29 @@
-<div class="post">
+<button class="moderator" *ngIf="isModerator"
+(click)="deletePost()">
+Delete this post as a moderator
+</button>
 
-    <button class="moderator" *ngIf="group?.moderators?.includes(username!=null?username:'')"
-        (click)="deletePost()">
-        Delete this post as a moderator
-    </button>
+<post-card [post]="post"></post-card>
 
-    <post-card [post]="post"></post-card>
+<form class="form" #createComment="ngForm" (ngSubmit)="comment(createComment)" 
+*ngIf="authService.getUsername() != null">
+    <input ngModel type="text" name="content">
+    <button type="submit" class="btn">Comment</button>
+</form>
 
-    <form class="form" #createComment="ngForm" (ngSubmit)="comment(createComment)" *ngIf="username != null">
-        <input ngModel type="text" name="content">
-        <button type="submit" class="btn">Comment</button>
-    </form>
+<div class="separator">
+    Comments:
+</div>
 
-    <div class="comments">
-        <div *ngFor="let c of comments">
-            <div *ngIf="c.parentCommentId==null">
-                <comment-card [comment]="c" (deleteId)="deleteComment($event)"></comment-card>
-            </div>
-            <div *ngFor="let sc of comments" class="sideComment">
-                <div *ngIf="sc.parentCommentId!=null && sc.parentCommentId==c.id">
-                    <comment-card [comment]="sc" (deleteId)="deleteComment($event)"></comment-card>
-                </div>
+<div class="comments">
+    <div *ngFor="let c of comments">
+        <div *ngIf="c.parentCommentId==null">
+            <comment-card [comment]="c" (deleteId)="deleteComment($event)" (respond)="respondComment($event)"></comment-card>
+        </div>
+        <div *ngFor="let sc of comments" class="sideComment">
+            <div *ngIf="sc.parentCommentId!=null && sc.parentCommentId==c.id">
+                <comment-card [comment]="sc" (deleteId)="deleteComment($event)" (respond)="respondComment($event)"></comment-card>
             </div>
         </div>
     </div>
 </div>
-

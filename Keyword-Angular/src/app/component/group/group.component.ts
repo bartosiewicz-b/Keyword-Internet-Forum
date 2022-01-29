@@ -1,5 +1,4 @@
 import { MemoryService } from './../../service/memory.service';
-import { PostService } from './../../service/post.service';
 import { Group } from './../../model/group';
 import { GroupService } from './../../service/group.service';
 import { Component } from '@angular/core';
@@ -11,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./group.component.css']
 })
 export class GroupComponent {
-  group: Group | null = null;
+  group: Group = new Group;
 
   username: string | null = this.memoryService.getUsername();
 

@@ -1,3 +1,4 @@
+import { AuthService } from './../../service/auth.service';
 import { GroupService } from './../../service/group.service';
 import { Group } from './../../model/group';
 import { MemoryService } from './../../service/memory.service';
@@ -16,12 +17,12 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./post.component.css']
 })
 export class PostComponent implements OnInit {
-  username: string | null;
   comments: Comment[] = [];
   post: Post = new Post;
   group: Group = new Group;
+  isModerator: boolean = false;
 
-  constructor(memoryService: MemoryService,
+  constructor(public authService: AuthService,
     private groupService: GroupService,
     private postService: PostService,
       private commentService: CommentService,
@@ -33,9 +34,10 @@ export class PostComponent implements OnInit {
 
     this.postService.get(postId).subscribe(res => this.post = res);
     this.commentService.getAll(postId).subscribe(res => this.comments = res);
-    this.groupService.get(groupId).subscribe(res => this.group = res);
-
-    this.username = memoryService.getUsername();
+    this.groupService.get(groupId).subscribe(res => {
+      this.group = res;
+      this.isModerator = this.group.moderators.includes(String(authService.getUsername()));
+    });
   }
 
   ngOnInit(): void {
@@ -57,5 +59,9 @@ export class PostComponent implements OnInit {
   deletePost() {
     this.postService.delete(this.post.id);
     this.router.navigateByUrl('/' + this.group.id);
+  }
+
+  respondComment(comment: Comment) {
+    this.comments.push(comment);
   }
 }

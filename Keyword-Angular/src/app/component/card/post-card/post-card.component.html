@@ -16,6 +16,8 @@
       <p class="header">
         <small class="text-muted name">
           <a routerLink="/user/{{post.username}}">{{post.username}}</a>
+          >
+          <a routerLink="/{{post.groupId}}">{{post.groupName}}</a>
         </small>
         <small class="text-muted">{{post.dateCreated | date}}</small>
       </p>
