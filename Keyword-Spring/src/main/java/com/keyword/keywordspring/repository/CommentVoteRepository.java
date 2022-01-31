@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface CommentVoteRepository extends CrudRepository<CommentVote, Long> {
     Optional<CommentVote> findByUserAndComment(AppUser user, Comment comment);
+
+    void deleteAllByComment(Comment comment);
 }

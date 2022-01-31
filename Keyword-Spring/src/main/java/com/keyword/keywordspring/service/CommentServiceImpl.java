@@ -16,6 +16,7 @@ import com.keyword.keywordspring.service.interf.CommentService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -94,6 +95,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void delete(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -106,6 +108,8 @@ public class CommentServiceImpl implements CommentService {
 
         user.setNrOfComments(user.getNrOfComments() - 1);
         userRepository.save(user);
+
+        commentVoteRepository.deleteAllByComment(comment);
 
         commentRepository.deleteById(id);
     }

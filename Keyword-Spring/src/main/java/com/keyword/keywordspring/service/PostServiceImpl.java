@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -136,6 +137,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void delete(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -149,6 +151,9 @@ public class PostServiceImpl implements PostService {
         postOwner.setNrOfPosts(postOwner.getNrOfPosts() - 1);
 
         userRepository.save(postOwner);
+
+        postVoteRepository.deleteAllByPost(post);
+
         postRepository.deleteById(id);
     }
 
