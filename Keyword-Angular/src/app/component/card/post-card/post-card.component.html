@@ -15,7 +15,10 @@
     <div class="col-11">  
       <p class="header">
         <small class="text-muted name">
-          <a routerLink="/user/{{post.username}}">{{post.username}}</a>
+          <a routerLink="/user/{{post.username}}">
+            <img [src]="post.userAvatarUrl" onerror="this.src='/assets/no_profile.jpeg'" class="avatar">
+            {{post.username}}
+          </a>
           >
           <a routerLink="/{{post.groupId}}">{{post.groupName}}</a>
         </small>

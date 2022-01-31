@@ -139,6 +139,20 @@ class AuthApiTest {
     }
 
     @Test
+    void changeAvatar() throws Exception {
+
+        mockMvc.perform(post("/auth/change-avatar")
+                        .header("Authorization", "token")
+                        .content("newAvatarUrl")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("{methodName}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
     void changeUsername() throws Exception {
 
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));

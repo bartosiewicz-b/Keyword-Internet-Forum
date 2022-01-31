@@ -15,6 +15,7 @@ public class UserMapperImpl implements UserMapper {
                 .dateCreated(user.getDateCreated())
                 .comments(user.getNrOfComments())
                 .posts(user.getNrOfPosts())
+                .avatarUrl(user.getAvatarUrl())
                 .build();
     }
 }

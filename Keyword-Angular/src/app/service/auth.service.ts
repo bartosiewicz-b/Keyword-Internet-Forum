@@ -91,6 +91,11 @@ export class AuthService {
     .pipe(take(1));
   }
 
+  changeAvatar(newAvatarUrl: string){
+    this.httpClient.post<any>(this.url + '/change-avatar', newAvatarUrl)
+    .pipe(take(1)).subscribe();
+  }
+
   changeUsername(newUsername: string){
     this.httpClient.post<any>(this.url + '/change-username', newUsername)
     .pipe(take(1)).subscribe(

@@ -36,6 +36,8 @@ public class PostDto {
     @NotNull
     private String username;
 
+    private String userAvatarUrl;
+
     @NotNull
     private Integer numberOfComments;
 

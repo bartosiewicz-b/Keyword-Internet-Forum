@@ -1,6 +1,7 @@
 export class AppUser {
-    username: string = "";
+    username: string = '';
     date: Date = new Date();
     posts: number = 0;
     comments: number = 0;
+    avatarUrl: string = '';
 }

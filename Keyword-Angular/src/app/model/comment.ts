@@ -4,6 +4,7 @@ export class Comment{
     content: string = "content";
     parentCommentId: number | null = null;
     user: string = "username";
+    userAvatarUrl: string = "";
     postId: number = 0;
     dateCreated: Date = new Date();
     votes: number = 0;

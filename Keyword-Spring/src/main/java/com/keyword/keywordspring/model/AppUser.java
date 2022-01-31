@@ -28,6 +28,8 @@ public class AppUser implements Serializable {
     private int nrOfComments;
     private int nrOfPosts;
 
+    private String avatarUrl;
+
     @OneToMany
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private List<ForumGroup> ownedGroups;

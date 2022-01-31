@@ -32,6 +32,7 @@ public class PostMapperImpl implements PostMapper {
                 .description(post.getDescription())
                 .dateCreated(post.getDateCreated())
                 .username(post.getUser().getUsername())
+                .userAvatarUrl(post.getUser().getAvatarUrl())
                 .numberOfComments(post.getComments().size())
                 .votes(post.getVotes())
                 .userVote(vote.isEmpty() ? null : vote.get().getType())

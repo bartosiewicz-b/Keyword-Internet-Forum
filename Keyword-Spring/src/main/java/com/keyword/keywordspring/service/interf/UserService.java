@@ -16,6 +16,7 @@ public interface UserService {
     AppUser login(LoginRequest request);
 
     void changeUsername(String token, String newUsername);
+    void changeAvatar(String token, String newAvatarUrl);
     void changeEmail(String token, String password, String newEmail);
     void changePassword(String token, String password, String newPassword);
 

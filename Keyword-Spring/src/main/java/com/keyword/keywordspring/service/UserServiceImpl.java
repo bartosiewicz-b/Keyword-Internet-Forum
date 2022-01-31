@@ -81,6 +81,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void changeAvatar(String token, String newAvatarUrl) {
+        AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
+
+        user.setAvatarUrl(newAvatarUrl);
+
+        userRepository.save(user);
+    }
+
+    @Override
     public void changeEmail(String token, String password, String newEmail) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);

@@ -1,4 +1,5 @@
-import { MemoryService } from './../../service/memory.service';
+import { UserService } from './../../service/user.service';
+import { AppUser } from './../../model/AppUser';
 import { AuthService } from './../../service/auth.service';
 import { Component, OnInit } from '@angular/core';
 
@@ -11,15 +12,26 @@ export class ProfileComponent implements OnInit {
   editingUsername: boolean = false;
   editingEmail: boolean = false;
   editingPassword: boolean = false;
+  changingAvatar: boolean = false;
 
   newUsernameTaken: boolean = false;
   newEmailTaken: boolean = false;
 
-  currentUsername: string | null = this.memoryService.getUsername();
-  currentEmail: string | null = this.memoryService.getEmail();
+  user: AppUser = new AppUser;
+
+  currentUsername: string | null = this.authService.getUsername();
+  currentEmail: string | null = this.authService.getEmail();
+
+  newAvatarUrl: string = '';
 
   constructor(private authService: AuthService,
-    private memoryService: MemoryService) { }
+    userService: UserService) { 
+      userService.get(String(authService.getUsername())).subscribe(res => {
+        this.user = res;
+        if(this.user.avatarUrl!=null)
+          this.newAvatarUrl = this.user.avatarUrl;
+      });
+    }
 
   ngOnInit(): void {
   }
@@ -52,5 +64,11 @@ export class ProfileComponent implements OnInit {
     this.authService.changePassword(oldPassword, newPassword);
 
     this.editingPassword = false;
+  }
+
+  changeAvatar() {
+    this.changingAvatar = false;
+    this.authService.changeAvatar(this.newAvatarUrl);
+    this.user.avatarUrl = this.newAvatarUrl;
   }
 }

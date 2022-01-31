@@ -29,6 +29,7 @@ public class CommentMapperImpl implements CommentMapper {
                         null :
                         comment.getParentComment().getId())
                 .user(comment.getUser().getUsername())
+                .userAvatarUrl(comment.getUser().getAvatarUrl())
                 .postId(comment.getPost().getId())
                 .dateCreated(comment.getDateCreated())
                 .votes(comment.getVotes())

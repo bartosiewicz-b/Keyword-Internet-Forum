@@ -26,6 +26,8 @@ public class CommentDto {
     @NotNull
     private String user;
 
+    private String userAvatarUrl;
+
     @NotNull
     private Long postId;
 

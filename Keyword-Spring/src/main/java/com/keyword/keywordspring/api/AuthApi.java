@@ -45,6 +45,14 @@ public class AuthApi {
         return ResponseEntity.ok().body(jwtUtil.refreshJwt(refresh));
     }
 
+    @PostMapping("/change-avatar")
+    public ResponseEntity<Void> changeAvatar(@RequestHeader("Authorization") String token,
+                                                        @RequestBody(required = false) String newAvatarUrl) {
+
+        userService.changeAvatar(token, newAvatarUrl);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/change-username")
     public ResponseEntity<TokenResponse> changeUsername(@RequestHeader("Authorization") String token,
                                                         @RequestBody String newUsername) {

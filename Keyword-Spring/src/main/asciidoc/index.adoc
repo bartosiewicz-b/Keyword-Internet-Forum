@@ -38,6 +38,15 @@ include::{snippets}/refreshToken/http-request.adoc[]
 include::{snippets}/refreshToken/http-response.adoc[]
 
 
+== Change Avatar
+Returns UNAUTHORIZED when token is invalid
+
+.request
+include::{snippets}/changeAvatar/http-request.adoc[]
+.response
+include::{snippets}/changeAvatar/http-response.adoc[]
+
+
 == Change Username
 Returns UNAUTHORIZED when token is invalid, BAD_REQUEST when username is already taken
 
@@ -95,7 +104,7 @@ include::{snippets}/getUser/http-request.adoc[]
 include::{snippets}/getUser/http-response.adoc[]
 
 
-== Get Subscribed
+== Get Subscribed Groups
 Returns UNAUTHORIZED when token is invalid
 
 .request
@@ -240,6 +249,7 @@ include::{snippets}/validateNewGroupName/http-response.adoc[]
 
 
 = Post
+All endpoints in api/PostApi.java
 
 
 
@@ -318,6 +328,7 @@ include::{snippets}/downvotePost/http-response.adoc[]
 
 
 = Comment
+All endpoints in api/CommentApi.java
 
 
 

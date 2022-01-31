@@ -14,7 +14,10 @@
   <div class="card-body col-10">
     <div class="header" *ngIf="!isUserWriting && !isUserEditing">
         <small class="text-muted">
-          <a routerLink="/user/{{comment.user}}" class="name">{{comment.user}}</a>
+          <a routerLink="/user/{{comment.user}}" class="name">
+            <img [src]="comment.userAvatarUrl" onerror="this.src='/assets/no_profile.jpeg'" class="avatar">
+            {{comment.user}}
+          </a>
         </small>
         <div class = "options" *ngIf="comment.user==authService.getUsername()">
           <fa-icon [icon]="faEdit" (click)="initlializeEdit()"></fa-icon>

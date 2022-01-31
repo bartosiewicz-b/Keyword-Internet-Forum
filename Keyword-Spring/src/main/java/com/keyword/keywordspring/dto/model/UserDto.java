@@ -17,4 +17,5 @@ public class UserDto {
     private Date dateCreated;
     private int posts;
     private int comments;
+    private String avatarUrl;
 }

@@ -1,6 +1,17 @@
 <h1>Profile:</h1>
 
 <div class="divider"></div>
+<div>
+    <img [src]="user.avatarUrl" onerror="this.src='/assets/no_profile.jpeg'" class="avatar">
+    <div *ngIf="!changingAvatar; else avatarForm">
+        <button class="btn btn-primary" (click)="changingAvatar=true">Change Avatar</button>
+    </div>
+    <ng-template #avatarForm>
+        <input [(ngModel)]="newAvatarUrl" type="text" class="form-control" placeholder="Enter avatar url">
+        <button class="btn btn-primary" (click)="changeAvatar()">Submit</button>
+    </ng-template>
+</div>
+
 
 <div class="row" *ngIf="!editingEmail && !editingPassword">
     <div class="col-4">

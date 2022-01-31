@@ -3,6 +3,14 @@
     margin: 20px 0 20px 0;
 }
 
+.avatar{
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 50px;
+    margin-right: 100px;
+}
+
 .row {
     display: flex;
     align-items: center;

@@ -8,6 +8,7 @@ export class Post {
     description: string = "description";
     dateCreated: Date = new Date();
     username: string = "username";
+    userAvatarUrl: string = "";
     numberOfComments: number = 0;
     votes: number = 0;
     userVote: VoteType | null = null;
