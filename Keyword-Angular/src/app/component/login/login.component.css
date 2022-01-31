@@ -1,14 +1,12 @@
-button{
-    margin-top: 40px;
+form{
+    width: 600px;
+    margin: 50px auto 50px auto;
 }
 
-.register{
-    margin-top: 10px;
+.error{
+    color: #b40b0b;
 }
 
-a{
-}
-
-input, input:focus{
-    background-color: transparent;
+div{
+    margin-bottom: 20px;
 }

@@ -9,7 +9,7 @@
       </a>
     </div>
 
-    <a class="nav-link" routerLink="/create-post">
+    <a class="nav-link" routerLink="/create-post" *ngIf="authService.isLoggedIn()">
       Create Post
     </a>
     

@@ -45,19 +45,19 @@ export class AuthService {
   }
 
   login(login: string, password: string) {
-    this.httpClient.post<any>(this.url + '/login', 
+    return this.httpClient.post<any>(this.url + '/login', 
     {'login': login, 'password': password})
-    .pipe(take(1))
-    .subscribe(
-      res => {
-        this.memoryService.setToken(res.token);
-        this.memoryService.setRefresh(res.refreshToken)
-        this.memoryService.setUsername(res.username);
-        this.memoryService.setEmail(res.email);
+    .pipe(take(1));
+  }
 
-        this.username = res.username;
-        this.email = res.email;
-      });
+  saveLoginData(data: any) {
+    this.memoryService.setToken(data.token);
+    this.memoryService.setRefresh(data.refreshToken)
+    this.memoryService.setUsername(data.username);
+    this.memoryService.setEmail(data.email);
+
+    this.username = data.username;
+    this.email = data.email;
   }
 
   register(email: string, username: string, password: string) {

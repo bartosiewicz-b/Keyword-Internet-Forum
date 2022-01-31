@@ -10,5 +10,8 @@
     <div class="register">
       You don't have an account? <a routerLink="/register">REGISTER HERE</a>
     </div>
+    <div *ngIf="loginError" class="error">
+      Login or password is invalid!
+    </div>
     <button type="submit" class="btn btn-primary">Login</button>
-  </form>
+</form>

@@ -201,7 +201,7 @@ class AuthApiTest {
     @Test
     void validateNewUsername() throws Exception {
 
-        when(userService.isUsernameTaken(anyString())).thenReturn(false);
+        when(userService.validateNewUsername(anyString())).thenReturn(true);
 
         mockMvc.perform(post("/auth/validate-new-username")
                 .content("newUsername")
@@ -217,7 +217,7 @@ class AuthApiTest {
     @Test
     void validateNewEmail() throws Exception {
 
-        when(userService.isEmailTaken(anyString())).thenReturn(false);
+        when(userService.validateNewEmail(anyString())).thenReturn(true);
 
         mockMvc.perform(post("/auth/validate-new-email")
                 .content("newEmail@email.com")

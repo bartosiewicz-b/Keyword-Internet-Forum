@@ -22,6 +22,8 @@ export class CreatePostComponent {
   description: string = '';
   group: string = '';
 
+  createPostError: boolean = false;
+
 
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -49,9 +51,15 @@ export class CreatePostComponent {
       this.postService.add(this.title, this.description, this.group).subscribe(res => {
         this.routePostId = res.id.toString();
         this.router.navigate(['/' + this.group + '/' + this.routePostId]);
+      }, () => {
+        this.createPostError = true;
       });
     } else {
-      this.postService.edit(Number(this.routePostId), this.title, this.description).subscribe();
+      this.postService.edit(Number(this.routePostId), this.title, this.description).subscribe(
+        () =>{}, 
+        () => {
+          this.createPostError = true;
+      });
       this.router.navigate(['/' + this.routeGroupId + '/' + this.routePostId]);
     }
   }

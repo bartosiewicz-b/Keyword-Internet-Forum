@@ -32,10 +32,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(RegisterRequest request) {
-        if(isEmailTaken(request.getEmail()))
+        if(!validateNewEmail(request.getEmail()))
             throw new EmailAlreadyTakenException(request.getEmail());
 
-        if(isUsernameTaken(request.getUsername()))
+        if(!validateNewUsername(request.getUsername()))
             throw new UsernameAlreadyTakenException(request.getUsername());
 
         AppUser user = AppUser.builder()
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
-        if(isUsernameTaken(newUsername))
+        if(!validateNewUsername(newUsername))
             throw new UsernameAlreadyTakenException(newUsername);
 
         user.setUsername(newUsername);
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
-        if(isEmailTaken(newEmail))
+        if(!validateNewEmail(newEmail))
             throw new EmailAlreadyTakenException(newEmail);
 
         if(!passwordEncoder.matches(password, user.getPassword()))
@@ -110,15 +110,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isUsernameTaken(String username) {
+    public boolean validateNewUsername(String username) {
 
-        return userRepository.findByUsername(username).isPresent();
+        return userRepository.findByUsername(username).isEmpty();
     }
 
     @Override
-    public boolean isEmailTaken(String email) {
+    public boolean validateNewEmail(String email) {
 
-        return userRepository.findByEmail(email).isPresent();
+        return userRepository.findByEmail(email).isEmpty();
     }
 
     @Override

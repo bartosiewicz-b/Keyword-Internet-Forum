@@ -7,5 +7,8 @@
       <label for="description">Description</label>
       <textarea [(ngModel)]="description" class="form-control" id="description" name="description" rows="20"></textarea>
     </div>
+    <div *ngIf="createGroupError" class="error">
+      Unexpected Error Occured!
+    </div>
     <button type="submit" class="btn btn-primary">Create</button>
   </form>

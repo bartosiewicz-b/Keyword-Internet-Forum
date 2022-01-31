@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  loginError: boolean = false;
 
   constructor(private router: Router,
     private authService: AuthService) { }
@@ -17,8 +18,13 @@ export class LoginComponent implements OnInit {
   }
 
   login(data: NgForm) {
-    this.authService.login(data.value.login, data.value.password);
-    
-    this.router.navigateByUrl('/');
+    this.authService.login(data.value.login, data.value.password).subscribe(
+      res => {
+        this.authService.saveLoginData(res);
+        this.router.navigateByUrl('/');
+      },
+      () => {
+        this.loginError = true;
+    });
   }
 }

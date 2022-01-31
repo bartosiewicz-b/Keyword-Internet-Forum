@@ -19,8 +19,8 @@ public interface UserService {
     void changeEmail(String token, String password, String newEmail);
     void changePassword(String token, String password, String newPassword);
 
-    boolean isUsernameTaken(String username);
-    boolean isEmailTaken(String email);
+    boolean validateNewUsername(String username);
+    boolean validateNewEmail(String email);
 
     UserDto get(String username);
 

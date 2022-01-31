@@ -1,17 +1,16 @@
+form{
+    width: 600px;
+    margin: 50px auto 50px auto;
+}
+
 .form-group{
     margin-bottom: 20px;
 }
-
-input, input:focus{
-    background-color: transparent;
-}
-
 .invalid{
-    border-color: red;
+    color: #b40b0b;
 }
 
 .alert{
-    background-color: transparent;
-    color: red;
+    color: #b40b0b;
     padding: 0;
 }

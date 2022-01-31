@@ -81,12 +81,12 @@ public class AuthApi {
     @PostMapping("/validate-new-username")
     public ResponseEntity<Boolean> validateNewUsername(@RequestBody String username) {
 
-        return ResponseEntity.ok().body(!userService.isUsernameTaken(username));
+        return ResponseEntity.ok().body(userService.validateNewUsername(username));
     }
 
     @PostMapping("/validate-new-email")
     public ResponseEntity<Boolean> validateNewEmail(@RequestBody String email) {
 
-        return ResponseEntity.ok().body(!userService.isEmailTaken(email));
+        return ResponseEntity.ok().body(userService.validateNewEmail(email));
     }
 }

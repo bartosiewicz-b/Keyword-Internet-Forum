@@ -20,12 +20,12 @@ export class RegisterComponent implements OnInit {
 
   validateNewEmail(email: string) {
     this.authService.validateNewEmail(email)
-    .subscribe(res => this.emailTaken = !res as boolean);
+    .subscribe(res => this.emailTaken = !res);
   }
 
   validateNewUsername(username: string) {
     this.authService.validateNewUsername(username)
-    .subscribe(res => this.usernameTaken = !res as boolean);
+    .subscribe(res => this.usernameTaken = !res);
   }
 
   register(data: NgForm) {

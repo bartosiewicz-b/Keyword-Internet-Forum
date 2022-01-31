@@ -190,31 +190,31 @@ class UserServiceImplTest {
     }
 
     @Test
-    void isUsernameTaken() {
+    void validateUsername() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        assertFalse(userService.isUsernameTaken("username"));
+        assertTrue(userService.validateNewUsername("username"));
     }
 
     @Test
-    void isUsernameTakenBad() {
+    void validateUsernameBad() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(AppUser.builder().build()));
 
-        assertTrue(userService.isUsernameTaken("username"));
+        assertFalse(userService.validateNewUsername("username"));
     }
 
     @Test
-    void isEmailTaken() {
+    void validateEmail() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        assertFalse(userService.isEmailTaken("email@email.com"));
+        assertTrue(userService.validateNewEmail("email@email.com"));
     }
 
     @Test
-    void isEmailTakenBad() {
+    void validateEmailBad() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(AppUser.builder().build()));
 
-        assertTrue(userService.isEmailTaken("email@email.com"));
+        assertFalse(userService.validateNewEmail("email@email.com"));
     }
 
     @Test
