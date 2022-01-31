@@ -80,14 +80,12 @@ export class AuthService {
   }
 
   validateNewEmail(email: string): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.url + '/validate-new-email', 
-    {'email': email})
+    return this.httpClient.post<boolean>(this.url + '/validate-new-email', email)
     .pipe(take(1));
   }
 
   validateNewUsername(username: string): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.url + '/validate-new-username', 
-    {'username': username})
+    return this.httpClient.post<boolean>(this.url + '/validate-new-username', username)
     .pipe(take(1));
   }
 
