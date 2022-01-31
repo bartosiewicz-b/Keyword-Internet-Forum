@@ -22,6 +22,7 @@ public class GroupMapperImpl implements GroupMapper {
         return GroupDto.builder()
                 .id(group.getId())
                 .groupName(group.getGroupName())
+                .avatarUrl(group.getAvatarUrl())
                 .description(group.getDescription())
                 .subscriptions(group.getSubscriptions())
                 .isSubscribed(null != user && (subscriptionRepository.findByUserAndGroup(user, group).isPresent()))

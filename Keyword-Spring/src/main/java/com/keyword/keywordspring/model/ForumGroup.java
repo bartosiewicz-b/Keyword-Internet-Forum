@@ -29,6 +29,8 @@ public class ForumGroup implements Serializable {
     @Lob
     private String description;
 
+    private String avatarUrl;
+
     @OneToMany
     @JoinColumn(name = "forum_group_id", referencedColumnName = "id")
     private List<Post> posts;

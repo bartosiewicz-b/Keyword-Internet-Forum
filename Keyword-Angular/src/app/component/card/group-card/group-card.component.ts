@@ -7,7 +7,10 @@ import { Component, Input, OnInit } from '@angular/core';
               <div class="card-body">
                 <div>
                   <small class="text-muted">Subscribers: {{group.subscriptions}}</small>
-                  <h5 class="card-title">{{group.groupName}}</h5>
+                  <h5 class="card-title">
+                  <img [src]="group.avatarUrl" onerror="this.src='/assets/no_group_avatar.png'" class="avatar">
+                    {{group.groupName}}
+                  </h5>
                 </div>
                 <p class="card-text">{{group.description|excerpt:1150}}</p>
               </div>

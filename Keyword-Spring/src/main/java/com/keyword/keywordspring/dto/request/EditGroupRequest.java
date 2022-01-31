@@ -19,4 +19,6 @@ public class EditGroupRequest {
     private String groupName;
     @NotNull
     private String description;
+
+    private String avatarUrl;
 }

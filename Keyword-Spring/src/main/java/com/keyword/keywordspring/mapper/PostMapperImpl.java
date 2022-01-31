@@ -27,6 +27,7 @@ public class PostMapperImpl implements PostMapper {
         return PostDto.builder()
                 .id(post.getId())
                 .groupName(post.getForumGroup().getGroupName())
+                .groupAvatarUrl(post.getForumGroup().getAvatarUrl())
                 .groupId(post.getForumGroup().getId())
                 .title(post.getTitle())
                 .description(post.getDescription())

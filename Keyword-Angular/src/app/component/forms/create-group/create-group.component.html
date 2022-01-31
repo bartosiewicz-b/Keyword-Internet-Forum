@@ -7,6 +7,10 @@
       <label for="description">Description</label>
       <textarea [(ngModel)]="description" class="form-control" id="description" name="description" rows="20"></textarea>
     </div>
+    <div class="form-group">
+      <label for="avatarUrl">Group Avatar Url</label>
+      <input [(ngModel)]="avatarUrl" class="form-control" id="avatarUrl" name="avatarUrl">
+    </div>
     <div *ngIf="createGroupError" class="error">
       Unexpected Error Occured!
     </div>

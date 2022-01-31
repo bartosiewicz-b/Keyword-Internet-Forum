@@ -21,6 +21,8 @@ public class PostDto {
     @NotNull
     private String groupName;
 
+    private String groupAvatarUrl;
+
     @NotNull
     private String groupId;
 

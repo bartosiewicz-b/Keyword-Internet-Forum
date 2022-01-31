@@ -51,3 +51,8 @@ button:active{
 .moderator{
     color: #b40b0b;
 }
+
+.avatar{
+    width: 100px;
+    height: 100px;
+}

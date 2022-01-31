@@ -1,6 +1,9 @@
 <header>
     <div class="title">
-        <h1>{{group.groupName}}</h1>
+        <h1>
+            <img [src]="group.avatarUrl" onerror="this.src='/assets/no_group_avatar.png'" class="avatar">
+            {{group.groupName}}
+        </h1>
         <small class="text-muted">Subscriptions: {{group.subscriptions}}</small>
     </div>
     <small class="text-muted">Owner: {{group.owner}}</small>

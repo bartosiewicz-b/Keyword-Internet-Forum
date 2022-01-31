@@ -97,12 +97,12 @@ public class GroupServiceImpl implements GroupService {
         ForumGroup group = groupRepository.findById(request.getId())
                 .orElseThrow(() -> new GroupDoesNotExistException(request.getId()));
 
-
         if(!Objects.equals(user, group.getOwner()))
             throw new UnauthorizedException(user, group);
 
         group.setGroupName(request.getGroupName());
         group.setDescription(request.getDescription());
+        group.setAvatarUrl(request.getAvatarUrl());
 
         groupRepository.save(group);
 

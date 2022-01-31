@@ -47,9 +47,9 @@ export class GroupService {
     }));
   }
 
-  edit(id: string, groupName: string, description: string): Observable<Group> {
+  edit(id: string, groupName: string, description: string, avatarUrl: string): Observable<Group> {
     return this.httpClient.post<Group>(this.url + '/edit',
-      {'id': id, 'groupName': groupName, 'description': description})
+      {'id': id, 'groupName': groupName, 'description': description, 'avatarUrl': avatarUrl})
       .pipe(take(1));
   }
 

@@ -11,6 +11,7 @@ public class GroupDto {
 
     private String id;
     private String groupName;
+    private String avatarUrl;
     private String description;
     private Integer subscriptions;
     private Boolean isSubscribed;

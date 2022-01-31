@@ -13,6 +13,7 @@ export class CreateGroupComponent {
 
   groupName: string = '';
   description: string = '';
+  avatarUrl: string = '';
 
   createGroupError: boolean = false;
 
@@ -35,7 +36,7 @@ export class CreateGroupComponent {
       });
       this.router.navigate(['/']);
     } else {
-      this.groupService.edit(this.groupId, this.groupName, this.description).subscribe(() => {},
+      this.groupService.edit(this.groupId, this.groupName, this.description, this.avatarUrl).subscribe(() => {},
       () => {
         this.createGroupError = true;
       });

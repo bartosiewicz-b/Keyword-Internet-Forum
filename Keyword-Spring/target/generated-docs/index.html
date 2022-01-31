@@ -756,7 +756,7 @@ Content-Length: 131
 
 {
   "username" : "user",
-  "dateCreated" : "2022-01-31T10:41:36.928+00:00",
+  "dateCreated" : "2022-01-31T11:31:14.099+00:00",
   "posts" : 0,
   "comments" : 0,
   "avatarUrl" : null
@@ -787,11 +787,12 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 173
+Content-Length: 195
 
 [ {
   "id" : "group",
   "groupName" : "Group",
+  "avatarUrl" : null,
   "description" : "description",
   "subscriptions" : 0,
   "isSubscribed" : false,
@@ -837,11 +838,12 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 173
+Content-Length: 195
 
 {
   "id" : "group",
   "groupName" : "group",
+  "avatarUrl" : null,
   "description" : "description",
   "subscriptions" : 0,
   "isSubscribed" : false,
@@ -941,13 +943,14 @@ Vary: Access-Control-Request-Headers</code></pre>
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /group/edit HTTP/1.1
 Content-Type: application/json
 Authorization: token
-Content-Length: 91
+Content-Length: 113
 Host: localhost:8080
 
 {
   "id" : "group",
   "groupName" : "new group name",
-  "description" : "new description"
+  "description" : "new description",
+  "avatarUrl" : null
 }</code></pre>
 </div>
 </div>
@@ -959,11 +962,12 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 186
+Content-Length: 208
 
 {
   "id" : "group",
   "groupName" : "new group name",
+  "avatarUrl" : null,
   "description" : "new description",
   "subscriptions" : 0,
   "isSubscribed" : false,
@@ -1298,16 +1302,18 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 229
+Content-Length: 282
 
 {
   "id" : 1,
   "groupName" : "group",
+  "groupAvatarUrl" : null,
   "groupId" : "group",
   "title" : "title",
   "description" : "description",
   "dateCreated" : null,
   "username" : "username",
+  "userAvatarUrl" : null,
   "numberOfComments" : 1,
   "votes" : 0,
   "userVote" : null
@@ -1423,16 +1429,18 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 229
+Content-Length: 282
 
 {
   "id" : 1,
   "groupName" : "group",
+  "groupAvatarUrl" : null,
   "groupId" : "group",
   "title" : "title",
   "description" : "description",
   "dateCreated" : null,
   "username" : "username",
+  "userAvatarUrl" : null,
   "numberOfComments" : 1,
   "votes" : 0,
   "userVote" : null
@@ -1572,13 +1580,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 163
+Content-Length: 189
 
 {
   "id" : 1,
   "content" : "content",
   "parentCommentId" : 2,
   "user" : "username",
+  "userAvatarUrl" : null,
   "postId" : 1,
   "dateCreated" : null,
   "votes" : 0,
@@ -1645,13 +1654,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 163
+Content-Length: 189
 
 {
   "id" : 1,
   "content" : "content",
   "parentCommentId" : 2,
   "user" : "username",
+  "userAvatarUrl" : null,
   "postId" : 1,
   "dateCreated" : null,
   "votes" : 0,
@@ -1759,7 +1769,7 @@ Content-Length: 1
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-01-31 11:41:30 CET
+Last updated 2022-01-31 12:30:43 CET
 </div>
 </div>
 </body>

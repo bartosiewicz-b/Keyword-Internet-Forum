@@ -20,7 +20,10 @@
             {{post.username}}
           </a>
           >
-          <a routerLink="/{{post.groupId}}">{{post.groupName}}</a>
+          <a routerLink="/{{post.groupId}}">
+            <img [src]="post.groupAvatarUrl" onerror="this.src='/assets/no_group_avatar.png'" class="avatar">
+            {{post.groupName}}
+          </a>
         </small>
         <small class="text-muted">{{post.dateCreated | date}}</small>
       </p>
