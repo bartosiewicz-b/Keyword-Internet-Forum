@@ -1,4 +1,4 @@
-<h1>Manage Roles for Group:</h1>
+<h1>Manage Roles for: {{group.groupName}}</h1>
 <div class="row">
     <div class="col-6">
         <button class="btn btn-primary" *ngIf="!addingModerator" (click)="initAddModeratorSelection()">Add Moderator</button>
@@ -14,7 +14,7 @@
                 <div class="col-10">{{u.username}}</div>
             </div>
 
-            <button class="btn btn-primary" (click)="addModerator()">Add as Moderator</button>
+            <button class="btn btn-warning" (click)="addModerator()">Add as Moderator</button>
             <button class="btn btn-primary" (click)="addingModerator = false">Cancel</button>
         </div>
 

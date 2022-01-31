@@ -1,14 +1,14 @@
-<h1>Profile:</h1>
+<h1>Profile: {{user.username}}</h1>
 
-<div class="divider"></div>
-<div>
+<div class="avatarSection">
     <img [src]="user.avatarUrl" onerror="this.src='/assets/no_profile.jpeg'" class="avatar">
     <div *ngIf="!changingAvatar; else avatarForm">
         <button class="btn btn-primary" (click)="changingAvatar=true">Change Avatar</button>
     </div>
     <ng-template #avatarForm>
         <input [(ngModel)]="newAvatarUrl" type="text" class="form-control" placeholder="Enter avatar url">
-        <button class="btn btn-primary" (click)="changeAvatar()">Submit</button>
+        <button class="btn btn-warning" (click)="changeAvatar()">Submit</button>
+        <button class="btn btn-primary" (click)="changingAvatar=false; newAvatarUrl=user.avatarUrl">Cancel</button>
     </ng-template>
 </div>
 
@@ -28,7 +28,8 @@
                     [class.invalid]="newUsernameTaken || (username.touched && username.invalid)"
                     required minlength="4" maxlength="32" >
 
-                    <button class="btn btn-warning" type="submit" [disabled]="username.value==currentUsername || username.invalid || newUsernameTaken">Change username</button>
+                    <button class="btn btn-warning" type="submit" [disabled]="username.value==currentUsername || username.invalid || newUsernameTaken">Change</button>
+                    <button class="btn btn-primary" (click)="editingUsername=false">Cancel</button>
 
                     <div class="alert" role="alert" *ngIf="username.touched && (username.value==currentUsername || username.invalid || newUsernameTaken)">
                         <div *ngIf="username.value==currentUsername">
@@ -48,12 +49,9 @@
         </ng-template>
     </div>
     <div class="col-4">
-        <div *ngIf="!editingUsername; else editUsername2">
+        <div *ngIf="!editingUsername">
             <button class="btn btn-warning" (click)="editingUsername=true">Edit</button>
         </div>
-        <ng-template #editUsername2>
-            <button class="btn btn-primary" (click)="editingUsername=false">Don't change</button>
-        </ng-template>
     </div>
 </div>
 
@@ -67,15 +65,18 @@
         </div>
         <ng-template #editEmail>
             <form #emailForm="ngForm" (ngSubmit)="changeEmail(emailForm.value.email, emailForm.value.password)" id="emailForm">
-                <input [ngModel]="currentEmail" #email="ngModel" type="email" class="form-control" id="email" name="email" placeholder="Enter email"
+                <div>
+                    <input [ngModel]="currentEmail" #email="ngModel" type="email" class="form-control" id="email" name="email" placeholder="Enter email"
                     (change)="validateNewEmail(emailForm.value.email)"
                     [class.invalid]="newEmailTaken || (email.touched && email.invalid)"
                     required>
 
                     <input ngModel #password="ngModel" type="password" class="form-control" id="password" name="password" 
                     placeholder="Enter password" required>
-
-                    <button class="btn btn-warning" type="submit" [disabled]="email.value==currentEmail || email.invalid || newEmailTaken || password.hasError('required')">Change email</button>
+                </div>
+                
+                    <button class="btn btn-warning" type="submit" [disabled]="email.value==currentEmail || email.invalid || newEmailTaken || password.hasError('required')">Change</button>
+                    <button class="btn btn-primary" (click)="editingEmail=false">Cancel</button>
 
                     <div class="alert" role="alert" *ngIf="email.touched && (email.value==currentEmail || email.invalid || newEmailTaken)">
                         <div *ngIf="email.value==currentEmail">
@@ -92,12 +93,9 @@
         </ng-template>
     </div>
     <div class="col-4">
-        <div *ngIf="!editingEmail; else editEmail2">
+        <div *ngIf="!editingEmail">
             <button class="btn btn-warning" (click)="editingEmail=true">Edit</button>
         </div>
-        <ng-template #editEmail2>
-            <button class="btn btn-primary" (click)="editingEmail=false">Don't change</button>
-        </ng-template>
     </div>
 </div>
 
@@ -110,31 +108,33 @@
             **********
         </div>
         <ng-template #editPassword>
+            
             <form #passwordForm="ngForm" (ngSubmit)="changePassword(passwordForm.value.oldPassword, passwordForm.value.newPassword)" id="passwordForm">
-                <input ngModel #oldPassword="ngModel" type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="Enter old password"
+                <div>
+                    <input ngModel #oldPassword="ngModel" type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="Enter old password"
                     [class.invalid]="oldPassword.touched && oldPassword.invalid"
                     required>
 
                 <input ngModel #newPassword="ngModel" type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Enter new password"
                     [class.invalid]="newPassword.touched && newPassword.invalid"
                     required minlength="8">
+                </div>
+                
 
                 <div class="alert" role="alert" *ngIf="newPassword.hasError('minlength')">
                     The password must be at least 8 characters long.
                 </div>
 
-                <button class="btn btn-warning" type="submit" [disabled]="oldPassword.invalid || newPassword.invalid">Change password</button>
+                <button class="btn btn-warning" type="submit" [disabled]="oldPassword.invalid || newPassword.invalid">Change</button>
+                <button class="btn btn-primary" (click)="editingPassword=false">Cancel</button>
 
               </form>
         </ng-template>
     </div>
     <div class="col-4">
-        <div *ngIf="!editingPassword; else editPassword2">
+        <div *ngIf="!editingPassword">
             <button class="btn btn-warning" (click)="editingPassword=true">Edit</button>
         </div>
-        <ng-template #editPassword2>
-            <button class="btn btn-primary" (click)="editingPassword=false">Don't change</button>
-        </ng-template>
     </div>
 </div>
 

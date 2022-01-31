@@ -25,6 +25,7 @@ export class CreateGroupComponent {
         this.groupService.get(this.groupId).pipe(take(1)).subscribe(res => {
           this.groupName = res.groupName;
           this.description = res.description;
+          this.avatarUrl = res.avatarUrl
         });
     }
 

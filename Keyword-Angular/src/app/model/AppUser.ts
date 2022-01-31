@@ -1,6 +1,6 @@
 export class AppUser {
     username: string = '';
-    date: Date = new Date();
+    dateCreated: Date = new Date();
     posts: number = 0;
     comments: number = 0;
     avatarUrl: string = '';
