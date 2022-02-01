@@ -14,6 +14,8 @@ export class GroupComponent {
 
   username: string | null = this.memoryService.getUsername();
 
+  deleting: boolean = false;
+
   constructor(private memoryService: MemoryService,
     private groupService: GroupService,
     private router: Router,
@@ -37,9 +39,11 @@ export class GroupComponent {
     this.group.isSubscribed = !this.group.isSubscribed;
   }
 
-  delete() {
-    if(this.group==null)
+  delete(event: any) {
+    if(this.group==null || event==false) {
+      this.deleting = false;
       return;
+    }
       
     this.groupService.delete(this.group.id);
     this.router.navigateByUrl('/');

@@ -1,5 +1,4 @@
 header{
-    border-bottom: 1px solid black;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -17,6 +16,7 @@ h1{
 }
 
 .manage{
+    border-top: 1px solid black;
     border-bottom: 1px solid black;
     margin-bottom: 50px;
 }

@@ -26,7 +26,10 @@
             <ng-template #ownerPanel>
                 <button routerLink="/create-group/{{group.id}}">Edit</button>
                 <button routerLink="/manage-group/{{group.id}}">Manage Roles</button>
-                <button (click)="delete()">Delete</button>
+                <button (click)="deleting=true">Delete</button>
+                <div *ngIf="deleting">
+                    <confirmation message="Are you sure you want to delete your group: {{group.groupName}}?" (confirm)="delete($event)"></confirmation>
+                </div>
             </ng-template>
     </div>
 </div>

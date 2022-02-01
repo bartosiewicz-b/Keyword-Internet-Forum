@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService } from './../../service/group.service';
 import { Group } from './../../model/group';
-import { AppUser } from './../../model/AppUser';
+import { AppUser } from '../../model/app-user';
 import { Component, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';
 

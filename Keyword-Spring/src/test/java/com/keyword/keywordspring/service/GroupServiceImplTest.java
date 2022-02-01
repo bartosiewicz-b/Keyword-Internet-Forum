@@ -9,9 +9,7 @@ import com.keyword.keywordspring.mapper.interf.GroupMapper;
 import com.keyword.keywordspring.mapper.interf.UserMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ForumGroup;
-import com.keyword.keywordspring.model.GroupSubscription;
 import com.keyword.keywordspring.repository.GroupRepository;
-import com.keyword.keywordspring.repository.GroupSubscriptionRepository;
 import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,8 +34,6 @@ class GroupServiceImplTest {
 
     @Mock
     GroupRepository groupRepository;
-    @Mock
-    GroupSubscriptionRepository groupSubscriptionRepository;
     @Mock
     UserRepository userRepository;
     @Mock
@@ -66,7 +62,7 @@ class GroupServiceImplTest {
                 .username("username1")
                 .ownedGroups(new ArrayList<>(){{add(ForumGroup.builder().id("group").build());}})
                 .moderatedGroups(new ArrayList<>(){{add(ForumGroup.builder().id("group").build());}})
-                .subscribed(new ArrayList<>(){{add(ForumGroup.builder().id("group").build());}})
+                .subscribedGroups(new ArrayList<>(){{add(ForumGroup.builder().id("group").build());}})
                 .build();
 
         moderator = AppUser.builder()
@@ -74,7 +70,7 @@ class GroupServiceImplTest {
                 .username("username2")
                 .ownedGroups(new ArrayList<>())
                 .moderatedGroups(new ArrayList<>(){{add(ForumGroup.builder().id("group").build());}})
-                .subscribed(new ArrayList<>(){{add(ForumGroup.builder().id("group").build());}})
+                .subscribedGroups(new ArrayList<>(){{add(ForumGroup.builder().id("group").build());}})
                 .build();
 
         subscriber = AppUser.builder()
@@ -82,7 +78,7 @@ class GroupServiceImplTest {
                 .username("username3")
                 .ownedGroups(new ArrayList<>())
                 .moderatedGroups(new ArrayList<>())
-                .subscribed(new ArrayList<>(){{add(ForumGroup.builder().id("group").build());}})
+                .subscribedGroups(new ArrayList<>(){{add(ForumGroup.builder().id("group").build());}})
                 .build();
 
         nonSubscriber = AppUser.builder()
@@ -90,7 +86,7 @@ class GroupServiceImplTest {
                 .username("username4")
                 .ownedGroups(new ArrayList<>())
                 .moderatedGroups(new ArrayList<>())
-                .subscribed(new ArrayList<>())
+                .subscribedGroups(new ArrayList<>())
                 .build();
 
         group = ForumGroup.builder()
@@ -254,37 +250,28 @@ class GroupServiceImplTest {
     void subscribeGroup() {
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(nonSubscriber));
         when(groupRepository.findById(group.getId())).thenReturn(Optional.of(group));
-        when(groupSubscriptionRepository.findByUserAndGroup(any(), any())).thenReturn(Optional.empty());
 
         groupService.subscribe("token", group.getId());
 
-        ArgumentCaptor<GroupSubscription> captor = ArgumentCaptor.forClass(GroupSubscription.class);
-        verify(groupSubscriptionRepository).save(captor.capture());
+        ArgumentCaptor<ForumGroup> captor = ArgumentCaptor.forClass(ForumGroup.class);
+        verify(groupRepository).save(captor.capture());
 
-        GroupSubscription captured = captor.getValue();
-        assertEquals(group.getId(), captured.getGroup().getId());
-        assertEquals(nonSubscriber.getId(), captured.getUser().getId());
+        ForumGroup captured = captor.getValue();
+        assertEquals(group.getId(), captured.getId());
     }
 
     @Test
     void subscribeAlreadySubscribedGroup() {
         when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(subscriber));
         when(groupRepository.findById(group.getId())).thenReturn(Optional.of(group));
-        when(groupSubscriptionRepository.findByUserAndGroup(any(), any())).thenReturn(Optional.of(
-                GroupSubscription.builder()
-                        .group(group)
-                        .user(subscriber)
-                        .build()
-        ));
 
         groupService.subscribe("token", group.getId());
 
-        ArgumentCaptor<GroupSubscription> captor = ArgumentCaptor.forClass(GroupSubscription.class);
-        verify(groupSubscriptionRepository).delete(captor.capture());
+        ArgumentCaptor<ForumGroup> captor = ArgumentCaptor.forClass(ForumGroup.class);
+        verify(groupRepository).delete(captor.capture());
 
-        GroupSubscription captured = captor.getValue();
-        assertEquals(group.getId(), captured.getGroup().getId());
-        assertEquals(subscriber.getId(), captured.getUser().getId());
+        ForumGroup captured = captor.getValue();
+        assertEquals(group.getId(), captured.getId());
     }
 
     @Test

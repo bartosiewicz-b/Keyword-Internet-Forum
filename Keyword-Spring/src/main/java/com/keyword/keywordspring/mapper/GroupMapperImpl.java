@@ -4,17 +4,15 @@ import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.mapper.interf.GroupMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ForumGroup;
-import com.keyword.keywordspring.repository.GroupSubscriptionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
 public class GroupMapperImpl implements GroupMapper {
-
-    private final GroupSubscriptionRepository subscriptionRepository;
 
     @Override
     public GroupDto mapToDto(ForumGroup group, AppUser user) {
@@ -25,7 +23,7 @@ public class GroupMapperImpl implements GroupMapper {
                 .avatarUrl(group.getAvatarUrl())
                 .description(group.getDescription())
                 .subscriptions(group.getSubscriptions())
-                .isSubscribed(null != user && (subscriptionRepository.findByUserAndGroup(user, group).isPresent()))
+                .isSubscribed(!Objects.isNull(user) && user.getSubscribedGroups().contains(group))
                 .owner(group.getOwner().getUsername())
                 .moderators(group.getModerators().stream().map(AppUser::getUsername).collect(Collectors.toList()))
                 .build();

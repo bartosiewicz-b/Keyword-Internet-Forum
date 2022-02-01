@@ -1,6 +1,6 @@
 import { BACKEND_URL } from './../url';
 import { map, take } from 'rxjs/operators';
-import { AppUser } from './../model/AppUser';
+import { AppUser } from '../model/app-user';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { Group } from '../model/group';
 })
 export class UserService {
 
-  private url = BACKEND_URL + '/user';
+  url = BACKEND_URL + '/user';
 
   constructor(private httpClient: HttpClient) { }
 
@@ -24,7 +24,7 @@ export class UserService {
   getSubscribed(): Observable<Group[]> {
     return this.httpClient.get<Group[]>(this.url + '/get-subscribed')
       .pipe(take(1), map(res => {
-        return res as Group[];
+        return res;
       }));
   }
 }

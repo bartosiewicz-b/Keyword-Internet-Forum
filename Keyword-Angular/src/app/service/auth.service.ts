@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-  private url = BACKEND_URL + '/auth';
+  url = BACKEND_URL + '/auth';
 
   private username: string | null;
   private email: string | null;
@@ -44,7 +44,7 @@ export class AuthService {
     this.email = null;
   }
 
-  login(login: string, password: string) {
+  login(login: string, password: string): Observable<any> {
     return this.httpClient.post<any>(this.url + '/login', 
     {'login': login, 'password': password})
     .pipe(take(1));

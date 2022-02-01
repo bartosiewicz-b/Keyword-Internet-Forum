@@ -1,5 +1,5 @@
 export class AppUser {
-    username: string = '';
+    username: string = 'username';
     dateCreated: Date = new Date();
     posts: number = 0;
     comments: number = 0;

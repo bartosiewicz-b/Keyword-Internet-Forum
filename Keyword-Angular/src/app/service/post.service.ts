@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 })
 export class PostService {
 
-  private url = BACKEND_URL + '/post';
+  url = BACKEND_URL + '/post';
 
   constructor(private httpClient: HttpClient) { }
 

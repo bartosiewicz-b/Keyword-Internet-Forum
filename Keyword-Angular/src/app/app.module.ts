@@ -28,6 +28,7 @@ import { CreateGroupComponent } from './component/forms/create-group/create-grou
 import { ProfileComponent } from './component/profile/profile.component';
 import { UserComponent } from './component/user/user.component';
 import { ManageGroupComponent } from './component/manage-group/manage-group.component';
+import { ConfirmationComponent } from './component/confirmation/confirmation.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { ManageGroupComponent } from './component/manage-group/manage-group.comp
     CreateGroupComponent,
     ProfileComponent,
     UserComponent,
-    ManageGroupComponent
+    ManageGroupComponent,
+    ConfirmationComponent
   ],
   imports: [
     BrowserModule,

@@ -62,7 +62,7 @@ class UserServiceImplTest {
         user = AppUser.builder()
                 .id(1L)
                 .username("username")
-                .subscribed(new ArrayList<>(){{
+                .subscribedGroups(new ArrayList<>(){{
                     add(ForumGroup.builder().id("group").build());
                 }})
                 .build();
@@ -232,6 +232,6 @@ class UserServiceImplTest {
 
         List<GroupDto> res = userService.getSubscribedGroups("token");
 
-        assertEquals(user.getSubscribed().size(), res.size());
+        assertEquals(user.getSubscribedGroups().size(), res.size());
     }
 }

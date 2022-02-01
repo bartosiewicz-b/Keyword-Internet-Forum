@@ -10,7 +10,7 @@ import { Comment } from '../model/comment';
 })
 export class CommentService {
 
-  private url = BACKEND_URL + '/comment';
+  url = BACKEND_URL + '/comment';
 
   constructor(private httpClient: HttpClient) { }
 

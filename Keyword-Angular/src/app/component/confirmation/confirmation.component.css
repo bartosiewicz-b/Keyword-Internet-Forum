@@ -1,0 +1,18 @@
+.content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.text{
+    height: 100px;
+}
+
+.buttons{
+    display: flex;
+    justify-content:flex-end;
+}
+
+.btn{
+    margin-left: 30px;
+}

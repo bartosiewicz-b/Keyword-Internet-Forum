@@ -1,5 +1,5 @@
 import { BACKEND_URL } from './../url';
-import { AppUser } from './../model/AppUser';
+import { AppUser } from '../model/app-user';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -66,9 +66,9 @@ export class GroupService {
       .subscribe();
   }
 
-  getSubscribers(groupId: string, username: string): Observable<AppUser[]> {
+  getSubscribers(groupId: string, keyword: string): Observable<AppUser[]> {
     return this.httpClient.get<AppUser[]>(this.url + '/get-subscribers',
-    {params: {"groupId": groupId, "keyword": username}})
+    {params: {"groupId": groupId, "keyword": keyword}})
     .pipe(take(1), map(res => {
       return res;
     }));

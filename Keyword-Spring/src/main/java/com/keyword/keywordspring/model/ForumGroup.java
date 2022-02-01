@@ -21,8 +21,17 @@ public class ForumGroup implements Serializable {
     @ManyToOne
     private AppUser owner;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "group_moderators",
+        joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private List<AppUser> moderators;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "group_subscribers",
+            joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private List<AppUser> subscribers;
 
     private String groupName;
 
@@ -38,7 +47,4 @@ public class ForumGroup implements Serializable {
     private Date dateCreated;
 
     private Integer subscriptions;
-
-    @ManyToMany
-    private List<AppUser> subscribers;
 }

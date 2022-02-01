@@ -11,9 +11,7 @@ import com.keyword.keywordspring.mapper.interf.GroupMapper;
 import com.keyword.keywordspring.mapper.interf.UserMapper;
 import com.keyword.keywordspring.model.AppUser;
 import com.keyword.keywordspring.model.ForumGroup;
-import com.keyword.keywordspring.model.GroupSubscription;
 import com.keyword.keywordspring.repository.GroupRepository;
-import com.keyword.keywordspring.repository.GroupSubscriptionRepository;
 import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.GroupService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
@@ -30,7 +28,6 @@ import java.util.stream.Collectors;
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
-    private final GroupSubscriptionRepository groupSubscriptionRepository;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final GroupMapper groupMapper;
@@ -164,28 +161,18 @@ public class GroupServiceImpl implements GroupService {
 
         ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
 
-        Optional<GroupSubscription> subscription = groupSubscriptionRepository.findByUserAndGroup(user, group);
-
-        if(subscription.isEmpty()) {
-            groupSubscriptionRepository.save(GroupSubscription.builder()
-                    .group(group)
-                    .user(user)
-                    .build());
-
+        if(!user.getSubscribedGroups().contains(group)) {
             group.setSubscriptions(group.getSubscriptions() + 1);
             group.getSubscribers().add(user);
-            user.getSubscribed().add(group);
+            user.getSubscribedGroups().add(group);
         }
         else {
-            groupSubscriptionRepository.delete(subscription.get());
-
             group.setSubscriptions(group.getSubscriptions() - 1);
-
-            if(group.getSubscriptions()<0)
+            if(group.getSubscriptions() < 0)
                 group.setSubscriptions(0);
 
             group.getSubscribers().remove(user);
-            user.getSubscribed().remove(group);
+            user.getSubscribedGroups().remove(group);
         }
 
         groupRepository.save(group);

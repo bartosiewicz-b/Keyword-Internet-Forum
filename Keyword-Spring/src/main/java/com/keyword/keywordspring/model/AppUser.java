@@ -34,8 +34,11 @@ public class AppUser implements Serializable {
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private List<ForumGroup> ownedGroups;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "moderators", cascade = CascadeType.ALL)
     private List<ForumGroup> moderatedGroups;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "subscribers", cascade = CascadeType.ALL)
+    private List<ForumGroup> subscribedGroups;
 
     @OneToMany
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -44,9 +47,6 @@ public class AppUser implements Serializable {
     @OneToMany
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private List<Comment> comments;
-
-    @ManyToMany
-    private List<ForumGroup> subscribed;
 
     @Override
     public boolean equals(Object o) {

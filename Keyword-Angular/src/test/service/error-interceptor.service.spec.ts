@@ -33,7 +33,7 @@ describe('ErrorInterceptorService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('When 401, something', () => {
+  it('When 401, intercept', () => {
 
     httpClient.get('/url').subscribe(
       res => fail('401 error'),

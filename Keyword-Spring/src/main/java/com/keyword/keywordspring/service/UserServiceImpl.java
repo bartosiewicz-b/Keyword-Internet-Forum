@@ -12,7 +12,6 @@ import com.keyword.keywordspring.repository.UserRepository;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.UserService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -44,7 +42,7 @@ public class UserServiceImpl implements UserService {
                 .dateCreated(new Date(System.currentTimeMillis()))
                 .nrOfComments(0)
                 .nrOfPosts(0)
-                .subscribed(new ArrayList<>())
+                .subscribedGroups(new ArrayList<>())
                 .moderatedGroups(new ArrayList<>())
                 .password(passwordEncoder.encode(request.getPassword())).build();
 
@@ -143,7 +141,7 @@ public class UserServiceImpl implements UserService {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
-        return user.getSubscribed().stream()
+        return user.getSubscribedGroups().stream()
                 .map(g -> groupMapper.mapToDto(g, user))
                 .collect(Collectors.toList());
     }
