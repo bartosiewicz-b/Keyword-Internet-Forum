@@ -1,16 +1,29 @@
-package com.keyword.keywordspring.security;
+package com.keyword.keywordspring.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@AllArgsConstructor
 public class BeanConfig implements WebMvcConfigurer {
+
+    private final AppConfig appConfig;
 
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins(appConfig.getFrontUrl())
+                .allowedMethods("POST", "GET")
+                .allowCredentials(false).maxAge(3600);
     }
 }

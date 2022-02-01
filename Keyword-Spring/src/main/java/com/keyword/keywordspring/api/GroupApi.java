@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/group")
 @AllArgsConstructor
-@CrossOrigin("http://localhost:4200")
 public class GroupApi {
 
     private final GroupService groupService;

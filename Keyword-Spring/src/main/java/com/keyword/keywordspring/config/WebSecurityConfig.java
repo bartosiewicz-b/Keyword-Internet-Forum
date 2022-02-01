@@ -1,4 +1,4 @@
-package com.keyword.keywordspring.security;
+package com.keyword.keywordspring.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;

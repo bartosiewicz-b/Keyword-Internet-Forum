@@ -1,4 +1,4 @@
-package com.keyword.keywordspring.security;
+package com.keyword.keywordspring.config;
 
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import lombok.AllArgsConstructor;

@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/comment")
-@CrossOrigin(origins = "http://localhost:4200")
 @AllArgsConstructor
 public class CommentApi {
 
