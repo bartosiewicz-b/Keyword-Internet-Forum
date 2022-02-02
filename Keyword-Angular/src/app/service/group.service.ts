@@ -1,4 +1,4 @@
-import { BACKEND_URL } from './../url';
+import { environment } from './../../environments/environment';
 import { AppUser } from '../model/app-user';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -11,7 +11,7 @@ import { Group } from '../model/group';
 })
 export class GroupService {
 
-  url = BACKEND_URL + '/group';
+  url = environment.baseUrl + '/group';
 
   constructor(private httpClient: HttpClient) { }
 

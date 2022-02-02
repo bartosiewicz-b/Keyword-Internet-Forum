@@ -1,4 +1,4 @@
-import { BACKEND_URL } from './../url';
+import { environment } from './../../environments/environment';
 import { Post } from './../model/post';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 })
 export class PostService {
 
-  url = BACKEND_URL + '/post';
+  url = environment.baseUrl + '/post';
 
   constructor(private httpClient: HttpClient) { }
 

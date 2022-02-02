@@ -1,4 +1,4 @@
-import { BACKEND_URL } from './../url';
+import { environment } from './../../environments/environment';
 import { MemoryService } from './memory.service';
 import { take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-  url = BACKEND_URL + '/auth';
+  url = environment.baseUrl + '/auth';
 
   private username: string | null;
   private email: string | null;

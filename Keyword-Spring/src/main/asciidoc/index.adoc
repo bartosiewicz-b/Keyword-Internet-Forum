@@ -1,6 +1,5 @@
 = Keyword Internet Forum - Spring API
 
-A service running natively at http://localhost:8080
 
 
 

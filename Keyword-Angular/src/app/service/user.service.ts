@@ -1,4 +1,4 @@
-import { BACKEND_URL } from './../url';
+import { environment } from './../../environments/environment';
 import { map, take } from 'rxjs/operators';
 import { AppUser } from '../model/app-user';
 import { HttpClient } from '@angular/common/http';
@@ -11,7 +11,7 @@ import { Group } from '../model/group';
 })
 export class UserService {
 
-  url = BACKEND_URL + '/user';
+  url = environment.baseUrl + '/user';
 
   constructor(private httpClient: HttpClient) { }
 
