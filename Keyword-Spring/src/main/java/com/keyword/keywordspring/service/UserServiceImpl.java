@@ -14,6 +14,7 @@ import com.keyword.keywordspring.service.interf.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final GroupMapper groupMapper;
 
     @Override
+    @Transactional
     public void register(RegisterRequest request) {
         if(!validateNewEmail(request.getEmail()))
             throw new EmailAlreadyTakenException(request.getEmail());
@@ -50,6 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public AppUser login(LoginRequest request) {
 
         Optional<AppUser> user = userRepository.findByUsername(request.getLogin());
@@ -66,6 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void changeUsername(String token, String newUsername) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -79,6 +83,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void changeAvatar(String token, String newAvatarUrl) {
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
@@ -88,6 +93,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void changeEmail(String token, String password, String newEmail) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -104,6 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void changePassword(String token, String password, String newPassword) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -117,18 +124,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean validateNewUsername(String username) {
 
         return userRepository.findByUsername(username).isEmpty();
     }
 
     @Override
+    @Transactional
     public boolean validateNewEmail(String email) {
 
         return userRepository.findByEmail(email).isEmpty();
     }
 
     @Override
+    @Transactional
     public UserDto get(String username) {
         AppUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserDoesNotExistException(username));
@@ -137,6 +147,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public List<GroupDto> getSubscribedGroups(String token) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);

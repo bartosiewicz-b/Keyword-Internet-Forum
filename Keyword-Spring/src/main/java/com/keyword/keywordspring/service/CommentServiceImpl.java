@@ -35,6 +35,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
 
     @Override
+    @Transactional
     public CommentDto add(String token, AddCommentRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -63,6 +64,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public List<CommentDto> getAll(String token, Long postId) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElse(null);
@@ -76,6 +78,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentDto edit(String token, EditCommentRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -103,7 +106,8 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CommentDoesNotExistException(id));
 
-        if(!user.equals(comment.getUser()))
+        if(!user.equals(comment.getUser()) &&
+                !comment.getPost().getForumGroup().getModerators().contains(user))
             throw new UnauthorizedException(user, comment);
 
         user.setNrOfComments(user.getNrOfComments() - 1);
@@ -115,6 +119,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public int upvote(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -147,6 +152,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public int downvote(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);

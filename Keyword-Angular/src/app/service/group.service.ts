@@ -22,15 +22,19 @@ export class GroupService {
   }
 
   getAll(page: number, keyword: string): Observable<Group[]> {
+    let pars: any = {"page": page};
+    if(keyword != '')
+      pars.keyword = keyword;
+
     return this.httpClient.get<Group[]>(this.url + '/get-all',
-    {params: {"page": page, "keyword": keyword}})
+    {params: pars})
       .pipe(take(1), map(res => {
         return res as Group[];
       }));
   }
 
   getCount(keyword: string | null): Observable<number> {
-    let pars: any = {'keyword': keyword};
+    let pars: any = (keyword==null || keyword=='') ? null : {'keyword': keyword};
 
     return this.httpClient.get<number>(this.url + '/get-count',
     {params: pars})
@@ -67,8 +71,12 @@ export class GroupService {
   }
 
   getSubscribers(groupId: string, keyword: string): Observable<AppUser[]> {
+    let pars: any = {"groupId": groupId};
+    if(keyword != '')
+      pars.keyword = keyword;
+
     return this.httpClient.get<AppUser[]>(this.url + '/get-subscribers',
-    {params: {"groupId": groupId, "keyword": keyword}})
+    {params: pars})
     .pipe(take(1), map(res => {
       return res;
     }));

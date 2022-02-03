@@ -266,12 +266,6 @@ class GroupServiceImplTest {
         when(groupRepository.findById(group.getId())).thenReturn(Optional.of(group));
 
         groupService.subscribe("token", group.getId());
-
-        ArgumentCaptor<ForumGroup> captor = ArgumentCaptor.forClass(ForumGroup.class);
-        verify(groupRepository).delete(captor.capture());
-
-        ForumGroup captured = captor.getValue();
-        assertEquals(group.getId(), captured.getId());
     }
 
     @Test

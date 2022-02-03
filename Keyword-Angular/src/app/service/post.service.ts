@@ -21,7 +21,11 @@ export class PostService {
   }
 
   getAll(page: number, groupId: string | any, keyword: string): Observable<Post[]> {
-    let pars: any = {'page': page, 'groupId': groupId, 'keyword': keyword};
+    let pars: any = {"page": page};
+    if(keyword != null && keyword != '')
+      pars.keyword = keyword;
+    if(groupId != null &&groupId != '')
+      pars.groupId = groupId;
 
     return this.httpClient.get<Post[]>(this.url + '/get-all',
     {params: pars})
@@ -31,7 +35,9 @@ export class PostService {
   }
 
   getCount(groupId: string | null, keyword: string | null): Observable<number> {
-    let pars: any = {'groupId': groupId, 'keyword': keyword};
+    let pars: any = {"groupId": groupId};
+    if(keyword != '')
+      pars.keyword = keyword;
 
     return this.httpClient.get<number>(this.url + '/get-count',
     {params: pars})

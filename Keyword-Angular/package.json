@@ -1,11 +1,16 @@
 {
   "name": "keyword-angular",
   "version": "0.0.0",
+  "engines": {
+    "node": "14.x",
+    "npm": "8.x"
+  },
   "scripts": {
     "ng": "ng",
-    "heroku-postbuild": "ng build --prod && npm install -g http-server-spa",
-    "start": "ng serve",
+    "heroku-postbuild": "ng build",
+    "start": "node server.js",
     "build": "ng build",
+    "build-production": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -24,6 +29,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "bootstrap": "^5.1.3",
+    "express": "^4.17.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

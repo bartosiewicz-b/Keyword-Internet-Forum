@@ -61,6 +61,11 @@ class CommentServiceImplTest {
 
         post = Post.builder()
                 .id(1L)
+                .forumGroup(
+                        ForumGroup.builder()
+                                .moderators(new ArrayList<>())
+                                .build()
+                )
                 .build();
 
         comment = Comment.builder()

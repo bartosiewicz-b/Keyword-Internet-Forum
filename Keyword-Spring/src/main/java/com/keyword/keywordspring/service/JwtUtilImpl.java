@@ -11,6 +11,7 @@ import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -41,6 +42,7 @@ public class JwtUtilImpl implements JwtUtil {
     }
 
     @Override
+    @Transactional
     public TokenResponse refreshJwt(String refreshToken) {
 
         if(!validateRefreshToken(refreshToken)) throw new UnauthorizedException();
@@ -62,6 +64,7 @@ public class JwtUtilImpl implements JwtUtil {
     }
 
     @Override
+    @Transactional
     public Optional<AppUser> getUserFromToken(String token) {
 
         if(token == null) return Optional.empty();

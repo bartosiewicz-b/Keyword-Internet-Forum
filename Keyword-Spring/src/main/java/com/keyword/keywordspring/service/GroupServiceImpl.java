@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ public class GroupServiceImpl implements GroupService {
     private final UserMapper userMapper;
 
     @Override
+    @Transactional
     public GroupDto add(String token, AddGroupRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -55,6 +57,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public List<GroupDto> getAll(String token, Integer page, String keyword) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElse(null);
@@ -69,6 +72,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public int getCount(String keyword) {
 
         return keyword == null ?
@@ -77,6 +81,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public GroupDto get(String token, String id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElse(null);
@@ -87,6 +92,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public GroupDto edit(String token, EditGroupRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -107,6 +113,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void delete(String token, String id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -120,6 +127,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void transferOwnership(String token, String id, String newOwnerUsername) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -141,6 +149,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public List<UserDto> getSubscribers(String id, String keyword) {
         ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
 
@@ -155,6 +164,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void subscribe(String token, String id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -180,6 +190,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public List<UserDto> getModerators(String id) {
 
         ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
@@ -190,6 +201,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public boolean isModerator(String username, String id) {
 
         ForumGroup group = groupRepository.findById(id).orElseThrow(() -> new GroupDoesNotExistException(id));
@@ -200,6 +212,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void addModerator(String token, String moderatorUsername, String id) {
 
         AppUser owner = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -219,6 +232,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void deleteModerator(String token, String moderatorUsername, String id) {
 
         AppUser owner = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -238,6 +252,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public boolean isGroupNameTaken(String name) {
 
         return groupRepository.findByGroupName(name).isPresent();

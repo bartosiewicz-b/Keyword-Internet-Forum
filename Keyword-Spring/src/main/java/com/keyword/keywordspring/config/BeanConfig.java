@@ -23,7 +23,8 @@ public class BeanConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(appConfig.getFrontUrl())
-                .allowedMethods("POST", "GET")
-                .allowCredentials(false).maxAge(3600);
+                .allowedMethods("*")
+                .allowCredentials(true).maxAge(7200);
     }
 }
+

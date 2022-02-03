@@ -8,10 +8,8 @@ import com.keyword.keywordspring.exception.GroupDoesNotExistException;
 import com.keyword.keywordspring.exception.PostDoesNotExistException;
 import com.keyword.keywordspring.mapper.interf.PostMapper;
 import com.keyword.keywordspring.model.*;
-import com.keyword.keywordspring.repository.GroupRepository;
-import com.keyword.keywordspring.repository.PostRepository;
-import com.keyword.keywordspring.repository.PostVoteRepository;
-import com.keyword.keywordspring.repository.UserRepository;
+import com.keyword.keywordspring.repository.*;
+import com.keyword.keywordspring.service.interf.CommentService;
 import com.keyword.keywordspring.service.interf.JwtUtil;
 import com.keyword.keywordspring.service.interf.PostService;
 import lombok.AllArgsConstructor;
@@ -32,6 +30,7 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final GroupRepository groupRepository;
+    private final CommentService commentService;
     private final PostMapper postMapper;
     private final PostVoteRepository postVoteRepository;
     private final UserRepository userRepository;
@@ -40,6 +39,7 @@ public class PostServiceImpl implements PostService {
     private static final int PAGE_SIZE = 10;
 
     @Override
+    @Transactional
     public PostDto add(String token, AddPostRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -65,6 +65,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public List<PostDto> getAll(String token, String groupId, int page, String keyword) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElse(null);
@@ -90,6 +91,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public int getCount(String keyword, String groupId) {
 
         ForumGroup group = groupId == null ?
@@ -107,6 +109,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public PostDto get(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElse(null);
@@ -117,6 +120,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public PostDto edit(String token, EditPostRequest request) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -154,10 +158,15 @@ public class PostServiceImpl implements PostService {
 
         postVoteRepository.deleteAllByPost(post);
 
+        post.getComments().forEach(c -> {
+            commentService.delete(token, c.getId());
+        });
+
         postRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public int upvote(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
@@ -190,6 +199,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public int downvote(String token, Long id) {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);

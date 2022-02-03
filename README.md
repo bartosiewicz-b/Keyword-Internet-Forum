@@ -32,7 +32,9 @@ to run on default port 4200.
 
 ### Backend with Spring:
 
-Download the "Keyword-Spring" folder. In "src/main/resources/application-prod.properties" configure all variables.
+Download the "Keyword-Spring" folder. 
+In "src/main/resources/application.properties" change "spring.profiles.active=local" to "prod".
+In "src/main/resources/application-prod.properties" configure all variables.
 
 In terminal run
 
