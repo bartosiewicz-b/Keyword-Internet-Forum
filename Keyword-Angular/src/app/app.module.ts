@@ -29,6 +29,8 @@ import { ProfileComponent } from './component/profile/profile.component';
 import { UserComponent } from './component/user/user.component';
 import { ManageGroupComponent } from './component/manage-group/manage-group.component';
 import { ConfirmationComponent } from './component/confirmation/confirmation.component';
+import { ErrorMessageComponent } from './component/error-message/error-message.component';
+import { LoadingMessageComponent } from './component/loading-message/loading-message.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import { ConfirmationComponent } from './component/confirmation/confirmation.com
     ProfileComponent,
     UserComponent,
     ManageGroupComponent,
-    ConfirmationComponent
+    ConfirmationComponent,
+    ErrorMessageComponent,
+    LoadingMessageComponent
   ],
   imports: [
     BrowserModule,

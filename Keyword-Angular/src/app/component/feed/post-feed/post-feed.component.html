@@ -1,26 +1,37 @@
-<div class="search">
-  Search for posts:
-  <input [(ngModel)]="searchPhrase" type="text" class="input" (keyup)="search()">
+<div *ngIf="isLoading && !isError">
+  <loading-message></loading-message>
 </div>
 
-<div class="border-horiz">
-  Page:
-  <div class="pageSelect">
-    <div *ngFor="let i of pages" (click)="goToPage(i)" class="selector">
-      {{i}}
+<div *ngIf="!isLoading && isError">
+  <error-message></error-message>
+</div>
+
+<div *ngIf="!isLoading && !isError">
+  <div class="search">
+    Search for posts:
+    <input [(ngModel)]="searchPhrase" type="text" class="input" (keyup)="search()">
+  </div>
+  
+  <div class="border-horiz">
+    Page:
+    <div class="pageSelect">
+      <div *ngFor="let i of pages" (click)="goToPage(i)" class="selector">
+        {{i}}
+      </div>
     </div>
   </div>
-</div>
-
-<div *ngFor="let p of posts" class="feed">
-    <post-card [post]="p" [short]="true"></post-card>
-</div>
-
-<div class="border-horiz">
-  Page:
-  <div class="pageSelect">
-    <div *ngFor="let i of pages" (click)="goToPage(i)" class="selector">
-      {{i}}
+  
+  <div *ngFor="let p of posts" class="feed">
+      <post-card [post]="p" [short]="true"></post-card>
+  </div>
+  
+  <div class="border-horiz">
+    Page:
+    <div class="pageSelect">
+      <div *ngFor="let i of pages" (click)="goToPage(i)" class="selector">
+        {{i}}
+      </div>
     </div>
   </div>
+  
 </div>

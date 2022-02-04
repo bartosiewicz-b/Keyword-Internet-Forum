@@ -16,13 +16,23 @@ export class GroupComponent {
 
   deleting: boolean = false;
 
+  isError: boolean = false;
+  isLoading: boolean = true;
+
   constructor(private memoryService: MemoryService,
     private groupService: GroupService,
     private router: Router,
     route: ActivatedRoute) { 
 
       this.groupService.get(route.snapshot.paramMap.get('groupId') as string)
-        .subscribe(res => this.group = res);
+        .subscribe(res => {
+            this.group = res;
+            this.isLoading = false;
+          },
+          err => {
+            this.isError = true;
+            this.isLoading = false;
+          });
     }
 
   subscribe() {

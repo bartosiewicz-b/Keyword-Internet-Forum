@@ -20,6 +20,9 @@ export class PostFeedComponent implements OnInit {
 
   searchPhrase: string = '';
 
+  isError: boolean = false;
+  isLoading: boolean = true;
+
   constructor(private postService: PostService,
     private router: Router,
     private route: ActivatedRoute) {
@@ -45,8 +48,14 @@ export class PostFeedComponent implements OnInit {
       
 
       this.postService.getAll(this.currentPage - 1, this.groupId, this.searchPhrase).pipe(take(1),)
-      .subscribe(res => this.posts = res);
-
+      .subscribe(res => {
+        this.posts = res
+        this.isLoading = false;
+      },
+        err => {
+          this.isError = true;
+          this.isLoading = false;
+        });
     })
 
     this.postService.getCount(this.groupId, this.searchPhrase).pipe(take(1))
@@ -55,6 +64,10 @@ export class PostFeedComponent implements OnInit {
 
       for(let i = 0; i < this.pages.length; i++)
         this.pages[i] = i + 1;
+        
+    }, err => {
+      this.isError = true;
+      this.isLoading = false;
     });
   }
 

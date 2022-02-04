@@ -1,85 +1,51 @@
-<header>
-    <div class="title">
-        <h1>
-            <img [src]="group.avatarUrl" onerror="this.src='/assets/no_group_avatar.png'" class="avatar">
-            {{group.groupName}}
-        </h1>
-        <small class="text-muted">Subscriptions: {{group.subscriptions}}</small>
-    </div>
-    <small class="text-muted">Owner: {{group.owner}}</small>
-</header>
-
-<div class="manage">
-    <p class="moderator" *ngIf="group?.moderators?.includes(username!=null?username:'')">
-        You are a moderator of this group.
-    </p>
-    <div class="subscription">
-            <button *ngIf="group.owner != username; else ownerPanel" (click)="subscribe()">
-                <div *ngIf="!group.isSubscribed; else unsubscribe">
-                    Subscribe
-                </div>
-                <ng-template #unsubscribe>
-                    Unsubscribe
-                </ng-template>
-            </button>
-    
-            <ng-template #ownerPanel>
-                <button routerLink="/create-group/{{group.id}}">Edit</button>
-                <button routerLink="/manage-group/{{group.id}}">Manage Roles</button>
-                <button (click)="deleting=true">Delete</button>
-                <div *ngIf="deleting">
-                    <confirmation message="Are you sure you want to delete your group: {{group.groupName}}?" (confirm)="delete($event)"></confirmation>
-                </div>
-            </ng-template>
-    </div>
+<div *ngIf="isLoading && !isError">
+    <loading-message></loading-message>
 </div>
-
-<div class="description">
-    <p>{{group.description}}</p>
+  
+<div *ngIf="!isLoading && isError">
+    <error-message></error-message>
 </div>
-
-<div class="line">
-    Posts:
-</div>
-
-<div class="space" *ngIf="group.isSubscribed">
-    <button routerLink="/create-post/{{group.id}}">Create Post</button>
-</div>
-
-<post-feed [groupId]="group.id"></post-feed>
-
-<!--<div *ngIf="group!=null">
-    <h1>{{group.groupName}}</h1>
-
-    <p class="moderator" *ngIf="group?.moderators?.includes(username!=null?username:'')">
-        You are a moderator of this group.
-    </p>
-
-    <small class="text-muted">Owner: {{group.owner}}</small>
-    
-    <div class="subscription row">
-        <div class="col-3">
-            <button *ngIf="group.owner != username; else ownerPanel" (click)="subscribe()">
-                <div *ngIf="!group.isSubscribed; else unsubscribe">
-                    Subscribe
-                </div>
-                <ng-template #unsubscribe>
-                    Unsubscribe
-                </ng-template>
-            </button>
-    
-            <ng-template #ownerPanel>
-                <button routerLink="/create-group/{{group.id}}">Edit</button>
-                <button routerLink="/manage-group/{{group.id}}">Manage Roles</button>
-                <button (click)="delete()">Delete</button>
-            </ng-template>
-        </div>
-        <div class="col-9">
+  
+<div *ngIf="!isLoading && !isError">
+    <header>
+        <div class="title">
+            <h1>
+                <img [src]="group.avatarUrl" onerror="this.src='/assets/no_group_avatar.png'" class="avatar">
+                {{group.groupName}}
+            </h1>
             <small class="text-muted">Subscriptions: {{group.subscriptions}}</small>
         </div>
+        <small class="text-muted">Owner: {{group.owner}}</small>
+    </header>
+    
+    <div class="manage">
+        <p class="moderator" *ngIf="group?.moderators?.includes(username!=null?username:'')">
+            You are a moderator of this group.
+        </p>
+        <div class="subscription">
+                <button *ngIf="group.owner != username; else ownerPanel" (click)="subscribe()">
+                    <div *ngIf="!group.isSubscribed; else unsubscribe">
+                        Subscribe
+                    </div>
+                    <ng-template #unsubscribe>
+                        Unsubscribe
+                    </ng-template>
+                </button>
+        
+                <ng-template #ownerPanel>
+                    <button routerLink="/create-group/{{group.id}}">Edit</button>
+                    <button routerLink="/manage-group/{{group.id}}">Manage Roles</button>
+                    <button (click)="deleting=true">Delete</button>
+                    <div *ngIf="deleting">
+                        <confirmation message="Are you sure you want to delete your group: {{group.groupName}}?" (confirm)="delete($event)"></confirmation>
+                    </div>
+                </ng-template>
+        </div>
     </div>
     
-    <p>{{group.description}}</p>
+    <div class="description">
+        <p>{{group.description}}</p>
+    </div>
     
     <div class="line">
         Posts:
@@ -90,4 +56,4 @@
     </div>
     
     <post-feed [groupId]="group.id"></post-feed>
-</div>-->
+</div>

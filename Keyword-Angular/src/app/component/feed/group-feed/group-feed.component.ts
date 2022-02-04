@@ -19,6 +19,9 @@ export class GroupFeedComponent implements OnInit {
 
   searchPhrase: string = '';
 
+  isError: boolean = false;
+  isLoading: boolean = true;
+
   constructor(private groupService: GroupService,
     private route: ActivatedRoute,
     private router: Router) {
@@ -43,8 +46,14 @@ export class GroupFeedComponent implements OnInit {
       this.currentPage = res['page']!=null ? res['page'] : 1;
 
       this.groupService.getAll(this.currentPage - 1, this.searchPhrase).pipe(take(1),)
-      .subscribe(res => {this.groups = res});
-
+      .subscribe(res => {
+        this.groups = res;
+        this.isLoading = false;
+      },
+        err => {
+          this.isError = true;
+          this.isLoading = false;
+        });
     })
 
     this.groupService.getCount(this.prevValue).pipe(take(1))
@@ -53,6 +62,11 @@ export class GroupFeedComponent implements OnInit {
 
       for(let i = 0; i < this.pages.length; i++)
         this.pages[i] = i + 1;
+
+        this.isLoading = false;
+    },err => {
+      this.isError = true;
+      this.isLoading = false;
     });
   }
 
