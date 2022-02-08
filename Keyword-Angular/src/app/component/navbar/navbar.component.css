@@ -16,8 +16,26 @@ div{
     cursor: pointer;
 }
 
+.navbar-brand{
+    display: flex;
+}
+
 .logo{
     width: 30px;
     margin-right: 20px;
     color: black
+}
+
+@media only screen and (max-device-width: 480px) {
+    .logo-word, .groups{
+        display: none;
+    }
+
+    .logo{
+        margin-right: 0;
+    }
+
+    nav{
+        padding: 10px 80px;
+    }
 }

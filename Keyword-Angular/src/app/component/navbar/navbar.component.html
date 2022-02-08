@@ -2,15 +2,16 @@
     <div>
       <a class="navbar-brand" routerLink="">
         <img src="/assets/icon.png" class="logo">
-        Keyword
+        <div class="logo-word">Keyword</div>
+        
       </a>
-      <a class="nav-link" routerLink="/groups">
+      <a class="nav-link groups" routerLink="/groups">
         Groups
       </a>
     </div>
 
     <a class="nav-link" routerLink="/create-post" *ngIf="authService.isLoggedIn()">
-      Create Post
+      Write
     </a>
     
     <div *ngIf="!authService.isLoggedIn(); else user">
