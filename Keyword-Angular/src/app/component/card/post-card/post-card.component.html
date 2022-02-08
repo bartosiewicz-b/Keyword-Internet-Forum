@@ -5,7 +5,7 @@
       [class.active]="post.userVote!=null && (post.userVote==0 || post.userVote.toString()=='UP')"
       (click)="upvote()"></fa-icon>
             
-      <small class="text-muted">{{post.votes}}</small>
+      <small class="text-muted votes">{{post.votes}}</small>
 
       <fa-icon [icon]="faArrowDown" class="arrow"
       [class.active]="post.userVote!=null && (post.userVote==1 || post.userVote.toString()=='DOWN')"

@@ -40,3 +40,19 @@ button{
     border: none;
     margin-right: 15px;
 }
+
+@media only screen and (max-device-width: 480px) {
+    .col-1{
+        font-size: large;
+        text-align: end;
+    }
+    .col-11{
+        border: none;
+        width: 85%;
+        font-size: small;
+    }
+    .content{
+        height: 60%;
+    }
+    .votes{margin-left: 3px;}
+}

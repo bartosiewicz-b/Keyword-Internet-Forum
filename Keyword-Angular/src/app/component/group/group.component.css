@@ -22,6 +22,7 @@ h1{
 }
 
 .subscription{
+    margin-top: 5px;
     margin-bottom: 5px;
 }
 
@@ -55,4 +56,10 @@ button:active{
 .avatar{
     width: 100px;
     height: 100px;
+}
+
+@media only screen and (max-device-width: 480px) {
+    .title{
+        flex-direction: column;
+    }
 }

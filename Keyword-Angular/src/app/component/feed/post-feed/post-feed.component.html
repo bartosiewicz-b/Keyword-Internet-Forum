@@ -12,7 +12,7 @@
     <input [(ngModel)]="searchPhrase" type="text" class="input" (keyup)="search()">
   </div>
   
-  <div class="border-horiz">
+  <div class="border-horiz" *ngIf="pages.length>1">
     Page:
     <div class="pageSelect">
       <div *ngFor="let i of pages" (click)="goToPage(i)" class="selector">
@@ -25,7 +25,7 @@
       <post-card [post]="p" [short]="true"></post-card>
   </div>
   
-  <div class="border-horiz">
+  <div class="border-horiz" *ngIf="pages.length>1">
     Page:
     <div class="pageSelect">
       <div *ngFor="let i of pages" (click)="goToPage(i)" class="selector">
