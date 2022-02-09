@@ -12,7 +12,7 @@
       <input [(ngModel)]="avatarUrl" class="form-control" id="avatarUrl" name="avatarUrl">
     </div>
     <div *ngIf="createGroupError" class="error">
-      Unexpected Error Occured!
+      {{errorMessage}}
     </div>
     <button type="submit" class="btn btn-primary">Create</button>
   </form>

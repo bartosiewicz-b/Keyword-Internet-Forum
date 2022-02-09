@@ -48,6 +48,9 @@
           <input ngModel type="text" name="content">
           <button type="submit" class="btn">Respond</button>
         </form>
+        <div class="error" *ngIf="createCommentError">
+          {{errorMessage}}
+      </div>
       </ng-template>
     </div>
   </div>

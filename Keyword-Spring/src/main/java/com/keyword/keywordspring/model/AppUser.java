@@ -30,6 +30,10 @@ public class AppUser implements Serializable {
 
     private String avatarUrl;
 
+    private Date lastGroupCreated;
+    private Date lastPostCreated;
+    private Date lastCommentCreated;
+
     @OneToMany
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private List<ForumGroup> ownedGroups;

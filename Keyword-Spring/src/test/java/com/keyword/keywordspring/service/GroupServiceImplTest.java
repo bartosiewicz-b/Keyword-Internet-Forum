@@ -4,6 +4,7 @@ import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.dto.request.AddGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
+import com.keyword.keywordspring.exception.ActionTooQuickException;
 import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.mapper.interf.GroupMapper;
 import com.keyword.keywordspring.mapper.interf.UserMapper;
@@ -21,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,6 +136,17 @@ class GroupServiceImplTest {
 
         assertNotNull(res);
         assertEquals(groupDto, res);
+    }
+
+    @Test
+    void addGroupTooFast() {
+
+        owner.setLastGroupCreated(new Date(System.currentTimeMillis()));
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(owner));
+
+        assertThrows(ActionTooQuickException.class, () ->
+                groupService.add("token", AddGroupRequest.builder().build()));
     }
 
     @Test

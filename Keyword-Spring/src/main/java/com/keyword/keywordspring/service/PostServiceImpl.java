@@ -3,6 +3,7 @@ package com.keyword.keywordspring.service;
 import com.keyword.keywordspring.dto.model.PostDto;
 import com.keyword.keywordspring.dto.request.AddPostRequest;
 import com.keyword.keywordspring.dto.request.EditPostRequest;
+import com.keyword.keywordspring.exception.ActionTooQuickException;
 import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.GroupDoesNotExistException;
 import com.keyword.keywordspring.exception.PostDoesNotExistException;
@@ -18,10 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +42,9 @@ public class PostServiceImpl implements PostService {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
+        if(Objects.nonNull(user.getLastPostCreated()) && user.getLastPostCreated().compareTo(new Date(System.currentTimeMillis() - 600000)) > 0)
+            throw new ActionTooQuickException("create post", 10);
+
         ForumGroup group = groupRepository.findById(request.getGroupId())
                 .orElseThrow(() -> new GroupDoesNotExistException(request.getGroupId()));
 
@@ -59,6 +60,7 @@ public class PostServiceImpl implements PostService {
                 .build());
 
         user.setNrOfPosts(user.getNrOfPosts() + 1);
+        user.setLastPostCreated(new Date(System.currentTimeMillis()));
         userRepository.save(user);
 
         return postMapper.mapToDto(post, user);

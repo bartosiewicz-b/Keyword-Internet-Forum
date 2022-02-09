@@ -1,15 +1,12 @@
 import { AuthService } from './../../service/auth.service';
 import { GroupService } from './../../service/group.service';
 import { Group } from './../../model/group';
-import { MemoryService } from './../../service/memory.service';
-import { take } from 'rxjs/operators';
 import { PostService } from '../../service/post.service';
 import { Post } from '../../model/post';
 import { CommentService } from '../../service/comment.service';
 import { Component, OnInit } from '@angular/core';
 import { Comment } from '../../model/comment';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-post',
@@ -24,6 +21,10 @@ export class PostComponent implements OnInit {
 
   isError: boolean = false;
   isLoading: boolean = true;
+
+  newComment: string = '';
+  createCommentError: boolean = false;
+  errorMessage: string = '';
 
   constructor(public authService: AuthService,
     private groupService: GroupService,
@@ -62,10 +63,18 @@ export class PostComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  comment(data: NgForm){
+  comment(){
 
-    this.commentService.add(data.value.content, this.post.id, null)
-    .subscribe(res => this.comments.push(res as Comment));
+    this.commentService.add(this.newComment, this.post.id, null)
+    .subscribe(res => {
+      this.comments.push(res)
+      this.createCommentError = false;
+      this.newComment = '';
+    },
+    err => {
+      this.createCommentError = true;
+      this.errorMessage = err.error;
+    });
   }
 
   deleteComment(id: number) {

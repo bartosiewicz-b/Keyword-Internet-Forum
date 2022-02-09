@@ -36,3 +36,7 @@ a{
     padding: 40px;
     box-shadow: 0 0 50px black;
 }
+
+.error{
+    color: #b40b0b;
+}

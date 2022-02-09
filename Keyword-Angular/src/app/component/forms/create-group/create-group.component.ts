@@ -16,6 +16,7 @@ export class CreateGroupComponent {
   avatarUrl: string = '';
 
   createGroupError: boolean = false;
+  errorMessage: string = '';
 
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -31,17 +32,22 @@ export class CreateGroupComponent {
 
   create(){
     if(this.groupId == null) {
-      this.groupService.add(this.groupName, this.description).subscribe(() => {},
-      () => {
+      this.groupService.add(this.groupName, this.description).subscribe(() => {
+        this.router.navigate(['/']);
+      },
+      err => {
         this.createGroupError = true;
+        this.errorMessage = err.error;
       });
-      this.router.navigate(['/']);
+      
     } else {
-      this.groupService.edit(this.groupId, this.groupName, this.description, this.avatarUrl).subscribe(() => {},
-      () => {
+      this.groupService.edit(this.groupId, this.groupName, this.description, this.avatarUrl).subscribe(() => {
+        this.router.navigate(['/']);
+      },
+      err => {
         this.createGroupError = true;
+        this.errorMessage = err.error;
       });
-      this.router.navigate(['/']);
     }
     
   }

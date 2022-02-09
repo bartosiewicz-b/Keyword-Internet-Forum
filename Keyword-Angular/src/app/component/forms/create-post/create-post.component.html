@@ -16,7 +16,7 @@
       <textarea [(ngModel)]="description" class="form-control" id="description" name="description" rows="20"></textarea>
     </div>
     <div *ngIf="createPostError" class="error">
-      Unexpected Error Occured!
+      {{errorMessage}}
     </div>
     <button type="submit" class="btn btn-primary">Create</button>
   </form>

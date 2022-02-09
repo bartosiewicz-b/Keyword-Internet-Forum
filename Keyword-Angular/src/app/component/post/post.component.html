@@ -14,11 +14,14 @@
     
     <post-card [post]="post"></post-card>
     
-    <form class="form" #createComment="ngForm" (ngSubmit)="comment(createComment)" 
+    <form class="form" #createComment="ngForm" (ngSubmit)="comment()" 
     *ngIf="authService.getUsername() != null">
-        <input ngModel type="text" name="content">
+        <input [(ngModel)]="newComment" type="text" name="content">
         <button type="submit" class="btn">Comment</button>
     </form>
+    <div class="error" *ngIf="createCommentError">
+        {{errorMessage}}
+    </div>
     
     <div class="separator">
         Comments:

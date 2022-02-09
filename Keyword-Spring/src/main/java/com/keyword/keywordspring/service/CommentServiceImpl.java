@@ -3,6 +3,7 @@ package com.keyword.keywordspring.service;
 import com.keyword.keywordspring.dto.model.CommentDto;
 import com.keyword.keywordspring.dto.request.AddCommentRequest;
 import com.keyword.keywordspring.dto.request.EditCommentRequest;
+import com.keyword.keywordspring.exception.ActionTooQuickException;
 import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.CommentDoesNotExistException;
 import com.keyword.keywordspring.exception.PostDoesNotExistException;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,9 @@ public class CommentServiceImpl implements CommentService {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
+        if(Objects.nonNull(user.getLastCommentCreated()) && user.getLastCommentCreated().compareTo(new Date(System.currentTimeMillis() - 60000)) > 0)
+            throw new ActionTooQuickException("create comment", 1);
+
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new PostDoesNotExistException(request.getPostId()));
 
@@ -58,6 +63,7 @@ public class CommentServiceImpl implements CommentService {
                 .build());
 
         user.setNrOfComments(user.getNrOfComments() + 1);
+        user.setLastCommentCreated(new Date(System.currentTimeMillis()));
         userRepository.save(user);
 
         return commentMapper.mapToDto(comment, user);

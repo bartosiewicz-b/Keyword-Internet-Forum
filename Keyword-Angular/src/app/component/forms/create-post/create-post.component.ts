@@ -1,6 +1,4 @@
 import { UserService } from './../../../service/user.service';
-import { Post } from './../../../model/post';
-import { GroupService } from './../../../service/group.service';
 import { Group } from './../../../model/group';
 import { take } from 'rxjs/operators';
 import { PostService } from './../../../service/post.service';
@@ -23,12 +21,13 @@ export class CreatePostComponent {
   group: string = '';
 
   createPostError: boolean = false;
+  errorMessage: string = '';
 
 
   constructor(private route: ActivatedRoute,
     private router: Router,
     private postService: PostService,
-    groupService: GroupService, private userService: UserService) {
+    userService: UserService) {
 
       if(this.routePostId != null){
         this.postService.get(Number(this.routePostId)).pipe(take(1))
@@ -51,16 +50,19 @@ export class CreatePostComponent {
       this.postService.add(this.title, this.description, this.group).subscribe(res => {
         this.routePostId = res.id.toString();
         this.router.navigate(['/' + this.group + '/' + this.routePostId]);
-      }, () => {
+      }, err => {
         this.createPostError = true;
+        this.errorMessage = err.error;
       });
     } else {
       this.postService.edit(Number(this.routePostId), this.title, this.description).subscribe(
-        () =>{}, 
-        () => {
+        () =>{
+          this.router.navigate(['/' + this.routeGroupId + '/' + this.routePostId]);
+        }, 
+        err => {
           this.createPostError = true;
+          this.errorMessage = err.error;
       });
-      this.router.navigate(['/' + this.routeGroupId + '/' + this.routePostId]);
     }
   }
 }

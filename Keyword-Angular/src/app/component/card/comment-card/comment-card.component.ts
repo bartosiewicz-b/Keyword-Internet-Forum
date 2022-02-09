@@ -32,6 +32,9 @@ export class CommentCardComponent{
   faEdit = faEdit;
   faTrash = faTrash;
 
+  createCommentError: boolean = false;
+  errorMessage: string = '';
+
   constructor(public authService: AuthService,
     private router: Router,
     private commentService: CommentService) {}
@@ -71,9 +74,14 @@ export class CommentCardComponent{
 
   respondComment(data: NgForm) {
     this.commentService.add(data.value.content, this.comment.postId, this.comment.id)
-    .subscribe(res => this.respond.emit(res));
-
-    this.isUserWriting = false;
+    .subscribe(res => {
+      this.respond.emit(res);
+      this.createCommentError = false;
+      this.isUserWriting = false;
+    }, err => {
+      this.createCommentError = true;
+      this.errorMessage = err.error;
+    });
   }
 
   deleteComment(){

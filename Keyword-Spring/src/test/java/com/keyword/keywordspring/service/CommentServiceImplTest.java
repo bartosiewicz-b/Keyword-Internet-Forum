@@ -2,7 +2,9 @@ package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.model.CommentDto;
 import com.keyword.keywordspring.dto.request.AddCommentRequest;
+import com.keyword.keywordspring.dto.request.AddGroupRequest;
 import com.keyword.keywordspring.dto.request.EditCommentRequest;
+import com.keyword.keywordspring.exception.ActionTooQuickException;
 import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.mapper.interf.CommentMapper;
 import com.keyword.keywordspring.model.*;
@@ -19,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,6 +102,17 @@ class CommentServiceImplTest {
 
         assertNotNull(res);
         assertEquals(comment.getId(), res.getId());
+    }
+
+    @Test
+    void addCommentTooFast() {
+
+        user.setLastCommentCreated(new Date(System.currentTimeMillis()));
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
+
+        assertThrows(ActionTooQuickException.class, () ->
+                commentService.add("token", AddCommentRequest.builder().build()));
     }
 
     @Test

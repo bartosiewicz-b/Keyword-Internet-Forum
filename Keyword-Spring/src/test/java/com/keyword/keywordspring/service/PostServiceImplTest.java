@@ -1,8 +1,10 @@
 package com.keyword.keywordspring.service;
 
 import com.keyword.keywordspring.dto.model.PostDto;
+import com.keyword.keywordspring.dto.request.AddGroupRequest;
 import com.keyword.keywordspring.dto.request.AddPostRequest;
 import com.keyword.keywordspring.dto.request.EditPostRequest;
+import com.keyword.keywordspring.exception.ActionTooQuickException;
 import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.mapper.interf.PostMapper;
 import com.keyword.keywordspring.model.*;
@@ -19,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,6 +108,17 @@ class PostServiceImplTest {
 
         assertNotNull(res);
         assertEquals(postDto, res);
+    }
+
+    @Test
+    void addPostTooFast() {
+
+        user.setLastPostCreated(new Date(System.currentTimeMillis()));
+
+        when(jwtUtil.getUserFromToken(anyString())).thenReturn(Optional.of(user));
+
+        assertThrows(ActionTooQuickException.class, () ->
+                postService.add("token", AddPostRequest.builder().build()));
     }
 
     @Test

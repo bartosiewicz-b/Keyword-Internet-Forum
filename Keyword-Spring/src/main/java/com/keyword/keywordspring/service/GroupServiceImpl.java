@@ -4,6 +4,7 @@ import com.keyword.keywordspring.dto.model.GroupDto;
 import com.keyword.keywordspring.dto.model.UserDto;
 import com.keyword.keywordspring.dto.request.AddGroupRequest;
 import com.keyword.keywordspring.dto.request.EditGroupRequest;
+import com.keyword.keywordspring.exception.ActionTooQuickException;
 import com.keyword.keywordspring.exception.UnauthorizedException;
 import com.keyword.keywordspring.exception.GroupDoesNotExistException;
 import com.keyword.keywordspring.exception.UserDoesNotExistException;
@@ -40,6 +41,9 @@ public class GroupServiceImpl implements GroupService {
 
         AppUser user = jwtUtil.getUserFromToken(token).orElseThrow(UnauthorizedException::new);
 
+        if(Objects.nonNull(user.getLastGroupCreated()) && user.getLastGroupCreated().compareTo(new Date(System.currentTimeMillis() - 600000)) > 0)
+            throw new ActionTooQuickException("create group", 10);
+
         ForumGroup group = groupRepository.save(ForumGroup.builder()
                 .id(request.getGroupName().toLowerCase(Locale.ROOT).trim().replace(' ', '-'))
                 .owner(user)
@@ -52,6 +56,9 @@ public class GroupServiceImpl implements GroupService {
                 .build());
 
         subscribe(token, group.getId());
+
+        user.setLastGroupCreated(new Date(System.currentTimeMillis()));
+        userRepository.save(user);
 
         return groupMapper.mapToDto(group, user);
     }
