@@ -18,4 +18,6 @@ public class AddGroupRequest {
 
     @NotNull
     private String description;
+
+    private String avatarUrl;
 }

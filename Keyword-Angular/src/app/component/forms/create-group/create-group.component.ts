@@ -32,7 +32,7 @@ export class CreateGroupComponent {
 
   create(){
     if(this.groupId == null) {
-      this.groupService.add(this.groupName, this.description).subscribe(() => {
+      this.groupService.add(this.groupName, this.description, this.avatarUrl).subscribe(() => {
         this.router.navigate(['/']);
       },
       err => {

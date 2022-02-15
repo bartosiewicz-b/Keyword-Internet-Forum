@@ -15,9 +15,9 @@ export class GroupService {
 
   constructor(private httpClient: HttpClient) { }
 
-  add(groupName: string, description: string): Observable<Group> {
+  add(groupName: string, description: string, avatarUrl: string): Observable<Group> {
     return this.httpClient.post<Group>(this.url + '/add',
-      {'groupName': groupName, 'description': description})
+      {'groupName': groupName, 'description': description, 'avatarUrl': avatarUrl})
       .pipe(take(1));
   }
 

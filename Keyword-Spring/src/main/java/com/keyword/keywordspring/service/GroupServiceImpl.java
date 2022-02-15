@@ -53,6 +53,7 @@ public class GroupServiceImpl implements GroupService {
                 .subscriptions(0)
                 .subscribers(new ArrayList<>())
                 .moderators(new ArrayList<>(){{add(user);}})
+                .avatarUrl(request.getAvatarUrl())
                 .build());
 
         subscribe(token, group.getId());
