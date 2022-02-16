@@ -46,7 +46,7 @@ export class AuthService {
 
   login(login: string, password: string): Observable<any> {
     return this.httpClient.post<any>(this.url + '/login', 
-    {'login': login, 'password': password})
+    {'login': login, 'password': [...password]})
     .pipe(take(1));
   }
 
@@ -62,7 +62,7 @@ export class AuthService {
 
   register(email: string, username: string, password: string) {
     this.httpClient.post(this.url + '/register', 
-      {'email': email, 'username': username, 'password': password})
+      {'email': email, 'username': username, 'password': [...password]})
       .pipe(take(1))
       .subscribe();
   }

@@ -21,5 +21,5 @@ public class RegisterRequest {
 
     @NotNull
     @Size(min = 8, message = "Password is too short.")
-    private String password;
+    private char[] password;
 }

@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.CharBuffer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public class UserServiceImpl implements UserService {
                 .nrOfPosts(0)
                 .subscribedGroups(new ArrayList<>())
                 .moderatedGroups(new ArrayList<>())
-                .password(passwordEncoder.encode(request.getPassword())).build();
+                .password(passwordEncoder.encode(CharBuffer.wrap(request.getPassword()))).build();
 
         userRepository.save(user);
     }
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
         if(user.isEmpty()) throw new UnauthorizedException(request.getLogin());
 
-        if(!passwordEncoder.matches(request.getPassword(), user.get().getPassword()))
+        if(!passwordEncoder.matches(CharBuffer.wrap(request.getPassword()), user.get().getPassword()))
             throw new UnauthorizedException(user.get().getUsername());
 
         return user.get();

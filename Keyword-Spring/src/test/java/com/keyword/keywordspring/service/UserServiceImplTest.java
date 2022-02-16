@@ -54,10 +54,10 @@ class UserServiceImplTest {
     void setUp() {
 
         registerRequest = RegisterRequest.builder().username("test").email("test@email.com")
-                .password("password").build();
+                .password(new char[0]).build();
 
         loginRequest = LoginRequest.builder().login("test@email.com")
-                .password("password").build();
+                .password(new char[0]).build();
 
         user = AppUser.builder()
                 .id(1L)
@@ -76,7 +76,7 @@ class UserServiceImplTest {
     void registerOk() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(anyString())).thenReturn(registerRequest.getPassword());
+        when(passwordEncoder.encode(any())).thenReturn("password");
 
         userService.register(registerRequest);
     }

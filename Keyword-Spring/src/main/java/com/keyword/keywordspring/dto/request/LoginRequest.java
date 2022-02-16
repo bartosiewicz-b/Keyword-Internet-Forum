@@ -13,5 +13,5 @@ public class LoginRequest {
     private String login;
 
     @NotNull
-    private String password;
+    private char[] password;
 }

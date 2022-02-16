@@ -86,7 +86,7 @@ class AuthApiTest {
         String request = mapper.writeValueAsString(RegisterRequest.builder()
                 .email(user.getEmail())
                 .username(user.getUsername())
-                .password(user.getPassword())
+                .password(new char['p'])
                 .build());
 
         mockMvc.perform(post("/auth/register")
@@ -104,7 +104,7 @@ class AuthApiTest {
 
         String request = mapper.writeValueAsString(LoginRequest.builder()
                 .login(user.getUsername())
-                .password(user.getPassword())
+                .password(new char[0])
                 .build());
 
         when(userService.login(any())).thenReturn(user);
